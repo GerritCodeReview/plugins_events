@@ -20,5 +20,6 @@ public class SshModule extends PluginCommandModule {
   @Override
   protected void configureCommands() {
     command(StreamEvents.class);
+    command(TrimCommand.class);
   }
 }
