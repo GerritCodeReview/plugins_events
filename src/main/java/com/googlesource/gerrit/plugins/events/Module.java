@@ -17,12 +17,13 @@ package com.googlesource.gerrit.plugins.events;
 import com.google.gerrit.common.ChangeListener;
 import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.inject.AbstractModule;
+import com.googlesource.gerrit.plugins.events.fsstore.FsStore;
 
 public class Module extends AbstractModule {
   @Override
   protected void configure() {
     DynamicSet.setOf(binder(), StreamEventListener.class);
-    bind(EventStore.class).to(MemStore.class);
+    bind(EventStore.class).to(FsStore.class);
     DynamicSet.bind(binder(), ChangeListener.class).to(CoreListener.class);
   }
 }
