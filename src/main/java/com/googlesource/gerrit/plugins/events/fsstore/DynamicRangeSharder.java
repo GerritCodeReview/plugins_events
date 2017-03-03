@@ -56,6 +56,11 @@ public class DynamicRangeSharder {
     order = Long.toString(orders);
   }
 
+  /** Get the Path where `i` should be stored. */
+  public Path path(long i) {
+    return dir(i).resolve(Long.toString(i));
+  }
+
   /** Get the Path of the block that `i` should be stored in. */
   public Path dir(long i) {
     Path dir = base.resolve(subtreeName(i));
