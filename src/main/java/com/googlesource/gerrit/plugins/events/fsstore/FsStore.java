@@ -84,6 +84,9 @@ public class FsStore implements EventStore {
   protected final Stores stores;
   protected final UUID uuid;
 
+  protected final SequenceCache cachedHead;
+  protected final SequenceCache cachedTail;
+
   @Inject
   public FsStore(SitePaths site) throws IOException {
     this(site.data_dir.toPath().resolve("plugin").resolve("events").resolve("fstore-v2"));
@@ -94,6 +97,8 @@ public class FsStore implements EventStore {
     stores = new Stores(paths);
     stores.initFs();
     uuid = UUID.fromString(stores.uuid.get());
+    cachedHead = new SequenceCache(stores.head);
+    cachedTail = new SequenceCache(stores.tail);
   }
 
   @Override
@@ -108,12 +113,13 @@ public class FsStore implements EventStore {
 
   @Override
   public long getHead() throws IOException {
-    return stores.head.spinGet(MAX_GET_SPINS);
+    return cachedHead.spinGet(MAX_GET_SPINS);
   }
 
   @Override
   public String get(long num) throws IOException {
-    if (getTail() <= num && num <= getHead()) {
+    if (cachedTail.isLessThanOrEqualTo(num, MAX_GET_SPINS)
+        && cachedHead.isGreaterThanOrEqualTo(num, MAX_GET_SPINS)) {
       try {
         return Fs.readFile(paths.events.path(num));
       } catch (NoSuchFileException e) {
@@ -124,18 +130,20 @@ public class FsStore implements EventStore {
 
   @Override
   public long getTail() throws IOException {
-    if (getHead() == 0) {
+    if (cachedHead.isZero(MAX_GET_SPINS)) {
       return 0;
     }
-    long tail = stores.tail.spinGet(MAX_GET_SPINS);
+    long tail = cachedTail.spinGet(MAX_GET_SPINS);
     return tail < 1 ? 1 : tail;
   }
 
   @Override
   public void trim(long trim) throws IOException {
-    long head = getHead();
-    if (trim >= head) {
-      trim = head - 1;
+    if (cachedHead.isLessThanOrEqualTo(trim, MAX_GET_SPINS)) {
+      long head = getHead();
+      if (trim >= head) {
+        trim = head - 1;
+      }
     }
     if (trim > 0) {
       for (long i = getTail(); i <= trim; i++) {
