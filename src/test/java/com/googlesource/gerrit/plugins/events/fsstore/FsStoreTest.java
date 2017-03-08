@@ -222,7 +222,7 @@ public class FsStoreTest extends TestCase {
    *
    * <p>Local(spinning) 1 workers 1M 14.34s ~14us/event find events|wc -l 1.3s rm -rf 42s
    *
-   * <p>Mixed workers: NFS(WAN) 1 worker (+NFS LAN continuous) count=10, 10m6s
+   * <p>Mixed workers: NFS(WAN) 1 worker (+NFS LAN continuous) count=10, 3m28s
    */
   public static void main(String[] argv) throws Exception {
     if (argv.length > 0) {
