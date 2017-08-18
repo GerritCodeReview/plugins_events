@@ -150,7 +150,7 @@ public class FsStoreTest extends TestCase {
     }
   }
 
-  public void verify(String id, long head) throws Exception {
+  public boolean verify(String id, long head) throws Exception {
     Set<Long> found = new HashSet<Long>();
     long stop = store.getHead();
     long mine = 1;
@@ -178,10 +178,13 @@ public class FsStoreTest extends TestCase {
         report("missing", i, -1);
       }
     }
-    reportTotal("duplicate");
-    reportTotal("out of order");
-    reportTotal("missing");
-    reportTotal("gap");
+
+    boolean error = false;
+    error |= reportTotal("duplicate");
+    error |= reportTotal("out of order");
+    error |= reportTotal("missing");
+    error |= reportTotal("gap");
+    return error;
   }
 
   private void report(String type, long n, long i) {
@@ -193,11 +196,13 @@ public class FsStoreTest extends TestCase {
     reported.put(type, ++cnt);
   }
 
-  private void reportTotal(String type) {
+  private boolean reportTotal(String type) {
     Long cnt = reported.get(type);
     if (cnt != null) {
       System.out.println("Total " + type + "s: " + cnt);
+      return true;
     }
+    return false;
   }
 
   /**
@@ -211,6 +216,10 @@ public class FsStoreTest extends TestCase {
    * com.googlesource.gerrit.plugins.events.fsstore.FsStoreTest \ [dir [count [store-id]]]
    *
    * <p>Note: if you do not specify <dir>, it will create a directory under /tmp
+   *
+   * <p>Performance: NFS(Fast,Lowlatency,SSDs), 1 worker, count=1000, ~6s ~6ms/event
+   *
+   * <p>Local(spinning) 5 workers count=100K 11m38.512s find events|wc -l 2s rm -rf 10s
    */
   public static void main(String[] argv) throws Exception {
     if (argv.length > 0) {
@@ -231,6 +240,10 @@ public class FsStoreTest extends TestCase {
     t.setUp();
     long head = t.store.getHead();
     t.count(id);
-    t.verify(id, head);
+    if (t.verify(id, head)) {
+      System.out.println("\nFAIL");
+      System.exit(1);
+    }
+    System.out.println("\nPASS");
   }
 }

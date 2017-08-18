@@ -54,20 +54,6 @@ public class FsStore implements EventStore {
     }
   }
 
-  public static class StringFsValue extends FsValue<String> {
-    public StringFsValue(Path path) {
-      super(path);
-    }
-
-    public String get() throws IOException {
-      return load();
-    }
-
-    public void set(String value) throws IOException {
-      store(value + "\n");
-    }
-  }
-
   public static class FsSequence extends FsValue<Long> {
     public FsSequence(Path path) {
       super(path);
@@ -114,18 +100,18 @@ public class FsStore implements EventStore {
   }
 
   protected static class Stores {
-    final StringFsValue uuid;
+    final FsId uuid;
     final FsSequence head;
     final FsSequence tail;
 
     public Stores(BasePaths bases) {
-      uuid = new StringFsValue(bases.uuid);
+      uuid = new FsId(bases.uuid);
       head = new FsSequence(bases.head);
       tail = new FsSequence(bases.tail);
     }
 
     public void initFs() throws IOException {
-      uuid.initFs(UUID.randomUUID().toString());
+      uuid.initFs();
       head.initFs((long) 0);
       tail.initFs((long) 1);
     }
@@ -137,7 +123,7 @@ public class FsStore implements EventStore {
 
   @Inject
   public FsStore(SitePaths site) throws IOException {
-    this(site.data_dir.toPath().resolve("plugin").resolve("events").resolve("fstore-v1"));
+    this(site.data_dir.toPath().resolve("plugin").resolve("events").resolve("fstore-v1.1"));
   }
 
   public FsStore(Path base) throws IOException {
