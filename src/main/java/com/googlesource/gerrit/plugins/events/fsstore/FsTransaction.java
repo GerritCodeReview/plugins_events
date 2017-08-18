@@ -113,6 +113,16 @@ public class FsTransaction {
   }
 
   /**
+   * Used to atomically delete a directory tree when the src directory name is guaranteed to be
+   * unique.
+   */
+  public static void renameAndDeleteUnique(Path src, Path del) throws IOException {
+    Path reparented = Fs.reparent(src, del);
+    Fs.tryAtomicMove(src, reparented);
+    Fs.tryRecursiveDelete(reparented);
+  }
+
+  /**
    * Used to atomically delete entries in a directory tree older than expiry, up to max count. Do
    * NOT throw IOExceptions.
    *
