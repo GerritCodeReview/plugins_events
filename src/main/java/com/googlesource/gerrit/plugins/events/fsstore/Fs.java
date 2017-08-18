@@ -21,15 +21,27 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 /** Some Filesystem utilities */
 public class Fs {
+  /** Try to create a link. Do NOT throw IOExceptions. */
+  public static boolean tryCreateLink(Path link, Path existing) {
+    try {
+      Files.createLink(link, existing);
+      return true;
+    } catch (IOException e) {
+      return false;
+    }
+  }
+
   /** Try to move a file/dir atomically. Do NOT throw IOExceptions. */
   public static boolean tryAtomicMove(Path src, Path dst) {
     try {
@@ -41,7 +53,7 @@ public class Fs {
   }
 
   /** Try to recursively delete a dir. Do NOT throw IOExceptions. */
-  public static void tryRecursiveDelete(Path dir) {
+  public static boolean tryRecursiveDelete(Path dir) {
     try {
       Files.walkFileTree(
           dir,
@@ -61,6 +73,7 @@ public class Fs {
           });
     } catch (IOException e) {
     }
+    return !Files.exists(dir);
   }
 
   /**
@@ -80,6 +93,24 @@ public class Fs {
         }
       }
     } catch (IOException e) {
+    }
+    return true;
+  }
+
+  /** Are all entries in a directory tree older than expiry? Do NOT throw IOExceptions. */
+  public static boolean isAllEntriesOlderThan(Path dir, FileTime expiry) {
+    if (!isOlderThan(dir, expiry)) {
+      return false;
+    }
+    try (DirectoryStream<Path> dirEntries = Files.newDirectoryStream(dir)) {
+      for (Path path : dirEntries) {
+        if (!isAllEntriesOlderThan(path, expiry)) {
+          return false;
+        }
+      }
+    } catch (NotDirectoryException e) {
+    } catch (IOException e) {
+      return false; // Modified after start, so not older
     }
     return true;
   }
@@ -129,6 +160,14 @@ public class Fs {
       buffer.append(line);
     }
     return buffer.toString();
+  }
+
+  /** Get the first entry in a directory. */
+  public static Path getFirstDirEntry(Path dir) throws IOException {
+    try (DirectoryStream<Path> dirEntries = Files.newDirectoryStream(dir)) {
+      Iterator<Path> it = dirEntries.iterator();
+      return it.hasNext() ? it.next() : null;
+    }
   }
 
   /**

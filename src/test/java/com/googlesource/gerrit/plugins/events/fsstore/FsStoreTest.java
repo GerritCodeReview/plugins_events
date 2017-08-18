@@ -217,9 +217,10 @@ public class FsStoreTest extends TestCase {
    *
    * <p>Note: if you do not specify <dir>, it will create a directory under /tmp
    *
-   * <p>Performance: NFS(Fast,Lowlatency,SSDs), 1 worker, count=1000, ~6s ~6ms/event
+   * <p>Performance: NFS(Lowlatency,SSDs), 1 worker 10K, 2m33s ~153ms/event find events|wc -l .4s rm
+   * -rf 1.3s
    *
-   * <p>Local(spinning) 5 workers count=100K 11m38.512s find events|wc -l 2s rm -rf 10s
+   * <p>Local(spinning) 1 workers 1M 16m7s ~1ms/event find events|wc -l 1.6s rm -rf 36s
    */
   public static void main(String[] argv) throws Exception {
     if (argv.length > 0) {

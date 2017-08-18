@@ -27,63 +27,13 @@ import javax.inject.Singleton;
 /** This class is only Thread, but not process (Multi-Master) safe */
 @Singleton
 public class FsStore implements EventStore {
-  public abstract static class FsValue<T> {
-    protected final Path path;
-
-    public FsValue(Path path) {
-      this.path = path;
-    }
-
-    /** Only Thread safe, but not process (Multi-Master) safe */
-    public synchronized void initFs(T value) throws IOException {
-      if (!Files.isRegularFile(path)) {
-        Fs.createDirectories(path.getParent());
-        set(value);
-      }
-    }
-
-    protected abstract void set(T value) throws IOException;
-
-    protected synchronized String load() throws IOException {
-      return Fs.readFile(path);
-    }
-
-    /** Only Thread, but not process (Multi-Master) safe */
-    protected synchronized void store(String value) throws IOException {
-      Files.write(path, value.getBytes());
-    }
-  }
-
-  public static class FsSequence extends FsValue<Long> {
-    public FsSequence(Path path) {
-      super(path);
-    }
-
-    public Long get() throws IOException {
-      return Long.parseLong(load());
-    }
-
-    protected void set(Long value) throws IOException {
-      store("" + value + "\n");
-    }
-
-    /** Only Thread safe, but not process (Multi-Master) safe */
-    public synchronized Long increment() throws IOException {
-      Long next = get() + 1;
-      set(next);
-      return next;
-    }
-  }
-
   protected static class BasePaths {
-    final Path base;
     final Path uuid;
     final Path head;
     final Path tail;
     final DynamicRangeSharder events;
 
     public BasePaths(Path base) {
-      this.base = base;
       uuid = base.resolve("uuid");
       events = new DynamicRangeSharder(base.resolve("events"));
       head = base.resolve("head");
@@ -117,13 +67,16 @@ public class FsStore implements EventStore {
     }
   }
 
+  public static final long MAX_GET_SPINS = 1000;
+  public static final long MAX_INCREMENT_SPINS = 1000;
+
   protected final BasePaths paths;
   protected final Stores stores;
   protected final UUID uuid;
 
   @Inject
   public FsStore(SitePaths site) throws IOException {
-    this(site.data_dir.toPath().resolve("plugin").resolve("events").resolve("fstore-v1.1"));
+    this(site.data_dir.toPath().resolve("plugin").resolve("events").resolve("fstore-v1.2"));
   }
 
   public FsStore(Path base) throws IOException {
@@ -145,12 +98,12 @@ public class FsStore implements EventStore {
     Path epath = paths.event(next);
     Fs.createDirectories(epath.getParent());
     Files.write(epath, (event + "\n").getBytes());
-    stores.head.increment();
+    stores.head.spinIncrement(MAX_INCREMENT_SPINS);
   }
 
   @Override
   public long getHead() throws IOException {
-    return stores.head.get();
+    return stores.head.spinGet(MAX_GET_SPINS);
   }
 
   @Override
@@ -169,22 +122,22 @@ public class FsStore implements EventStore {
     if (getHead() == 0) {
       return 0;
     }
-    long tail = stores.tail.get();
+    long tail = stores.tail.spinGet(MAX_GET_SPINS);
     return tail < 1 ? 1 : tail;
   }
 
   @Override
-  public synchronized void trim(long trim) throws IOException {
+  public void trim(long trim) throws IOException {
     long head = getHead();
     if (trim >= head) {
       trim = head - 1;
     }
     if (trim > 0) {
       for (long i = getTail(); i <= trim; i++) {
-        stores.tail.increment();
-        Path event = paths.event(i);
+        long delete = stores.tail.spinIncrement(MAX_INCREMENT_SPINS) - 1;
+        Path event = paths.event(delete);
         Fs.tryRecursiveDelete(event);
-        if (paths.isEventLastDirEntry(i)) {
+        if (paths.isEventLastDirEntry(delete)) {
           Fs.unsafeRecursiveRmdir(event.getParent().toFile());
         }
       }
