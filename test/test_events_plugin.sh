@@ -173,9 +173,10 @@ source "$MYDIR/lib_result.sh"
 
 parseArgs "$@"
 
-TEST_DIR=$(readlink -f "$MYDIR/../target/test")
+TEST_DIR=$MYDIR/../target/test
 rm -rf "$TEST_DIR"
 mkdir -p "$TEST_DIR"
+TEST_DIR=$(readlink -f "$TEST_DIR")
 
 GITURL=ssh://$SERVER:29418/$PROJECT
 DEST_REF=$REF_BRANCH
@@ -230,8 +231,8 @@ review "$ch2,1" $APPROVALS
 type=change-merged
 capture_events 2
 submit "$ch1,1"
-result_type "$GROUP" "ref-updated"
-result_type "$GROUP" "$type" 2
+result_type "$GROUP" "$type"
+result_type "$GROUP" "ref-updated" 2
 
 type=merge-failed
 capture_events

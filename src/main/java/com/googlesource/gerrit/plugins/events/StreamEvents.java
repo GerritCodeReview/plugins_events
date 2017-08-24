@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RequiresCapability(GlobalCapability.STREAM_EVENTS)
-@CommandMetaData(name = "stream", descr = "Monitor events occurring in real time")
+@CommandMetaData(name = "stream", description = "Monitor events occurring in real time")
 public final class StreamEvents extends BaseCommand {
   private static final Logger log = LoggerFactory.getLogger(StreamEvents.class);
 
