@@ -14,9 +14,9 @@
 
 package com.googlesource.gerrit.plugins.events;
 
-import com.google.gerrit.common.ChangeListener;
+import com.google.gerrit.common.EventListener;
 import com.google.gerrit.extensions.registration.DynamicSet;
-import com.google.gerrit.server.events.ChangeEvent;
+import com.google.gerrit.server.events.Event;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class CoreListener implements ChangeListener {
+public class CoreListener implements EventListener {
   private static Logger log = LoggerFactory.getLogger(CoreListener.class);
 
   protected static final Gson gson = new Gson();
@@ -39,7 +39,7 @@ public class CoreListener implements ChangeListener {
   }
 
   @Override
-  public void onChangeEvent(ChangeEvent event) {
+  public void onEvent(Event event) {
     try {
       store.add(gson.toJson(event));
     } catch (IOException e) {
