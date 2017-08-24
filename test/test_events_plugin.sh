@@ -225,19 +225,11 @@ capture_events
 review "$ch1,1" --message "my_comment" $APPROVALS
 result_type "$GROUP" "$type"
 
-ch2=$(create_change "$REF_BRANCH" "$FILE_A") || exit
-review "$ch2,1" $APPROVALS
-
 type=change-merged
 capture_events 2
 submit "$ch1,1"
 result_type "$GROUP" "$type"
 result_type "$GROUP" "ref-updated" 2
-
-type=merge-failed
-capture_events
-submit "$ch2,1"
-result_type "$GROUP" "$type"
 
 # reviewer-added needs to be tested via Rest-API
 

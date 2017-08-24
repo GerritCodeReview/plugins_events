@@ -89,7 +89,7 @@ public class FsStore implements EventStore {
 
   @Inject
   public FsStore(SitePaths site) throws IOException {
-    this(site.data_dir.toPath().resolve("plugin").resolve("events").resolve("fstore-v2"));
+    this(site.data_dir.resolve("plugin").resolve("events").resolve("fstore-v2"));
   }
 
   public FsStore(Path base) throws IOException {
