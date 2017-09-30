@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "adf5d48e_2196d178",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1010013
+      },
+      "writtenOn": "2017-09-30T13:31:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "56600ccb_d2947078",
+      "range": {
+        "startLine": 7,
+        "startChar": 46,
+        "endLine": 7,
+        "endChar": 47
+      },
+      "revId": "17e1f649c47c2636339051d7d7e256ea3ca686fc",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7de3b6f8_2a88233d",
         "filename": "src/main/java/com/googlesource/gerrit/plugins/events/fsstore/Fs.java",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2017-09-30T11:18:24Z",
       "side": 1,
       "message": "maybe log the exception as debug level to help troubleshooting if needed.\n\nSame comment for other empty catch below.",
+      "range": {
+        "startLine": 48,
+        "startChar": 4,
+        "endLine": 49,
+        "endChar": 5
+      },
+      "revId": "17e1f649c47c2636339051d7d7e256ea3ca686fc",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2476aade_8797924e",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/fsstore/Fs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1010013
+      },
+      "writtenOn": "2017-09-30T13:31:45Z",
+      "side": 1,
+      "message": "Added comments explaining the ignored exceptions.",
+      "parentUuid": "7de3b6f8_2a88233d",
       "range": {
         "startLine": 48,
         "startChar": 4,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "21931bde_efa194e6",
+        "filename": "src/main/resources/Documentation/events.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1010013
+      },
+      "writtenOn": "2017-09-30T13:31:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a2215f99_5b370aae",
+      "revId": "17e1f649c47c2636339051d7d7e256ea3ca686fc",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "36791f23_5c6b4dce",
         "filename": "src/main/resources/Documentation/events.md",
         "patchSetId": 1
@@ -76,6 +142,30 @@
       "writtenOn": "2017-09-30T11:18:24Z",
       "side": 1,
       "message": "You can remove that, index.html will be created automatically by Gerrit and will include about.md, config.md and any commands md files",
+      "range": {
+        "startLine": 6,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 0
+      },
+      "revId": "17e1f649c47c2636339051d7d7e256ea3ca686fc",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "240db4ca_2f6ced8e",
+        "filename": "src/main/resources/Documentation/events.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1010013
+      },
+      "writtenOn": "2017-09-30T13:31:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "36791f23_5c6b4dce",
       "range": {
         "startLine": 6,
         "startChar": 0,
