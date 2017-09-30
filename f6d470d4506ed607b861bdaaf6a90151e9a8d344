@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "557c15be_92e316b7",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/Module.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1012987
+      },
+      "writtenOn": "2017-09-30T11:18:24Z",
+      "side": 0,
+      "message": "Any plan to configure which store to use? If no, should you delete the MemStore class?",
+      "range": {
+        "startLine": 25,
+        "startChar": 30,
+        "endLine": 25,
+        "endChar": 38
+      },
+      "revId": "f6d470d4506ed607b861bdaaf6a90151e9a8d344",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    }
+  ]
+}
