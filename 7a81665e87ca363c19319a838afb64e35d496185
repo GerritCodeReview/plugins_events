@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e0cb66ba_d63a5663",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1010013
+      },
+      "writtenOn": "2017-09-30T14:04:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "57d452a8_c80589d1",
+      "range": {
+        "startLine": 7,
+        "startChar": 43,
+        "endLine": 7,
+        "endChar": 44
+      },
+      "revId": "7a81665e87ca363c19319a838afb64e35d496185",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b3d59c61_35405364",
         "filename": "src/main/java/com/googlesource/gerrit/plugins/events/fsstore/Nfs.java",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2017-09-30T11:59:50Z",
       "side": 1,
       "message": "this will only work if the ioe is caused by stale file handle, not if the stale file is in the casual chain. This is what is done in JGIT:\n\n/**\n* Determine if a throwable or a cause in its causal chain is a Stale NFS\n* File Handle\n*\n* @param throwable\n* @return a boolean true if the throwable or a cause in its causal chain is\n*         a Stale NFS File Handle\n* @since 4.7\n*/\npublic static boolean isStaleFileHandleInCausalChain(Throwable throwable) {\n  while (throwable !\u003d null) {\n    if (throwable instanceof IOException \u0026\u0026 isStaleFileHandle((IOException) throwable)) {\n      return true;\n    }\n    throwable \u003d throwable.getCause();\n  }\n  return false;\n}",
+      "range": {
+        "startLine": 28,
+        "startChar": 2,
+        "endLine": 31,
+        "endChar": 3
+      },
+      "revId": "7a81665e87ca363c19319a838afb64e35d496185",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "02983038_bb724c73",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/fsstore/Nfs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1010013
+      },
+      "writtenOn": "2017-09-30T14:04:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b3d59c61_35405364",
       "range": {
         "startLine": 28,
         "startChar": 2,
