@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "b6a1e3ec_7e6140c3",
+        "filename": "pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1010013
+      },
+      "writtenOn": "2017-09-30T11:10:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a48bf071_6f5e00e3",
+      "range": {
+        "startLine": 46,
+        "startChar": 34,
+        "endLine": 46,
+        "endChar": 72
+      },
+      "revId": "01608c25cbbcba0faeaf0944f274957bdf9ca51b",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6137209d_9a65660e",
         "filename": "src/main/java/com/googlesource/gerrit/plugins/events/BranchHelper.java",
         "patchSetId": 2
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "61d06490_23c9705e",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/BranchHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1010013
+      },
+      "writtenOn": "2017-09-30T11:10:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6137209d_9a65660e",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 43,
+        "endChar": 10
+      },
+      "revId": "01608c25cbbcba0faeaf0944f274957bdf9ca51b",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dedc8fa7_0989334e",
         "filename": "src/main/java/com/googlesource/gerrit/plugins/events/StreamEvents.java",
         "patchSetId": 2
@@ -59,6 +107,24 @@
       "writtenOn": "2017-09-30T10:11:13Z",
       "side": 1,
       "message": "Restrict to users with Stream-events capability, same as is core?\n\n@RequiresCapability(GlobalCapability.STREAM_EVENTS)",
+      "revId": "01608c25cbbcba0faeaf0944f274957bdf9ca51b",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fdbca931_550f234d",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/StreamEvents.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1010013
+      },
+      "writtenOn": "2017-09-30T11:10:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dedc8fa7_0989334e",
       "revId": "01608c25cbbcba0faeaf0944f274957bdf9ca51b",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
       "unresolved": false
