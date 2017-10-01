@@ -203,8 +203,8 @@ GROUP=visible-events
 type=patchset-created
 capture_events 2
 ch1=$(create_change --draft "$REF_BRANCH" "$FILE_A") || exit
-result_type "$GROUP $type" "ref-updated"
-result_type "$GROUP" "$type" 2
+result_type "$GROUP" "$type"
+result_type "$GROUP $type" "ref-updated" 2
 
 type=draft-published
 capture_events
