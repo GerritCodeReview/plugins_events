@@ -228,8 +228,8 @@ result_type "$GROUP" "$type"
 type=change-merged
 capture_events 2
 submit "$ch1,1"
-result_type "$GROUP" "$type"
-result_type "$GROUP" "ref-updated" 2
+result_type "$GROUP" "ref-updated"
+result_type "$GROUP" "$type" 2
 
 # reviewer-added needs to be tested via Rest-API
 
