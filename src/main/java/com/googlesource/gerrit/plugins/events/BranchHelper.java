@@ -21,6 +21,7 @@ import com.google.gerrit.server.project.ProjectCache;
 import com.google.gerrit.server.project.ProjectControl;
 import com.google.gerrit.server.project.ProjectState;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 
 public class BranchHelper {
@@ -47,52 +48,83 @@ public class BranchHelper {
   }
 
   public static Branch.NameKey getBranch(JsonElement event) {
-    // Known events of this type:
-    //  CommentAddedEvent, ChangeMergedEvent, ChangeAbandonedEvent,
-    //  ChangeRestoredEvent, DraftPublishedEvent, MergeFailedEvent,
-    //  PatchSetCreatedEvent, ReviewerAddedEvent:
-    JsonElement projectParent = event.getAsJsonObject().get("change");
-    if (projectParent == null) {
-      // Known events of this type: RefUpdatedEvent
-      projectParent = event.getAsJsonObject().get("refUpdate");
-    }
-    if (projectParent == null) {
+    Branch.NameKey b = null;
+    if (event != null) {
+      JsonObject obj = event.getAsJsonObject();
       // Known events of this type:
       //  CommitReceivedEvent, RefReplicationDoneEvent, RefReplicatedEvent
-      projectParent = event;
-    }
-
-    if (projectParent != null) {
-      JsonElement project = projectParent.getAsJsonObject().get("project");
-      if (project != null) {
+      b = getBranch(obj);
+      if (b == null) {
         // Known events of this type:
         //  CommentAddedEvent, ChangeMergedEvent, ChangeAbandonedEvent,
         //  ChangeRestoredEvent, DraftPublishedEvent, MergeFailedEvent,
         //  PatchSetCreatedEvent, ReviewerAddedEvent:
-        JsonElement branch = projectParent.getAsJsonObject().get("branch");
-        if (branch == null) {
-          // Known events of this type: RefUpdatedEvent, CommitReceivedEvent
-          branch = projectParent.getAsJsonObject().get("refName");
+        b = getBranch(obj.get("change"));
+        if (b == null) {
+          // Known events of this type: RefUpdatedEvent
+          b = getBranch(obj.get("refUpdate"));
         }
-        if (branch == null) {
-          // Known events of this type:
-          //  RefReplicationDoneEvent, RefReplicatedEvent
-          branch = projectParent.getAsJsonObject().get("ref");
-        }
+      }
+    }
+    return b;
+  }
 
-        if (branch != null) {
-          return getBranch(project, branch);
+  protected static Branch.NameKey getBranch(JsonObject projectParent) {
+    Project.NameKey project = getProject(projectParent);
+    if (project != null) {
+      // Known events of this type:
+      //  CommentAddedEvent, ChangeMergedEvent, ChangeAbandonedEvent,
+      //  ChangeRestoredEvent, DraftPublishedEvent, MergeFailedEvent,
+      //  PatchSetCreatedEvent, ReviewerAddedEvent:
+      JsonElement branch = projectParent.get("branch");
+      if (branch == null) {
+        // Known events of this type: RefUpdatedEvent, CommitReceivedEvent
+        branch = projectParent.get("refName");
+      }
+      if (branch == null) {
+        // Known events of this type:
+        //  RefReplicationDoneEvent, RefReplicatedEvent
+        branch = projectParent.get("ref");
+      }
+
+      if (branch != null) {
+        String name = asString(branch);
+        if (name != null) {
+          return new Branch.NameKey(project, name);
         }
       }
     }
     return null;
   }
 
-  protected static Branch.NameKey getBranch(JsonElement project, JsonElement branch) {
-    return getBranch(project.getAsString(), branch.getAsString());
+  public static Project.NameKey getProject(JsonObject projectParent) {
+    if (projectParent != null) {
+      JsonElement project = projectParent.get("project");
+      if (project != null) {
+        String name = asString(project);
+        if (name == null) {
+          try {
+            projectParent = project.getAsJsonObject();
+            project = projectParent.get("name");
+            name = asString(project);
+          } catch (RuntimeException e) {
+          }
+        }
+        if (name != null) {
+          return new Project.NameKey(name);
+        }
+      }
+    }
+    return null;
   }
 
-  protected static Branch.NameKey getBranch(String project, String branch) {
-    return new Branch.NameKey(new Project.NameKey(project), (branch.startsWith("refs/") ? "" : "refs/heads/") + branch);
+  protected static String asString(JsonElement el) {
+    if (el != null) {
+      try {
+        return el.getAsString();
+      } catch (RuntimeException e) {
+      }
+    }
+    return null;
   }
 }
