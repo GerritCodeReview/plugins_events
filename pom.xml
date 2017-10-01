@@ -23,7 +23,7 @@ limitations under the License.
   <artifactId>events</artifactId>
   <name>events</name>
   <packaging>jar</packaging>
-  <version>2.14</version>
+  <version>2.15-SNAPSHOT</version>
 
   <properties>
     <Gerrit-ApiType>plugin</Gerrit-ApiType>

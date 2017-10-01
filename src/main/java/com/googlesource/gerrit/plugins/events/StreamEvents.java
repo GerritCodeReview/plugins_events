@@ -19,8 +19,9 @@ import com.google.gerrit.extensions.annotations.RequiresCapability;
 import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.extensions.registration.RegistrationHandle;
 import com.google.gerrit.server.IdentifiedUser;
-import com.google.gerrit.server.git.WorkQueue;
 import com.google.gerrit.server.git.WorkQueue.CancelableRunnable;
+import com.google.gerrit.server.permissions.PermissionBackendException;
+import com.google.gerrit.server.permissions.RefPermission;
 import com.google.gerrit.sshd.BaseCommand;
 import com.google.gerrit.sshd.CommandMetaData;
 import com.google.gerrit.sshd.StreamCommandExecutor;
@@ -31,6 +32,7 @@ import com.google.inject.Inject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.apache.sshd.server.Environment;
 import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
@@ -76,7 +78,7 @@ public final class StreamEvents extends BaseCommand {
   @Option(name = "--ids", usage = "add ids to events (useful for resuming after a disconnect)")
   protected boolean includeIds = false;
 
-  @Inject @StreamCommandExecutor protected WorkQueue.Executor threadPool;
+  @Inject @StreamCommandExecutor protected ScheduledThreadPoolExecutor threadPool;
 
   @Inject protected EventStore events;
 
@@ -124,7 +126,7 @@ public final class StreamEvents extends BaseCommand {
       public void run() {
         try {
           flushBatch();
-        } catch (IOException e) {
+        } catch (IOException | PermissionBackendException e) {
           log.error("Error Flushing Stream Events", e);
         }
       }
@@ -204,7 +206,7 @@ public final class StreamEvents extends BaseCommand {
     }
   }
 
-  protected void flushBatch() throws IOException {
+  protected void flushBatch() throws IOException, PermissionBackendException {
     String uuid = events.getUuid().toString();
     int processed = 0;
     long head = events.getHead();
@@ -225,7 +227,8 @@ public final class StreamEvents extends BaseCommand {
     startFlush();
   }
 
-  protected void flush(String uuid, long number, String json) {
+  protected void flush(String uuid, long number, String json)
+      throws PermissionBackendException {
     if (json != null) {
       JsonElement el = parser.parse(json);
       if (perms.isVisibleTo(el, currentUser)) {

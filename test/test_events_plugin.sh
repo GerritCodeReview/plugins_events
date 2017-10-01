@@ -24,13 +24,11 @@ get_change_num() { # < gerrit_push_response > changenum
     echo "${url##*\/}" | tr -d -c '[:digit:]'
 }
 
-create_change() { # [--dependent] [--draft] branch file [commit_message] > changenum
-    local opt_d opt_c opt_draft=false
+create_change() { # [--dependent] branch file [commit_message] > changenum
+    local opt_d opt_c
     [ "$1" = "--dependent" ] && { opt_d=$1 ; shift ; }
-    [ "$1" = "--draft" ] && { opt_draft=true ; shift ; }
     local branch=$1 tmpfile=$2 msg=$3 out rtn
     local content=$RANDOM dest=refs/for/$branch
-    "$opt_draft" && dest=refs/drafts/$branch
 
     if [ -z "$opt_d" ] ; then
         out=$(mygit fetch "$GITURL" "$branch" 2>&1) ||\
@@ -202,14 +200,9 @@ setup_captures
 GROUP=visible-events
 type=patchset-created
 capture_events 2
-ch1=$(create_change --draft "$REF_BRANCH" "$FILE_A") || exit
-result_type "$GROUP" "$type"
-result_type "$GROUP $type" "ref-updated" 2
-
-type=draft-published
-capture_events
-review "$ch1,1" --publish
-result_type "$GROUP" "$type"
+ch1=$(create_change "$REF_BRANCH" "$FILE_A") || exit
+result_type "$GROUP $type" "ref-updated"
+result_type "$GROUP" "$type" 2
 
 type=change-abandoned
 capture_events
