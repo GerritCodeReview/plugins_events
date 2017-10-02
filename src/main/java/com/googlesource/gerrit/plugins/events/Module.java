@@ -16,14 +16,16 @@ package com.googlesource.gerrit.plugins.events;
 
 import com.google.gerrit.common.EventListener;
 import com.google.gerrit.extensions.registration.DynamicSet;
-import com.google.inject.AbstractModule;
+import com.google.gerrit.lifecycle.LifecycleModule;
 import com.googlesource.gerrit.plugins.events.fsstore.FsStore;
+import com.googlesource.gerrit.plugins.events.fsstore.FsListener.FsLifecycleListener;
 
-public class Module extends AbstractModule {
+public class Module extends LifecycleModule {
   @Override
   protected void configure() {
     DynamicSet.setOf(binder(), StreamEventListener.class);
     bind(EventStore.class).to(FsStore.class);
     DynamicSet.bind(binder(), EventListener.class).to(CoreListener.class);
+    listener().to(FsLifecycleListener.class);
   }
 }
