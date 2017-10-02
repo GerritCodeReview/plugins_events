@@ -14,16 +14,41 @@
 
 package com.googlesource.gerrit.plugins.events;
 
-import com.google.gerrit.common.EventListener;
-import com.google.gerrit.extensions.registration.DynamicSet;
-import com.google.inject.AbstractModule;
-import com.googlesource.gerrit.plugins.events.fsstore.FsStore;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
-public class Module extends AbstractModule {
+import com.google.common.base.Strings;
+import com.google.gerrit.common.EventListener;
+import com.google.gerrit.extensions.annotations.PluginName;
+import com.google.gerrit.extensions.registration.DynamicSet;
+import com.google.gerrit.lifecycle.LifecycleModule;
+import com.googlesource.gerrit.plugins.events.fsstore.FsStore;
+import com.googlesource.gerrit.plugins.events.fsstore.FsListener.FsLifecycleListener;
+import com.google.gerrit.server.config.ConfigUtil;
+import com.google.gerrit.server.config.PluginConfigFactory;
+import com.google.gerrit.server.config.SitePaths;
+
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+
+public class Module extends LifecycleModule {
+  private static final int DEFAULT_POLLING_INTERVAL = 0;
+
+  @Provides
+  @Singleton
+  @PollingInterval
+  protected Long getCleanupInterval(PluginConfigFactory cfg, @PluginName String pluginName) {
+    String fromConfig =
+        Strings.nullToEmpty(cfg.getFromGerritConfig(pluginName).getString(
+            "pollingInterval"));
+    return SECONDS.toMillis(ConfigUtil.getTimeUnit(fromConfig,
+        DEFAULT_POLLING_INTERVAL, SECONDS));
+  }
+
   @Override
   protected void configure() {
     DynamicSet.setOf(binder(), StreamEventListener.class);
     bind(EventStore.class).to(FsStore.class);
     DynamicSet.bind(binder(), EventListener.class).to(CoreListener.class);
+    listener().to(FsLifecycleListener.class);
   }
 }
