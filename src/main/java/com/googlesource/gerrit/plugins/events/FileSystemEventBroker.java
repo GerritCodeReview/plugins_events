@@ -125,7 +125,7 @@ public class FileSystemEventBroker extends EventBroker {
     }
   }
 
-  protected synchronized void sendAllPendingEvents() throws PermissionBackendException {
+  public synchronized void sendAllPendingEvents() throws PermissionBackendException {
     try {
       long current = store.getHead();
       while (lastSent < current) {
