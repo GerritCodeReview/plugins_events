@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8f7288e5_7c5b7b23",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/fsstore/FsListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1010013
+      },
+      "writtenOn": "2017-10-03T13:42:13Z",
+      "side": 1,
+      "message": "Hmm will this be shared with other default tasks and thus likely miss its deadline if the deadline is short?",
+      "range": {
+        "startLine": 48,
+        "startChar": 13,
+        "endLine": 48,
+        "endChar": 28
+      },
+      "revId": "dcddf57ac38e5658931914d9cddf5f521cae9e60",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": true
+    }
+  ]
+}
