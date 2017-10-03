@@ -22,6 +22,53 @@
       "revId": "dcddf57ac38e5658931914d9cddf5f521cae9e60",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30551c38_7f6ff9e8",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/fsstore/FsListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1012987
+      },
+      "writtenOn": "2017-10-03T13:52:27Z",
+      "side": 1,
+      "message": "it depends how many threads are configured for the default queue.  If you put more than one, then it\u0027s more likely to not be an issue.",
+      "parentUuid": "8f7288e5_7c5b7b23",
+      "range": {
+        "startLine": 48,
+        "startChar": 13,
+        "endLine": 48,
+        "endChar": 28
+      },
+      "revId": "dcddf57ac38e5658931914d9cddf5f521cae9e60",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58ebc386_79a566cc",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/fsstore/FsListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1012987
+      },
+      "writtenOn": "2017-10-03T13:52:27Z",
+      "side": 1,
+      "message": "You need to cancel the periodic task in the stop otherwise plugin will not fully unload.",
+      "range": {
+        "startLine": 50,
+        "startChar": 16,
+        "endLine": 50,
+        "endChar": 89
+      },
+      "revId": "dcddf57ac38e5658931914d9cddf5f521cae9e60",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
     }
   ]
 }
