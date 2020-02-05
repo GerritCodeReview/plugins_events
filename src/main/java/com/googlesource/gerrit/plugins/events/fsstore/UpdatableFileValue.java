@@ -280,7 +280,7 @@ public abstract class UpdatableFileValue<T> extends NfsFileValue<T> {
     return null;
   }
 
-  protected boolean shouldCompleteOngoing() {
+  protected boolean shouldCompleteOngoing() throws IOException {
     // Collisions are expected, and we don't actually want to
     // complete them too often since it affects fairness
     // by potentially preventing slower actors from ever
@@ -290,7 +290,7 @@ public abstract class UpdatableFileValue<T> extends NfsFileValue<T> {
 
     // Maximum delay incurred due to a server crash.
     FileTime expiry = Fs.getFileTimeAgo(10, TimeUnit.SECONDS);
-    return Fs.isAllEntriesOlderThan(paths.update, expiry);
+    return Nfs.isAllEntriesOlderThan(paths.update, expiry);
   }
 
   protected abstract UniqueUpdate<T> createUniqueUpdate(String uuid, boolean ours, long maxTries)
