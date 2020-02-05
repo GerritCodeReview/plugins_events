@@ -62,7 +62,7 @@ public class FsSequenceTest extends TestCase {
   @Test
   public void testSpinIncrement() throws IOException {
     long next = seq.get() + (long) 1;
-    assertEquals(next, (long) seq.spinIncrement(1));
+    assertEquals(next, seq.spinIncrement(1));
   }
 
   @Test

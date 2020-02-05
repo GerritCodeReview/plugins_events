@@ -117,7 +117,7 @@ public class FsTransaction {
    * Used to atomically delete a directory tree when the src directory name is guaranteed to be
    * unique.
    */
-  public static void renameAndDeleteUnique(Path src, Path del) throws IOException {
+  public static void renameAndDeleteUnique(Path src, Path del) {
     Path reparented = Fs.reparent(src, del);
     Fs.tryAtomicMove(src, reparented);
     Fs.tryRecursiveDelete(reparented);

@@ -43,9 +43,10 @@ public class FileValue<T> {
   /**
    * Auto setup the serializer based on the type used to initialize the class.
    *
-   * <p>Must be called with a supported type before use if a serializer has been set manualy. Safe
+   * <p>Must be called with a supported type before use if a serializer has been set manually. Safe
    * to call if the Serializer was already set.
    */
+  @SuppressWarnings("unchecked") // we check the type of init, so these casts are safe
   protected void initSerializer(T init) {
     if (serializer == null) {
       if (init instanceof String) {

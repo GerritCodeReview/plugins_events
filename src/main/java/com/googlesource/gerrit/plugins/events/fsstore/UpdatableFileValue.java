@@ -221,7 +221,7 @@ public abstract class UpdatableFileValue<T> extends NfsFileValue<T> {
     }
 
     /** Contains phase 6 */
-    protected void clean() throws IOException {
+    protected void clean() {
       if (committed) {
         FsTransaction.renameAndDeleteUnique(upaths.udir, updatable.paths.delete); // Phase 6
         updatable.cleanPreserved();
@@ -273,7 +273,7 @@ public abstract class UpdatableFileValue<T> extends NfsFileValue<T> {
     if (shouldCompleteOngoing()) {
       Path ongoing = Nfs.getFirstDirEntry(paths.update);
       if (ongoing != null) {
-        // Attempt to complete previous updates;
+        // Attempt to complete previous updates
         return createUniqueUpdate(Fs.basename(ongoing).toString(), false, maxTries);
       }
     }
