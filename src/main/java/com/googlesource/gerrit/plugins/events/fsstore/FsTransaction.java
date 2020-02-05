@@ -68,7 +68,7 @@ public class FsTransaction {
     public boolean clean(FileTime expiry, int max) {
       try {
         return Fs.tryRecursiveDeleteEntriesOlderThan(delete, expiry, max)
-            || renameAndDeleteEntriesOlderThan(build, delete, expiry, max);
+            && renameAndDeleteEntriesOlderThan(build, delete, expiry, max);
       } catch (IOException e) {
         // If we knew if it was a repeat offender, we could consider logging it.
         return true; // Don't keep retrying failures.
