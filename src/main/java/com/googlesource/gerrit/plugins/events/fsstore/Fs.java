@@ -17,6 +17,7 @@ package com.googlesource.gerrit.plugins.events.fsstore;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileVisitResult;
@@ -78,7 +79,7 @@ public class Fs {
 
   /**
    * Try to recursively delete entries, up to max count, in a dir older than expiry. Do NOT throw
-   * IOExceptions.
+   * IOExceptions or DirectoryIteratorExceptions.
    *
    * @return whether all entries were deleted
    */
@@ -93,12 +94,18 @@ public class Fs {
         }
       }
     } catch (IOException e) { // Intent of 'try' function is to ignore these.
+    } catch (DirectoryIteratorException e) {
+      // dir was deleted by another actor, thus so were all its entries
     }
     return true;
   }
 
-  /** Are all entries in a directory tree older than expiry? Do NOT throw IOExceptions. */
-  public static boolean isAllEntriesOlderThan(Path dir, FileTime expiry) {
+  /**
+   * Are all entries in a directory tree older than expiry?
+   *
+   * @throws IOException
+   */
+  public static boolean isAllEntriesOlderThan(Path dir, FileTime expiry) throws IOException {
     if (!isOlderThan(dir, expiry)) {
       return false;
     }
@@ -109,8 +116,8 @@ public class Fs {
         }
       }
     } catch (NotDirectoryException e) { // can't recurse if not a directory
-    } catch (IOException e) {
-      return false; // Modified after start, so not older
+    } catch (DirectoryIteratorException e) {
+      throw e.getCause(); // Throw the causal checked exception
     }
     return true;
   }
@@ -182,6 +189,8 @@ public class Fs {
     try (DirectoryStream<Path> dirEntries = Files.newDirectoryStream(dir)) {
       Iterator<Path> it = dirEntries.iterator();
       return it.hasNext() ? it.next() : null;
+    } catch (DirectoryIteratorException e) {
+      throw e.getCause(); // Throw the causal checked exception
     }
   }
 

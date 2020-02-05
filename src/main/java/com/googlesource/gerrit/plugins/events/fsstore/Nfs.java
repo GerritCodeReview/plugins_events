@@ -15,7 +15,6 @@
 package com.googlesource.gerrit.plugins.events.fsstore;
 
 import java.io.IOException;
-import java.nio.file.DirectoryIteratorException;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.Locale;
@@ -58,23 +57,23 @@ public class Nfs {
   }
 
   /**
-   * Is any entry in a directory tree older than expiry. Do NOT throw IOExceptions, or
-   * DirectoryIteratorExceptions.
+   * Is any entry in a directory tree older than expiry
+   *
+   * @throws IOException
    */
-  public static boolean isAllEntriesOlderThan(Path dir, FileTime expiry) {
+  public static boolean isAllEntriesOlderThan(Path dir, FileTime expiry) throws IOException {
     try {
       return Fs.isAllEntriesOlderThan(dir, expiry);
-    } catch (DirectoryIteratorException e) {
-      return false; // Modified after start, so not older
+    } catch (IOException e) {
+      throwIfNotStaleFileHandle(e);
     }
+    return false; // Modified after start, so not older
   }
 
   /** Get the first entry in a directory. */
   public static Path getFirstDirEntry(Path dir) throws IOException {
     try {
       return Fs.getFirstDirEntry(dir);
-    } catch (DirectoryIteratorException e) {
-      throwIfNotStaleFileHandle(e);
     } catch (IOException e) {
       throwIfNotStaleFileHandle(e);
     }

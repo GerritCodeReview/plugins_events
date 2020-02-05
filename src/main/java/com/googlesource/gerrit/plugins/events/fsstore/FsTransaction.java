@@ -15,6 +15,7 @@
 package com.googlesource.gerrit.plugins.events.fsstore;
 
 import java.io.IOException;
+import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -124,9 +125,10 @@ public class FsTransaction {
 
   /**
    * Used to atomically delete entries in a directory tree older than expiry, up to max count. Do
-   * NOT throw IOExceptions.
+   * NOT throw DirectoryIteratorExceptions.
    *
    * @return whether all entries were deleted
+   * @throws IOException
    */
   public static boolean renameAndDeleteEntriesOlderThan(
       Path dir, Path del, FileTime expiry, int max) throws IOException {
@@ -139,7 +141,10 @@ public class FsTransaction {
           renameAndDelete(path, del);
         }
       }
-      return true;
+    } catch (DirectoryIteratorException e) {
+      // dir was deleted by another actor, thus so were all its entries
+      Nfs.throwIfNotStaleFileHandle(e.getCause());
     }
+    return true;
   }
 }
