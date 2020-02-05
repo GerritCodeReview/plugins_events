@@ -64,8 +64,11 @@ limitations under the License.
           <target>1.7</target>
           <encoding>UTF-8</encoding>
           <fork>true</fork>
+          <showWarnings>true</showWarnings>
           <compilerArgs>
             <arg>-XX:MaxPermSize=256m</arg>
+            <arg>-Werror</arg>
+            <arg>-Xlint:all</arg>
           </compilerArgs>
         </configuration>
       </plugin>

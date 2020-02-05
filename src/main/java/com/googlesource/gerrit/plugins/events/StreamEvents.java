@@ -52,7 +52,7 @@ public final class StreamEvents extends BaseCommand {
   )
   protected void parseId(String arg) throws IOException {
     resume = 0;
-    if (arg.equals("0")) {
+    if ("0".equals(arg)) {
       return;
     }
 
@@ -151,10 +151,8 @@ public final class StreamEvents extends BaseCommand {
 
   protected void startFlush() throws IOException {
     synchronized (crossThreadlock) {
-      if (flusherTask == null && !shuttingDown) {
-        if (sent < events.getHead()) {
-          flusherTask = threadPool.submit(flusherRunnable);
-        }
+      if (!isFlushing() && !shuttingDown && !isUpToDate()) {
+        flusherTask = threadPool.submit(flusherRunnable);
       }
     }
   }
@@ -174,7 +172,7 @@ public final class StreamEvents extends BaseCommand {
     synchronized (crossThreadlock) {
       boolean alreadyShuttingDown = shuttingDown;
       shuttingDown = true;
-      if (flusherTask != null) {
+      if (isFlushing()) {
         flusherTask.cancel(true);
       } else if (!alreadyShuttingDown) {
         onExit(0);
@@ -207,8 +205,7 @@ public final class StreamEvents extends BaseCommand {
   protected void flushBatch() throws IOException {
     String uuid = events.getUuid().toString();
     int processed = 0;
-    long head = events.getHead();
-    while (sent < head && processed < BATCH_SIZE) {
+    while (!isUpToDate() && processed < BATCH_SIZE) {
       long sending = sent + 1;
       String event = events.get(sending);
       if (Thread.interrupted() || stdout.checkError()) {
@@ -243,5 +240,13 @@ public final class StreamEvents extends BaseCommand {
       stdout.print(msg);
       stdout.flush();
     }
+  }
+
+  protected boolean isUpToDate() throws IOException {
+    return sent >= events.getHead();
+  }
+
+  protected boolean isFlushing() {
+    return flusherTask != null;
   }
 }

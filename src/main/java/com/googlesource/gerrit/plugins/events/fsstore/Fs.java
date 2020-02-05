@@ -172,11 +172,11 @@ public class Fs {
 
   /** Read the contents of a UTF_8 encoded file as a String */
   protected static String readUtf8Unsafe(Path file) throws IOException {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder builder = new StringBuilder();
     for (String line : Files.readAllLines(file, StandardCharsets.UTF_8)) {
-      buffer.append(line);
+      builder.append(line);
     }
-    return buffer.toString();
+    return builder.toString();
   }
 
   /** Write the contents of a String as a UTF_8 encoded file */
