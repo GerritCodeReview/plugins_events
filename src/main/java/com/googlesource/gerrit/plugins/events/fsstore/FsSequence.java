@@ -25,6 +25,7 @@ import java.nio.file.Path;
  * value.
  */
 public class FsSequence extends UpdatableFileValue<Long> {
+  /** Advance through phases 2 - 6 */
   protected class UniqueUpdate extends UpdatableFileValue.UniqueUpdate<Long> {
     UniqueUpdate(String uuid, boolean ours, long maxTries) throws IOException {
       super(FsSequence.this, uuid, ours, maxTries);
@@ -44,7 +45,7 @@ public class FsSequence extends UpdatableFileValue<Long> {
   }
 
   /**
-   * Attempt up to maxTries to increment the sequence
+   * Attempt up to maxTries to increment the sequence (advance through all 6 phases).
    *
    * @param maxTries How many times to attempt to increment the sequence
    * @return the new sequence value after this increment.
@@ -55,9 +56,10 @@ public class FsSequence extends UpdatableFileValue<Long> {
       try (UpdateBuilder b = new UpdateBuilder(paths)) {
         for (; tries < maxTries; tries++) {
           UniqueUpdate update = null;
-          if (Fs.tryAtomicMove(b.dir, paths.update)) { // build/<tmp>/ -> update/
-            update = new UniqueUpdate(b.uuid, true, maxTries);
-            // update/<uuid>/
+          // Phase 1
+          if (Fs.tryAtomicMove(b.dir, paths.update)) { // rename build/<tmp>/ -> update/
+            // now there should be: update/<uuid>/
+            update = new UniqueUpdate(b.uuid, true, maxTries); // Advances through phases 2 - 6
           } else {
             update = (UniqueUpdate) completeOngoing(maxTries);
           }
@@ -79,12 +81,17 @@ public class FsSequence extends UpdatableFileValue<Long> {
         "Cannot increment sequence file " + path + " after " + maxTries + " tries.");
   }
 
-  /** Do NOT spin on this, it creates a new transaction every time. */
+  /**
+   * Attempt once to increment the sequence (advance through all 6 phases).
+   *
+   * <p>Do NOT spin on this, it creates a new transaction every time!
+   */
   protected Long increment() throws IOException {
     try (UpdateBuilder b = new UpdateBuilder(paths)) {
+      // Phase 1
       if (Fs.tryAtomicMove(b.dir, paths.update)) { // build/<tmp>/ -> update/
-        // update/<uuid>/
-        UniqueUpdate update = new UniqueUpdate(b.uuid, true, 1);
+        // now there should be: update/<uuid>/
+        UniqueUpdate update = new UniqueUpdate(b.uuid, true, 1); // Advances through phases 2 - 6
         if (update.myCommit) {
           return update.next;
         }

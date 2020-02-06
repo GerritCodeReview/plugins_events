@@ -22,17 +22,21 @@ import java.nio.file.Paths;
  * Use a file to store a sequence in a multi node/process (Multi-Master) safe way, and allow an
  * event to be delivered for each update to the sequence.
  *
+ * <p>Adds phase 1+, add an event file in the <uuid> dir.
+ * <p>Adds phase 2+, move the event to the event store.
+ *
  * <p>The event submitter must perform the first phase of the UpdatableFileValue transaction by
  * initiating the ownerless transaction with an event file in it. Any actor may perform the
- * remaining 5 UpdatableFileValue transaction phases.
+ * remaining 5 UpdatableFileValue.
  */
 public class EventSequence extends UpdatableFileValue<Long> {
   public static final Path EVENT = Paths.get("event");
 
+  /** For phase 1 - 1+ */
   protected static class EventBuilder extends UpdatableFileValue.UpdateBuilder {
     public EventBuilder(BasePaths paths, String event) throws IOException {
       super(paths);
-      FileValue.prepare(udir.resolve(EVENT), event);
+      FileValue.prepare(udir.resolve(EVENT), event); // Phase 1+
       // build/<tmp>/<uuid>/event
     }
   }
@@ -41,6 +45,7 @@ public class EventSequence extends UpdatableFileValue<Long> {
     final Path event;
     Path destination;
 
+    /** Advance through phases 2 - 6 */
     UniqueUpdate(String uuid, boolean ours, long maxTries) throws IOException {
       super(EventSequence.this, uuid, ours, maxTries);
       event = upaths.udir.resolve(EVENT);
@@ -53,10 +58,12 @@ public class EventSequence extends UpdatableFileValue<Long> {
       super.finish();
     }
 
+    /** Contains phase 2+ */
     protected void storeEvent() throws IOException {
       Path destination = getEventDestination(next);
-      if (Fs.tryAtomicMove(event, destination)) {
-        // update/<uuid>/event -> destination
+      // Phase 2+
+      if (Fs.tryAtomicMove(event, destination)) { // rename update/<uuid>/event -> destination
+        // now there should be: update/<uuid>/ and destination (file)
         this.destination = destination;
       }
     }
@@ -73,16 +80,18 @@ public class EventSequence extends UpdatableFileValue<Long> {
     initFs((long) 0);
   }
 
+  // Advance through phases 1 - 6
   protected UniqueUpdate spinSubmit(String event, long maxTries) throws IOException {
     try (EventBuilder b = new EventBuilder(paths, event)) {
       for (long tries = 0; tries < maxTries; tries++) {
-        if (Fs.tryAtomicMove(b.dir, paths.update)) { // build/<tmp>/ -> update/
-          // update/<uuid>/event
+        // Phase 1
+        if (Fs.tryAtomicMove(b.dir, paths.update)) { // rename build/<tmp>/ -> update/
+          // now there should be: update/<uuid>/event
           synchronized (this) {
             totalUpdates++;
             totalSpins += tries - 1;
           }
-          return createUniqueUpdate(b.uuid, true, maxTries - tries);
+          return createUniqueUpdate(b.uuid, true, maxTries - tries); // Advance phases 2 - 6
         }
 
         UniqueUpdate update = (UniqueUpdate) completeOngoing(maxTries - tries);
