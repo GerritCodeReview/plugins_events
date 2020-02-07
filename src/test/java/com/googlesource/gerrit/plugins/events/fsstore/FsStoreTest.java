@@ -34,6 +34,7 @@ import org.junit.Test;
 public class FsStoreTest extends TestCase {
   public static String dir = "events-FsStore";
   public static Path base;
+  public static List<OneThread> threads = new LinkedList<>();
 
   public Path myBase;
   public FsStore store;
@@ -210,6 +211,30 @@ public class FsStoreTest extends TestCase {
     return false;
   }
 
+  public static class OneThread implements Runnable {
+    public FsStoreTest test = new FsStoreTest();
+    public Boolean result;
+
+    @Override
+    public void run() {
+      try {
+        test.setUp();
+        long head = test.store.getHead();
+        test.count();
+        result = !test.verify(head);
+      } catch (Exception e) {
+      }
+      if (threads.size() > 1) {
+        if (result != null && result) {
+          System.out.println("\nPASS " + test.id);
+        } else {
+          result = false;
+          System.out.println("\nFAIL " + test.id);
+        }
+      }
+    }
+  }
+
   /**
    * First, make the junit jar easily available
    *
@@ -225,28 +250,33 @@ public class FsStoreTest extends TestCase {
    * <p>Performance: NFS(Lowlatency,SSDs), 1 worker 1M, 266m ~16ms/event find events|wc -l 12s rm
    * -rf 1m49s du -sh -> 3.9G 1m7s
    *
-   * <p>Local(spinning) 1 workers 1M 14.34s ~14us/event find events|wc -l 1.3s rm -rf 42s
+   * <p>Local(spinning) 1 workers 1M 21m58s ~13ms/event find events|wc -l 1.3s rm -rf 34s
    *
    * <p>Multi workers: NFS(LowLatency,LAN,SSDs) 8 hosts count=1000 (each) avg 273s 1000/34s
    *
    * <p>Mixed workers: NFS(WAN) 1 worker (+NFS LAN continuous) count=10, 3m28s
    */
   public static void main(String[] argv) throws Exception {
-    FsStoreTest t = new FsStoreTest();
-    t.submitMarker = ".";
-
     List<String> args = new LinkedList<>();
     for (String arg : argv) {
       args.add(arg);
     }
 
+    setThreadCount(1);
+    int thread = 0;
+    setSubmitMarker(".");
     for (Iterator<String> it = args.iterator(); it.hasNext(); ) {
       String arg = it.next();
-      if ("--id".equals(arg) && it.hasNext()) {
-        it.remove();
-        t.id = it.next();
-        it.remove();
-        t.submitMarker += t.id + ".";
+      if (it.hasNext()) {
+        if ("--id".equals(arg)) {
+          it.remove();
+          setId(thread++, it.next());
+          it.remove();
+        } else if ("-j".equals(arg) || "--threads".equals(arg)) {
+          it.remove();
+          setThreadCount(new Integer(it.next()));
+          it.remove();
+        }
       }
     }
 
@@ -255,16 +285,63 @@ public class FsStoreTest extends TestCase {
     }
 
     if (args.size() > 0) {
-      t.count = Long.parseLong(args.remove(0));
+      setCount(Long.parseLong(args.remove(0)));
     }
 
-    t.setUp();
-    long head = t.store.getHead();
-    t.count();
-    if (t.verify(head)) {
+    runThreads();
+
+    if (getResult()) {
+      System.out.println("\nPASS");
+    } else {
       System.out.println("\nFAIL");
-      System.exit(1);
     }
-    System.out.println("\nPASS");
+  }
+
+  private static void runThreads()
+      throws IllegalArgumentException, InterruptedException, SecurityException {
+    List<Thread> running = new LinkedList<>();
+
+    for (OneThread t : threads) {
+      Thread thread = new Thread(t);
+      thread.start();
+      running.add(thread);
+    }
+
+    for (Thread thread : running) {
+      thread.join();
+    }
+  }
+
+  private static boolean getResult() {
+    for (OneThread t : threads) {
+      if (t.result == null || !t.result) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static void setCount(long count) {
+    for (OneThread t : threads) {
+      t.test.count = count;
+    }
+  }
+
+  private static void setSubmitMarker(String marker) {
+    for (OneThread t : threads) {
+      t.test.submitMarker = marker;
+    }
+  }
+
+  private static void setId(int n, String id) {
+    OneThread t = threads.get(n);
+    t.test.id = id;
+    t.test.submitMarker += id + ".";
+  }
+
+  private static void setThreadCount(int n) {
+    while (threads.size() < n) {
+      threads.add(new OneThread());
+    }
   }
 }
