@@ -109,6 +109,7 @@ public class FsSequence extends UpdatableFileValue<Long> {
     return currentValue + 1;
   }
 
+  @Override
   protected UniqueUpdate createUniqueUpdate(String uuid, boolean ours, long maxTries)
       throws IOException {
     return new UniqueUpdate(uuid, ours, maxTries);

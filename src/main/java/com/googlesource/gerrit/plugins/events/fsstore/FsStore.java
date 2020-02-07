@@ -48,6 +48,7 @@ public class FsStore implements EventStore {
       this.paths = paths;
     }
 
+    @Override
     protected Path getEventDestination(Long n) {
       Path event = paths.events.path(n);
       try {
