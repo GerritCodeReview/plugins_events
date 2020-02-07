@@ -29,14 +29,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class FsStoreTest extends TestCase {
-  private static String dir = "events-FsStore";
-  private static Path base;
-  private Path myBase;
-  private FsStore store;
-  private String submitMarker = "";
+  public static String dir = "events-FsStore";
+  public static Path base;
 
-  private long count = 1000;
-  Map<String, Long> reported = new HashMap<String, Long>();
+  public Path myBase;
+  public FsStore store;
+  public String id = UUID.randomUUID().toString();
+  public String submitMarker = "";
+  public long count = 1000;
+
+  public Map<String, Long> reported = new HashMap<String, Long>();
 
   @Override
   @Before
@@ -143,14 +145,14 @@ public class FsStoreTest extends TestCase {
     }
   }
 
-  public void count(String id) throws Exception {
+  public void count() throws Exception {
     for (long i = 1; i <= count; i++) {
       store.add(id + " " + i);
       System.out.print(submitMarker);
     }
   }
 
-  public boolean verify(String id, long head) throws Exception {
+  public boolean verify(long head) throws Exception {
     Set<Long> found = new HashSet<Long>();
     long stop = store.getHead();
     long mine = 1;
@@ -235,17 +237,16 @@ public class FsStoreTest extends TestCase {
       t.count = Long.parseLong(argv[1]);
     }
 
-    String id = UUID.randomUUID().toString();
     t.submitMarker = ".";
     if (argv.length > 2) {
-      id = argv[2];
-      t.submitMarker += id + ".";
+      t.id = argv[2];
+      t.submitMarker += t.id + ".";
     }
 
     t.setUp();
     long head = t.store.getHead();
-    t.count(id);
-    if (t.verify(id, head)) {
+    t.count();
+    if (t.verify(head)) {
       System.out.println("\nFAIL");
       System.exit(1);
     }
