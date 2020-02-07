@@ -37,8 +37,8 @@ public class EventSequence extends UpdatableFileValue<Long> {
   protected static class EventBuilder extends UpdatableFileValue.UpdateBuilder {
     public EventBuilder(BasePaths paths, String event) throws IOException {
       super(paths);
-      FileValue.prepare(udir.resolve(EVENT), event); // Phase 1+
-      // build/<tmp>/<uuid>/event
+      FileValue.prepare(next.resolve(EVENT), event); // Phase 1+
+      // build/<tmp>/<uuid>/next/event
     }
   }
 
@@ -49,7 +49,7 @@ public class EventSequence extends UpdatableFileValue<Long> {
     /** Advance through phases 2 - 6 */
     protected UniqueUpdate(String uuid, boolean ours, long maxTries) throws IOException {
       super(EventSequence.this, uuid, ours, maxTries);
-      event = upaths.udir.resolve(EVENT);
+      event = upaths.next.resolve(EVENT);
       spinFinish();
     }
 
@@ -63,8 +63,8 @@ public class EventSequence extends UpdatableFileValue<Long> {
     protected void storeEvent() throws IOException {
       Path destination = getEventDestination(next);
       // Phase 2+
-      if (Fs.tryAtomicMove(event, destination)) { // rename update/<uuid>/event -> destination
-        // now there should be: update/<uuid>/ and destination (file)
+      if (Fs.tryAtomicMove(event, destination)) { // rename update/<uuid>/next/event -> destination
+        // now there should be: update/<uuid>/next/ and destination (file)
         this.destination = destination;
       }
     }
@@ -85,9 +85,9 @@ public class EventSequence extends UpdatableFileValue<Long> {
   protected UniqueUpdate spinSubmit(String event, long maxTries) throws IOException {
     try (EventBuilder b = new EventBuilder(paths, event)) {
       for (long tries = 0; tries < maxTries; tries++) {
-        // Phase 1
+        // Phase 1 (can only succeed if update is empty or non-existant)
         if (Fs.tryAtomicMove(b.dir, paths.update)) { // rename build/<tmp>/ -> update/
-          // now there should be: update/<uuid>/event
+          // now there should be: update/<uuid>/next/event
           synchronized (this) {
             totalUpdates++;
             totalSpins += tries - 1;
