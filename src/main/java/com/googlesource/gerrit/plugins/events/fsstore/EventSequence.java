@@ -23,6 +23,7 @@ import java.nio.file.Paths;
  * event to be delivered for each update to the sequence.
  *
  * <p>Adds phase 1+, add an event file in the <uuid> dir.
+ *
  * <p>Adds phase 2+, move the event to the event store.
  *
  * <p>The event submitter must perform the first phase of the UpdatableFileValue transaction by
@@ -42,11 +43,11 @@ public class EventSequence extends UpdatableFileValue<Long> {
   }
 
   protected class UniqueUpdate extends UpdatableFileValue.UniqueUpdate<Long> {
-    final Path event;
-    Path destination;
+    protected final Path event;
+    protected Path destination;
 
     /** Advance through phases 2 - 6 */
-    UniqueUpdate(String uuid, boolean ours, long maxTries) throws IOException {
+    protected UniqueUpdate(String uuid, boolean ours, long maxTries) throws IOException {
       super(EventSequence.this, uuid, ours, maxTries);
       event = upaths.udir.resolve(EVENT);
       spinFinish();

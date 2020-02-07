@@ -63,8 +63,8 @@ public abstract class UpdatableFileValue<T> extends FileValue<T> {
 
   /** For Phase 1 */
   protected static class UpdateBuilder extends FsTransaction.Builder {
-    String uuid = UUID.randomUUID().toString();
-    Path udir = dir.resolve(uuid);
+    public final String uuid = UUID.randomUUID().toString();
+    public final Path udir = dir.resolve(uuid);
 
     public UpdateBuilder(BasePaths paths) throws IOException {
       super(paths);
@@ -95,7 +95,7 @@ public abstract class UpdatableFileValue<T> extends FileValue<T> {
     public final Path closed;
     public final Path value;
 
-    UpdatePaths(Path base, String uuid) {
+    protected UpdatePaths(Path base, String uuid) {
       udir = base.resolve(uuid);
       closed = udir.resolve(CLOSED);
       value = closed.resolve(VALUE);
@@ -104,25 +104,26 @@ public abstract class UpdatableFileValue<T> extends FileValue<T> {
 
   /** Phase 2 -6 helper. */
   protected static class UniqueUpdate<T> {
-    final UpdatableFileValue<T> updatable;
-    final String uuid;
-    final UpdatePaths upaths;
-    final boolean ours;
-    final T currentValue;
-    final T next;
+    protected final UpdatableFileValue<T> updatable;
+    protected final String uuid;
+    protected final UpdatePaths upaths;
+    protected final boolean ours;
+    protected final T currentValue;
+    protected final T next;
 
-    long maxTries;
+    protected long maxTries;
 
-    long tries;
-    boolean closed;
-    boolean preserved;
-    boolean committed;
-    boolean finished;
+    protected long tries;
+    protected boolean closed;
+    protected boolean preserved;
+    protected boolean committed;
+    protected boolean finished;
 
-    boolean myCommit;
+    protected boolean myCommit;
 
     /** Advance through phase 2 */
-    UniqueUpdate(UpdatableFileValue<T> updatable, String uuid, boolean ours, long maxTries)
+    protected UniqueUpdate(
+        UpdatableFileValue<T> updatable, String uuid, boolean ours, long maxTries)
         throws IOException {
       this.updatable = updatable;
       this.uuid = uuid;
