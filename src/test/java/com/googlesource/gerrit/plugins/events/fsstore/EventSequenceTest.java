@@ -37,7 +37,14 @@ public class EventSequenceTest extends TestCase {
     if (myBase == null) {
       myBase = Files.createTempDirectory(dir);
     }
-    seq = new EventSequence(myBase);
+    seq =
+        new EventSequence(myBase) {
+          @Override
+          protected Path getEventDestination(Long n) {
+            return paths.base.resolve(EVENT);
+          }
+        };
+
     seq.initFs((long) 0);
   }
 

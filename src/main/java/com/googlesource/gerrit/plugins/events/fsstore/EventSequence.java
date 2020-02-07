@@ -107,12 +107,14 @@ public class EventSequence extends UpdatableFileValue<Long> {
     return currentValue + 1;
   }
 
+  @Override
   protected UniqueUpdate createUniqueUpdate(String uuid, boolean ours, long maxTries)
       throws IOException {
     return new UniqueUpdate(uuid, ours, maxTries);
   }
 
+  /** Override to shard */
   protected Path getEventDestination(Long n) {
-    return paths.base.resolve(EVENT);
+    return paths.base.resolve(EVENT).resolve(n.toString());
   }
 }
