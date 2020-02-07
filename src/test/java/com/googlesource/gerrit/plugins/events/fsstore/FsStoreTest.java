@@ -247,14 +247,7 @@ public class FsStoreTest extends TestCase {
    *
    * <p>Note: if you do not specify <dir>, it will create a directory under /tmp
    *
-   * <p>Performance: NFS(Lowlatency,SSDs), 1 worker 1M, 266m ~16ms/event find events|wc -l 12s rm
-   * -rf 1m49s du -sh -> 3.9G 1m7s
-   *
-   * <p>Local(spinning) 1 workers 1M 21m58s ~13ms/event find events|wc -l 1.3s rm -rf 34s
-   *
-   * <p>Multi workers: NFS(LowLatency,LAN,SSDs) 8 hosts count=1000 (each) avg 273s 1000/34s
-   *
-   * <p>Mixed workers: NFS(WAN) 1 worker (+NFS LAN continuous) count=10, 3m28s
+   * <p>Local(spinning) 1 worker 1M 28m2s ~17ms/event find events|wc -l .97 rm -rf 30s
    */
   public static void main(String[] argv) throws Exception {
     List<String> args = new LinkedList<>();

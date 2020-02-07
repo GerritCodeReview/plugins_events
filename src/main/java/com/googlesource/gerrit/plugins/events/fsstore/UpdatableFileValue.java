@@ -46,6 +46,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class UpdatableFileValue<T> extends FileValue<T> {
   public static final Path CLOSED = Paths.get("closed");
   public static final Path INIT = Paths.get("init");
+  public static final Path NEXT = Paths.get("next");
   public static final Path PRESERVED = Paths.get("preserved");
   public static final Path UPDATE = Paths.get("update");
   public static final Path VALUE = Paths.get("value");
@@ -65,10 +66,12 @@ public abstract class UpdatableFileValue<T> extends FileValue<T> {
   protected static class UpdateBuilder extends FsTransaction.Builder {
     public final String uuid = UUID.randomUUID().toString();
     public final Path udir = dir.resolve(uuid);
+    public final Path next;
 
     public UpdateBuilder(BasePaths paths) throws IOException {
       super(paths);
-      Files.createDirectories(udir); // build/<tmp>/<uuid>/
+      next = udir.resolve(NEXT);
+      Files.createDirectories(next); // build/<tmp>/<uuid>/next
     }
   }
 
@@ -92,12 +95,14 @@ public abstract class UpdatableFileValue<T> extends FileValue<T> {
 
   protected static class UpdatePaths {
     public final Path udir;
+    public final Path next;
     public final Path closed;
     public final Path value;
 
     protected UpdatePaths(Path base, String uuid) {
       udir = base.resolve(uuid);
-      closed = udir.resolve(CLOSED);
+      next = udir.resolve(NEXT);
+      closed = next.resolve(CLOSED);
       value = closed.resolve(VALUE);
     }
   }
@@ -181,16 +186,18 @@ public abstract class UpdatableFileValue<T> extends FileValue<T> {
       if (!closed) {
         try (NextBuilder b =
             new NextBuilder(updatable.paths, updatable.serializer.fromGeneric(next))) { // Phase 3
-          // Phase 4
-          Fs.tryAtomicMove(b.dir, upaths.udir); // rename build/<tmp>/ -> update/<uuid>/
-          // now there should be: update/<uuid>/closed/value(next)
+
+          // Phase 4. Rename can only succeed if update/<uuid>/next/ is empty (desired) or
+          // non-existent (not desired). The later case is detected after the move.
+          Fs.tryAtomicMove(b.dir, upaths.next); // rename build/<tmp>/ -> update/<uuid>/next/
+          // now there should be: update/<uuid>/next/closed/value(next)
         }
 
         // Do not use the result of the move to determine if it is closed.
         // The move result could provide false positives due to some filesystem
         // implementions allowing a second move to succeed after the transaction
         // has been finished and the first "closed" has been deleted under the
-        // "delete" dir). Additionally, this check allows us to be able to detect
+        // "delete" dir. Additionally, this check allows us to be able to detect
         // closes by other actors, not just ourselves.
         closed = Files.exists(upaths.closed);
       }
