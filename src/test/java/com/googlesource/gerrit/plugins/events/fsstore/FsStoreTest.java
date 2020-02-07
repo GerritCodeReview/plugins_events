@@ -20,6 +20,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -215,7 +218,7 @@ public class FsStoreTest extends TestCase {
    * <p>To run type:
    *
    * <p>java -cp target/classes:target/test-classes:target/junit-4.8.1.jar \
-   * com.googlesource.gerrit.plugins.events.fsstore.FsStoreTest \ [dir [count [store-id]]]
+   * com.googlesource.gerrit.plugins.events.fsstore.FsStoreTest [--id store-id] [dir [count]]
    *
    * <p>Note: if you do not specify <dir>, it will create a directory under /tmp
    *
@@ -229,18 +232,30 @@ public class FsStoreTest extends TestCase {
    * <p>Mixed workers: NFS(WAN) 1 worker (+NFS LAN continuous) count=10, 3m28s
    */
   public static void main(String[] argv) throws Exception {
-    if (argv.length > 0) {
-      base = Paths.get(argv[0]);
-    }
     FsStoreTest t = new FsStoreTest();
-    if (argv.length > 1) {
-      t.count = Long.parseLong(argv[1]);
+    t.submitMarker = ".";
+
+    List<String> args = new LinkedList<>();
+    for (String arg : argv) {
+      args.add(arg);
     }
 
-    t.submitMarker = ".";
-    if (argv.length > 2) {
-      t.id = argv[2];
-      t.submitMarker += t.id + ".";
+    for (Iterator<String> it = args.iterator(); it.hasNext(); ) {
+      String arg = it.next();
+      if ("--id".equals(arg) && it.hasNext()) {
+        it.remove();
+        t.id = it.next();
+        it.remove();
+        t.submitMarker += t.id + ".";
+      }
+    }
+
+    if (args.size() > 0) {
+      base = Paths.get(args.remove(0));
+    }
+
+    if (args.size() > 0) {
+      t.count = Long.parseLong(args.remove(0));
     }
 
     t.setUp();
