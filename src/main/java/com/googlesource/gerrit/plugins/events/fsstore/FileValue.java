@@ -77,7 +77,7 @@ public class FileValue<T> {
 
   /** The lowest level raw String read of the file */
   protected String read() throws IOException {
-    return Fs.readFile(path);
+    return Fs.readUtf8(path);
   }
 
   /** Serialize object to given tmp file in preparation to call update() */
@@ -92,6 +92,6 @@ public class FileValue<T> {
 
   /** Low level raw string write to given tmp file in preparation to call update(). */
   protected static void prepare(Path tmp, String s) throws IOException {
-    Files.write(tmp, s.getBytes());
+    Fs.writeUtf8(tmp, s);
   }
 }
