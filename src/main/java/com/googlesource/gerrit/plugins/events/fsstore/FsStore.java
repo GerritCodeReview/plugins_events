@@ -122,7 +122,7 @@ public class FsStore implements EventStore {
     if (cachedTail.isLessThanOrEqualTo(num, MAX_GET_SPINS)
         && cachedHead.isGreaterThanOrEqualTo(num, MAX_GET_SPINS)) {
       try {
-        return Fs.readFile(paths.events.path(num));
+        return Fs.readUtf8(paths.events.path(num));
       } catch (NoSuchFileException e) {
       }
     }

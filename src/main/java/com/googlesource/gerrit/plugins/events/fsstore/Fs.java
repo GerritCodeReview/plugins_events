@@ -154,12 +154,17 @@ public class Fs {
   }
 
   /** Read the contents of a UTF_8 encoded file as a String */
-  public static String readFile(Path file) throws IOException {
+  public static String readUtf8(Path file) throws IOException {
     StringBuffer buffer = new StringBuffer();
     for (String line : Files.readAllLines(file, StandardCharsets.UTF_8)) {
       buffer.append(line);
     }
     return buffer.toString();
+  }
+
+  /** Write the contents of a String as a UTF_8 encoded file */
+  public static void writeUtf8(Path file, String s) throws IOException {
+    Files.write(file, s.getBytes(StandardCharsets.UTF_8));
   }
 
   /** Get the first entry in a directory. */

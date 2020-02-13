@@ -66,6 +66,6 @@ public class EventSequenceTest extends TestCase {
     EventSequence.UniqueUpdate up = seq.spinSubmit(event, maxSpins);
     assertEquals(next, seq.get());
     assertNotNull(up.destination);
-    assertEquals(event, Fs.readFile(up.destination));
+    assertEquals(event, Fs.readUtf8(up.destination));
   }
 }
