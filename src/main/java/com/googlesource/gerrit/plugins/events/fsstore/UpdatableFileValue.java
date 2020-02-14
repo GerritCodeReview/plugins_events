@@ -211,9 +211,9 @@ public abstract class UpdatableFileValue<T> extends FileValue<T> {
         // when closed (operations depend on "closed" in paths).
         perserve();
 
-        // rename update/<uuid>/closed/value(next) -> value
+        // rename update/<uuid>/next/closed/value(next) -> value
         committed = myCommit = Fs.tryAtomicMove(upaths.value, updatable.path); // Phase 5
-        // now there should be: update/<uuid>/closed/ and: value (file)
+        // now there should be: update/<uuid>/next/closed/ and: value (file)
       }
       if (!committed && closed) {
         committed = !Files.exists(upaths.value);
