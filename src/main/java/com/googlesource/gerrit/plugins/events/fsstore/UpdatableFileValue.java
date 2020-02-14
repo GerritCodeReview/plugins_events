@@ -209,7 +209,7 @@ public abstract class UpdatableFileValue<T> extends FileValue<T> {
         // Safe to perform this block (for performance reasons) even if we
         // have not detected "closed yet", since it can only actually succeed
         // when closed (operations depend on "closed" in paths).
-        perserve();
+        preserve();
 
         // rename update/<uuid>/next/closed/value(next) -> value
         committed = myCommit = Fs.tryAtomicMove(upaths.value, updatable.path); // Phase 5
@@ -236,7 +236,7 @@ public abstract class UpdatableFileValue<T> extends FileValue<T> {
      * stale file handle exception over NFS. This can reduce the amount of spinning required for
      * readers.
      */
-    protected void perserve() {
+    protected void preserve() {
       if (!preserved) {
         preserved = Fs.tryCreateLink(updatable.paths.preserved.resolve(uuid), upaths.value);
       }
