@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>Any actor may perform any/all of the above phases.
  */
-public abstract class UpdatableFileValue<T> extends FileValue<T> {
+public abstract class UpdatableFileValue<T> extends NfsFileValue<T> {
   public static final Path CLOSED = Paths.get("closed");
   public static final Path INIT = Paths.get("init");
   public static final Path NEXT = Paths.get("next");
@@ -212,7 +212,7 @@ public abstract class UpdatableFileValue<T> extends FileValue<T> {
         preserve();
 
         // rename update/<uuid>/next/closed/value(next) -> value
-        committed = myCommit = Fs.tryAtomicMove(upaths.value, updatable.path); // Phase 5
+        committed = myCommit = updatable.update(upaths.value); // Phase 5
         // now there should be: update/<uuid>/next/closed/ and: value (file)
       }
       if (!committed && closed) {

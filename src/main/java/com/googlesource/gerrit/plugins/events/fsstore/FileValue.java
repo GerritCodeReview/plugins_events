@@ -15,7 +15,6 @@
 package com.googlesource.gerrit.plugins.events.fsstore;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 /** Helper file for serialzing and storing a single type in a file */
