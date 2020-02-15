@@ -155,6 +155,16 @@ public class Fs {
 
   /** Read the contents of a UTF_8 encoded file as a String */
   public static String readUtf8(Path file) throws IOException {
+    try {
+      return readUtf8Unsafe(file);
+    } catch (ArrayIndexOutOfBoundsException e) {
+      // A concurrent update can cause this, make sure Exception becomes checked.
+      throw new IOException("File modified or deleted during read.", e);
+    }
+  }
+
+  /** Read the contents of a UTF_8 encoded file as a String */
+  protected static String readUtf8Unsafe(Path file) throws IOException {
     StringBuffer buffer = new StringBuffer();
     for (String line : Files.readAllLines(file, StandardCharsets.UTF_8)) {
       buffer.append(line);
