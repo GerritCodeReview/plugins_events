@@ -333,8 +333,12 @@ public class FsStoreTest extends TestCase {
   }
 
   private static void setThreadCount(int n) {
+    /* Use a common FsStore for all threads so that synchronized will work across them. */
+    FsStore commonStore = threads.get(0).test.store;
     while (threads.size() < n) {
-      threads.add(new OneThread());
+      OneThread t = new OneThread();
+      t.test.store = commonStore;
+      threads.add(t);
     }
   }
 }
