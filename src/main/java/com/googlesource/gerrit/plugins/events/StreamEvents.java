@@ -15,6 +15,7 @@
 package com.googlesource.gerrit.plugins.events;
 
 import com.google.gerrit.common.data.GlobalCapability;
+import com.google.gerrit.extensions.annotations.CapabilityScope;
 import com.google.gerrit.extensions.annotations.PluginName;
 import com.google.gerrit.extensions.annotations.RequiresCapability;
 import com.google.gerrit.extensions.registration.DynamicSet;
@@ -38,7 +39,7 @@ import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequiresCapability(GlobalCapability.STREAM_EVENTS)
+@RequiresCapability(value = GlobalCapability.STREAM_EVENTS, scope = CapabilityScope.CORE)
 @CommandMetaData(name = "stream", description = "Monitor events occurring in real time")
 public final class StreamEvents extends BaseCommand {
   private static final Logger log = LoggerFactory.getLogger(StreamEvents.class);
