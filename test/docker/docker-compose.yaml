@@ -1,0 +1,33 @@
+version: '3'
+services:
+
+  gerrit-01:
+    build:
+      context: gerrit
+      args:
+        - GERRIT_WAR
+        - EVENTS_PLUGIN_JAR
+    networks:
+      - gerrit-net
+    volumes:
+      - "./:/docker"
+      - "gerrit-site-etc:/var/gerrit/etc"
+
+  run_tests:
+    build: run_tests
+    networks:
+      - gerrit-net
+    volumes:
+      - "../../:/events:ro"
+      - "gerrit-site-etc:/server-ssh-key:ro"
+    depends_on:
+      - gerrit-01
+    environment:
+      - GERRIT_HOST=gerrit-01
+
+networks:
+  gerrit-net:
+    driver: bridge
+
+volumes:
+  gerrit-site-etc:
