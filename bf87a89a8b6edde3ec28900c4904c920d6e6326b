@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f25288c_e6b562fb",
+        "filename": "test/docker/test_events_plugin.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1096442
+      },
+      "writtenOn": "2021-03-16T11:28:04Z",
+      "side": 1,
+      "message": "isn\u0027t it -v and not --v ..?",
+      "range": {
+        "startLine": 70,
+        "startChar": 45,
+        "endLine": 70,
+        "endChar": 48
+      },
+      "revId": "bf87a89a8b6edde3ec28900c4904c920d6e6326b",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
