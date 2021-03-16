@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a64b8c84_a67993bf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1096442
+      },
+      "writtenOn": "2021-03-16T12:33:01Z",
+      "side": 1,
+      "message": "Working as expected.\n./test_events_plugin.sh -g \u0027https://gerrit-releases.storage.googleapis.com/gerrit-2.14.22.war\u0027 -e file:///Users/prudhvi/Clones/googleevents/target/events-2.14.jar\n...\nrun_tests_1  | PASSED - visible-events patchset-created test\nrun_tests_1  | PASSED - visible-events patchset-created ref-updated test\nrun_tests_1  | PASSED - visible-events draft-published test\nrun_tests_1  | PASSED - visible-events change-abandoned test\nrun_tests_1  | PASSED - visible-events change-restored test\nrun_tests_1  | PASSED - visible-events comment-added test\nrun_tests_1  | PASSED - visible-events change-merged ref-updated test\nrun_tests_1  | PASSED - visible-events change-merged test\nrun_tests_1  | PASSED - core/plugin diff test\n",
+      "revId": "5fc7055bf9832f74cbada15603e9fc571ac9becc",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
