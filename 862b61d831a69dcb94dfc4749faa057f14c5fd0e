@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e4de8f4_fd99f592",
+        "filename": "test/docker/test_events_plugin.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2021-03-18T19:49:46Z",
+      "side": 1,
+      "message": "Using this means your \u0027|| die\u0027 lines don\u0027t work as expected. progress is putting these into a new process in the background and so only that process is exiting. It\u0027s also not returning the exit code from that background process. :-(\n\nI\u0027ll push an update.",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 90,
+        "endChar": 8
+      },
+      "revId": "862b61d831a69dcb94dfc4749faa057f14c5fd0e",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
