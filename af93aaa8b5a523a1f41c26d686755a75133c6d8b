@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0db71c9c_73c435ed",
+        "filename": "test/docker/run_tests/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2021-03-18T16:13:23Z",
+      "side": 1,
+      "message": "Use exec form:\n\n ENTRYPOINT [\"/events/test/docker/run_tests/start.sh\"]",
+      "revId": "af93aaa8b5a523a1f41c26d686755a75133c6d8b",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
