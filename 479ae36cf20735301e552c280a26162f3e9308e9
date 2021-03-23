@@ -24,6 +24,30 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b1bea66d_1e219d2f",
+        "filename": "test/docker/run.sh",
+        "patchSetId": 10
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1117824
+      },
+      "writtenOn": "2021-03-23T16:52:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "553ef328_9199176f",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 2
+      },
+      "revId": "479ae36cf20735301e552c280a26162f3e9308e9",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "51eed178_0f9aa0bc",
@@ -37,6 +61,30 @@
       "writtenOn": "2021-03-23T15:02:03Z",
       "side": 1,
       "message": "nit: probably doesn\u0027t need the quotes here.",
+      "range": {
+        "startLine": 14,
+        "startChar": 25,
+        "endLine": 14,
+        "endChar": 36
+      },
+      "revId": "479ae36cf20735301e552c280a26162f3e9308e9",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "92dbca9e_a3139b4b",
+        "filename": "test/docker/run.sh",
+        "patchSetId": 10
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1117824
+      },
+      "writtenOn": "2021-03-23T16:52:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "51eed178_0f9aa0bc",
       "range": {
         "startLine": 14,
         "startChar": 25,
@@ -70,6 +118,30 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a70dccf2_c55cead0",
+        "filename": "test/docker/run.sh",
+        "patchSetId": 10
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1117824
+      },
+      "writtenOn": "2021-03-23T16:52:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "777308ab_2df713e6",
+      "range": {
+        "startLine": 19,
+        "startChar": 16,
+        "endLine": 19,
+        "endChar": 64
+      },
+      "revId": "479ae36cf20735301e552c280a26162f3e9308e9",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3d3ffda9_17b8acbc",
@@ -83,6 +155,30 @@
       "writtenOn": "2021-03-23T15:02:03Z",
       "side": 1,
       "message": "Replace artifact with $1?",
+      "range": {
+        "startLine": 47,
+        "startChar": 90,
+        "endLine": 47,
+        "endChar": 98
+      },
+      "revId": "479ae36cf20735301e552c280a26162f3e9308e9",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9b77293_72fc5570",
+        "filename": "test/docker/run.sh",
+        "patchSetId": 10
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1117824
+      },
+      "writtenOn": "2021-03-23T16:52:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3d3ffda9_17b8acbc",
       "range": {
         "startLine": 47,
         "startChar": 90,
@@ -110,6 +206,24 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ebb56c5_ee944205",
+        "filename": "test/docker/run.sh",
+        "patchSetId": 10
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1117824
+      },
+      "writtenOn": "2021-03-23T16:52:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2da7d144_bbf06e9c",
+      "revId": "479ae36cf20735301e552c280a26162f3e9308e9",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "22c86ba6_d4900e68",
@@ -123,6 +237,30 @@
       "writtenOn": "2021-03-23T15:02:03Z",
       "side": 1,
       "message": "I would eliminate the inner single quotes as it makes it harder to debug when cutting and pasting info from the error message. Please add this as a guideline to our test docs.",
+      "range": {
+        "startLine": 82,
+        "startChar": 62,
+        "endLine": 82,
+        "endChar": 64
+      },
+      "revId": "479ae36cf20735301e552c280a26162f3e9308e9",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f434b95e_99046c28",
+        "filename": "test/docker/run.sh",
+        "patchSetId": 10
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1117824
+      },
+      "writtenOn": "2021-03-23T16:52:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "22c86ba6_d4900e68",
       "range": {
         "startLine": 82,
         "startChar": 62,
