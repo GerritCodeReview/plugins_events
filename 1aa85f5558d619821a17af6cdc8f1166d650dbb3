@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "47eec82e_6dc81fbc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1117824
+      },
+      "writtenOn": "2021-03-24T06:58:26Z",
+      "side": 1,
+      "message": "PASSED - visible-events patchset-created test\nPASSED - visible-events patchset-created ref-updated test\nPASSED - visible-events draft-published test\nPASSED - visible-events change-abandoned test\nPASSED - visible-events change-restored test\nPASSED - visible-events comment-added test\nPASSED - visible-events change-merged ref-updated test\nPASSED - visible-events change-merged test\nPASSED - core/plugin diff test",
+      "revId": "1aa85f5558d619821a17af6cdc8f1166d650dbb3",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
