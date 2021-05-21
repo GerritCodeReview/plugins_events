@@ -1,9 +1,11 @@
+/eclipse-out
 /target
+/.bazel_path
 /.classpath
+/.settings
 /.project
-/.settings/org.maven.ide.eclipse.prefs
-/.settings/org.eclipse.m2e.core.prefs
-/.settings/org.eclipse.core.resources.prefs
-/.settings/org.eclipse.jdt.core.prefs
-/events.iml
-/test/docker/gerrit/artifacts
+/.DS_Store
+/bazel-*
+*.iml
+/.apt_generated/
+/.apt_generated_tests/
