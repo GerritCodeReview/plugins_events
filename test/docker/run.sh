@@ -23,14 +23,20 @@ usage() { # [error_message]
     local prog=$(basename "$0")
     cat <<EOF
 Usage:
-    "$prog" --gerrit-war|-g <WAR URL or file path>
-            --events-plugin-jar|-e <events plugin JAR URL or file path>
+    $prog [--events-plugin-jar|-t <FILE_PATH>] [--gerrit-war|-g <FILE_PATH>]
 
+    This tool runs the plugin functional tests in a Docker environment built
+    from the gerritcodereview/gerrit base Docker image.
+
+    The events plugin JAR and optionally a Gerrit WAR are expected to be in the
+    $ARTIFACTS dir;
+    however, the --events-plugin-jar and --gerrit-war switches may be used as
+    helpers to specify which files to copy there.
+
+    Options:
     --help|-h
-    --gerrit-war|-g             gerrit WAR URL or the file path in local workspace
-                                eg: file:///path/to/gerrit.war
-    --events-plugin-jar|-e      events plugin JAR URL or the file path in local workspace
-                                eg: file:///path/to/events.jar
+    --gerrit-war|-g             path to Gerrit WAR file
+    --events-plugin-jar|-e      path to events plugin JAR file
 
 EOF
 
@@ -43,30 +49,14 @@ check_prerequisite() {
     docker-compose --version > /dev/null || die "docker-compose is not installed"
 }
 
-fetch_artifact() { # source_location output_path
-    curl --silent --fail --netrc "$1" --output "$2" --create-dirs || die "unable to fetch $1"
-}
-
-fetch_artifacts() {
-    fetch_artifact "$GERRIT_WAR" "$ARTIFACTS/gerrit.war"
-    fetch_artifact "$EVENTS_PLUGIN_JAR" "$ARTIFACTS/events.jar"
-}
-
 build_images() {
-    local build_args=(--build-arg GERRIT_WAR="/artifacts/gerrit.war" \
-        --build-arg EVENTS_PLUGIN_JAR="/artifacts/events.jar" \
-        --build-arg UID="$(id -u)" --build-arg GID="$(id -g)")
-
-    docker-compose "${COMPOSE_ARGS[@]}" build "${build_args[@]}" --quiet
-    rm -r "$ARTIFACTS"
+    docker-compose "${COMPOSE_ARGS[@]}" build --quiet
 }
 
 run_events_plugin_tests() {
-    docker-compose "${COMPOSE_ARGS[@]}" up -d
-    local runtests_container=$(docker ps | grep "$PROJECT_NAME"_run_tests | \
-        awk '{print $1}')
-    docker exec --user=gerrit_admin "$runtests_container" \
-            '/events/test/docker/run_tests/start.sh'
+    docker-compose "${COMPOSE_ARGS[@]}" up --detach
+    docker-compose "${COMPOSE_ARGS[@]}" exec -T --user=gerrit_admin run_tests \
+        '/events/test/docker/run_tests/start.sh'
 }
 
 cleanup() {
@@ -83,14 +73,18 @@ while (( "$#" )); do
     shift
 done
 
-[ -n "$GERRIT_WAR" ] || usage "'--gerrit-war' not set"
-[ -n "$EVENTS_PLUGIN_JAR" ] || usage "'--events-plugin-jar' not set "
-
 PROJECT_NAME="events_$$"
 COMPOSE_YAML="$MYDIR/docker-compose.yaml"
 COMPOSE_ARGS=(--project-name "$PROJECT_NAME" -f "$COMPOSE_YAML")
 check_prerequisite
-progress "fetching artifacts" fetch_artifacts
+mkdir -p -- "$ARTIFACTS"
+[ -n "$EVENTS_PLUGIN_JAR" ] && cp -f "$EVENTS_PLUGIN_JAR" "$ARTIFACTS/events.jar"
+if [ ! -e "$ARTIFACTS/events.jar" ] ; then
+    MISSING="Missing $ARTIFACTS/events.jar"
+    [ -n "$EVENTS_PLUGIN_JAR" ] && die "$MISSING, check for copy failure?"
+    usage "$MISSING, did you forget --events-plugin-jar?"
+fi
+[ -n "$GERRIT_WAR" ] && cp -f "$GERRIT_WAR" "$ARTIFACTS/gerrit.war"
 progress "Building docker images" build_images
 run_events_plugin_tests ; RESULT=$?
 cleanup

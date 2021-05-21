@@ -10,7 +10,6 @@ services:
     networks:
       - gerrit-net
     volumes:
-      - "./:/docker"
       - "gerrit-site-etc:/var/gerrit/etc"
 
   run_tests:

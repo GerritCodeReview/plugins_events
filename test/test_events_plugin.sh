@@ -4,6 +4,9 @@ q() { "$@" > /dev/null 2>&1 ; } # cmd [args...]  # quiet a command
 gssh() { ssh -p 29418 -x "$SERVER" "$@" 2>&1 ; } # run a gerrit ssh command
 mygit() { git --work-tree="$REPO_DIR" --git-dir="$GIT_DIR" "$@" ; } # [args...]
 
+# plugin_name
+is_plugin_installed() { gssh gerrit plugin ls | awk '{print $1}' | grep -q "^$1$"; }
+
 cleanup() {
     wait_event
     (kill_captures ; sleep 1 ; kill_captures -9 ) &
@@ -198,6 +201,8 @@ trap cleanup EXIT
 
 setup_captures
 
+RESULT=0
+
 # ------------------------- Individual Event Tests ---------------------------
 GROUP=visible-events
 type=patchset-created
@@ -227,10 +232,14 @@ review "$ch1,1" --message "my_comment" $APPROVALS
 result_type "$GROUP" "$type"
 
 type=change-merged
-capture_events 2
+events_count=2
+# If reviewnotes plugin is installed, an extra event of type 'ref-updated'
+# on 'refs/notes/review' is fired when a change is merged.
+is_plugin_installed reviewnotes && events_count=3
+capture_events "$events_count"
 submit "$ch1,1"
 result_type "$GROUP $type" "ref-updated"
-result_type "$GROUP" "$type" 2
+result_type "$GROUP" "$type" "$events_count"
 
 # reviewer-added needs to be tested via Rest-API
 
@@ -239,3 +248,4 @@ result_type "$GROUP" "$type" 2
 out=$(diff "$EVENTS_CORE" "$EVENTS_PLUGIN")
 result "core/plugin diff" "$out"
 
+exit $RESULT
