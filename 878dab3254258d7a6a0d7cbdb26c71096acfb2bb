@@ -33,6 +33,24 @@
       "message": "Can you confirm the test suite passes with the jar built using Bazel?",
       "revId": "878dab3254258d7a6a0d7cbdb26c71096acfb2bb",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9092203_e7fe783a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1012457
+      },
+      "writtenOn": "2021-05-24T22:57:19Z",
+      "side": 1,
+      "message": "Yes, it passes.\n\n$ ▶ ./run.sh --gerrit-war file:///Users/kaushikl/workspace/events/gerrit-2.14.22.war --events-plugin-jar file:///Users/kaushikl/workspace/events/bazel-bin/events.jar\nfetching artifacts.\nBuilding docker images.................\nCreating network \"events_20981_gerrit-net\" with driver \"bridge\"\nCreating volume \"events_20981_gerrit-site-etc\" with default driver\nCreating events_20981_gerrit-01_1 ... done\nCreating events_20981_run_tests_1 ... done\nwait-for-it.sh: waiting 60 seconds for gerrit-01:29418\nwait-for-it.sh: gerrit-01:29418 is available after 18 seconds\nGerrit is up\nCreating a default user account ...\nWarning: Permanently added \u0027[gerrit-01]:29418,[192.168.96.2]:29418\u0027 (ECDSA) to the list of known hosts.\nCreating a test project ...\nCloning into \u0027/home/gerrit_admin/workspace\u0027...\nwarning: remote HEAD refers to nonexistent ref, unable to checkout.\n\n[master (root-commit) f05de58] Initial commit\nremote: Processing changes: refs: 1, done\nTo ssh://gerrit-01:29418/test-project\n * [new branch]      HEAD -\u003e master\nPASSED - visible-events patchset-created test\nPASSED - visible-events patchset-created ref-updated test\nPASSED - visible-events draft-published test\nPASSED - visible-events change-abandoned test\nPASSED - visible-events change-restored test\nPASSED - visible-events comment-added test\nPASSED - visible-events change-merged ref-updated test\nPASSED - visible-events change-merged test\nPASSED - core/plugin diff test",
+      "parentUuid": "a1f7ed1d_def99aee",
+      "revId": "878dab3254258d7a6a0d7cbdb26c71096acfb2bb",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
