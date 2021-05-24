@@ -27,13 +27,11 @@ get_change_num() { # < gerrit_push_response > changenum
     echo "${url##*\/}" | tr -d -c '[:digit:]'
 }
 
-create_change() { # [--dependent] [--draft] branch file [commit_message] > changenum
-    local opt_d opt_c opt_draft=false
+create_change() { # [--dependent] branch file [commit_message] > changenum
+    local opt_d opt_c
     [ "$1" = "--dependent" ] && { opt_d=$1 ; shift ; }
-    [ "$1" = "--draft" ] && { opt_draft=true ; shift ; }
     local branch=$1 tmpfile=$2 msg=$3 out rtn
     local content=$RANDOM dest=refs/for/$branch
-    "$opt_draft" && dest=refs/drafts/$branch
 
     if [ -z "$opt_d" ] ; then
         out=$(mygit fetch "$GITURL" "$branch" 2>&1) ||\
@@ -73,6 +71,30 @@ submit() { # change,ps
             exit 1
         fi
     fi
+}
+
+get_open_changes() {
+    curl --netrc --silent "$REST_API_CHANGES_URL/?q=status:open"
+}
+
+mark_change_wip() { # change
+    curl --netrc --silent \
+        --data "message=wip" "$REST_API_CHANGES_URL/$1/wip"
+}
+
+mark_change_ready() { # change
+    curl --netrc --silent \
+        --data "message=ready" "$REST_API_CHANGES_URL/$1/ready"
+}
+
+mark_change_private() { # change
+    curl --netrc --silent \
+        --data "message=private" "$REST_API_CHANGES_URL/$1/private"
+}
+
+unmark_change_private() { # change
+    curl -X DELETE --netrc --silent --header 'Content-Type: application/json' \
+        --data '{"message":"unmark_private"}' "$REST_API_CHANGES_URL/$1/private"
 }
 
 # ------------------------- Event Capturing ---------------------------
@@ -185,6 +207,7 @@ rm -rf "$TEST_DIR"
 mkdir -p "$TEST_DIR"
 TEST_DIR=$(readlink -f "$TEST_DIR")
 
+REST_API_CHANGES_URL="http://$SERVER:8080/a/changes"
 GITURL=ssh://$SERVER:29418/$PROJECT
 DEST_REF=$REF_BRANCH
 echo "$REF_BRANCH" | grep -q '^refs/' || DEST_REF=refs/heads/$REF_BRANCH
@@ -204,45 +227,61 @@ trap cleanup EXIT
 
 setup_captures
 
+# We need to do an initial REST call, as the first REST call after a server is
+# brought up results in being anonymous despite providing proper authentication.
+get_open_changes
+
 RESULT=0
 
 # ------------------------- Individual Event Tests ---------------------------
 GROUP=visible-events
 type=patchset-created
-capture_events 2
-ch1=$(create_change --draft "$REF_BRANCH" "$FILE_A") || exit
-result_type "$GROUP" "$type"
-result_type "$GROUP $type" "ref-updated"
-
-type=draft-published
-capture_events
-review "$ch1,1" --publish
-result_type "$GROUP" "$type"
+capture_events 3
+ch1=$(create_change "$REF_BRANCH" "$FILE_A") || exit
+result_type "$GROUP" "$type" 1
+# The change ref and its meta ref are expected to be updated
+# For example: 'refs/changes/01/1001/1' and 'refs/changes/01/1001/meta'
+result_type "$GROUP $type" "ref-updated" 2
 
 type=change-abandoned
-capture_events
+capture_events 3
 review "$ch1,1" --abandon
 result_type "$GROUP" "$type"
 
 type=change-restored
-capture_events
+capture_events 3
 review "$ch1,1" --restore
 result_type "$GROUP" "$type"
 
 type=comment-added
-capture_events
+capture_events 2
 review "$ch1,1" --message "my_comment" $APPROVALS
 result_type "$GROUP" "$type"
 
+type=wip-state-changed
+capture_events 4
+q mark_change_wip "$ch1"
+q mark_change_ready "$ch1"
+result_type "$GROUP" "$type" 2
+
+type=private-state-changed
+capture_events 4
+q mark_change_private "$ch1"
+q unmark_change_private "$ch1"
+result_type "$GROUP" "$type" 2
+
 type=change-merged
-events_count=2
+events_count=3
 # If reviewnotes plugin is installed, an extra event of type 'ref-updated'
 # on 'refs/notes/review' is fired when a change is merged.
-is_plugin_installed reviewnotes && events_count=3
+is_plugin_installed reviewnotes && events_count="$((events_count+1))"
 capture_events "$events_count"
 submit "$ch1,1"
-result_type "$GROUP $type" "ref-updated" "$((events_count-1))"
 result_type "$GROUP" "$type"
+# The destination ref of the change, its meta ref and notes ref(if reviewnotes
+# plugin is installed) are expected to be updated.
+# For example: 'refs/heads/master', 'refs/changes/01/1001/meta' and 'refs/notes/review'
+result_type "$GROUP $type" "ref-updated" "$((events_count-1))"
 
 # reviewer-added needs to be tested via Rest-API
 

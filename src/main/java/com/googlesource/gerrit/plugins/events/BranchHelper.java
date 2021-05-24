@@ -17,8 +17,10 @@ package com.googlesource.gerrit.plugins.events;
 import com.google.gerrit.reviewdb.client.Branch;
 import com.google.gerrit.reviewdb.client.Project;
 import com.google.gerrit.server.IdentifiedUser;
+import com.google.gerrit.server.permissions.PermissionBackend;
+import com.google.gerrit.server.permissions.PermissionBackendException;
+import com.google.gerrit.server.permissions.RefPermission;
 import com.google.gerrit.server.project.ProjectCache;
-import com.google.gerrit.server.project.ProjectControl;
 import com.google.gerrit.server.project.ProjectState;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -26,17 +28,24 @@ import com.google.inject.Inject;
 
 public class BranchHelper {
   protected final ProjectCache projectCache;
+  protected final PermissionBackend permissionBackend;
 
   @Inject
-  BranchHelper(ProjectCache projectCache) {
+  BranchHelper(ProjectCache projectCache, PermissionBackend permissionBackend) {
     this.projectCache = projectCache;
+    this.permissionBackend = permissionBackend;
   }
 
   public boolean isVisibleTo(JsonElement event, IdentifiedUser user) {
-    return isVisibleTo(getBranch(event), user);
+    try {
+      return isVisibleTo(getBranch(event), user);
+    } catch (PermissionBackendException e) {
+      return false;
+    }
   }
 
-  public boolean isVisibleTo(Branch.NameKey branchName, IdentifiedUser user) {
+  public boolean isVisibleTo(Branch.NameKey branchName, IdentifiedUser user)
+      throws PermissionBackendException {
     if (branchName == null) {
       return false;
     }
@@ -44,7 +53,7 @@ public class BranchHelper {
     if (pe == null) {
       return false;
     }
-    return pe.controlFor(user).controlForRef(branchName).isVisible();
+    return permissionBackend.user(user).ref(branchName).test(RefPermission.READ);
   }
 
   public static Branch.NameKey getBranch(JsonElement event) {

@@ -6,7 +6,7 @@ ENV USER gerrit_admin
 ENV USER_HOME /home/$USER
 ENV WORKSPACE $USER_HOME/workspace
 
-RUN apk --update add --no-cache openssh bash git util-linux openssl shadow
+RUN apk --update add --no-cache openssh bash git util-linux openssl shadow curl
 RUN echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 
 RUN groupadd -f -g $GID users2

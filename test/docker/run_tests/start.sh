@@ -27,4 +27,13 @@ cat "$USER_HOME"/.ssh/id_rsa.pub | ssh -p 29418 -i /server-ssh-key/ssh_host_rsa_
      --ssh-key - --email "gerrit_admin@localdomain"  --group "Administrators" "gerrit_admin"
 
 setup_test_project
+
+HTTP_PASSWD=$(uuidgen)
+ssh -p 29418 "$GERRIT_HOST" gerrit set-account "$USER" --http-password "$HTTP_PASSWD"
+cat <<EOT >> ~/.netrc
+machine $GERRIT_HOST
+login $USER
+password $HTTP_PASSWD
+EOT
+
 ./test_events_plugin.sh --server "$GERRIT_HOST" --project "$TEST_PROJECT"

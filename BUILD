@@ -14,7 +14,7 @@ gerrit_plugin(
     srcs = glob(["src/main/java/**/*.java"]),
     manifest_entries = [
         "Gerrit-PluginName: " + plugin_name,
-        "Gerrit-ApiVersion: 2.14.21",
+        "Gerrit-ApiVersion: 2.15.21",
         "Implementation-Title: Events Plugin",
         "Implementation-URL: https://gerrit-review.googlesource.com/#/admin/projects/plugins/" + plugin_name,
         "Gerrit-Module: com.googlesource.gerrit.plugins.events.Module",
