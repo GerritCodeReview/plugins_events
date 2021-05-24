@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "89f28123_415a5fba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1012457
+      },
+      "writtenOn": "2021-05-24T22:14:05Z",
+      "side": 1,
+      "message": "$ ▶ bazel build events\nDEBUG: Rule \u0027com_googlesource_gerrit_bazlets\u0027 indicated that a canonical reproducible form can be obtained by modifying arguments shallow_since \u003d \"1591643554 -0400\"\nDEBUG: Repository com_googlesource_gerrit_bazlets instantiated at:\n  /Users/kaushikl/workspace/other/upstream_events/WORKSPACE:5:13: in \u003ctoplevel\u003e\n  /Users/kaushikl/workspace/other/upstream_events/bazlets.bzl:9:23: in load_bazlets\nRepository rule git_repository defined at:\n  /Users/kaushikl/.cache/bazel/2d7bf481ce897a04a13a8295c13e6f20/external/bazel_tools/tools/build_defs/repo/git.bzl:199:33: in \u003ctoplevel\u003e\nINFO: Analyzed target //:events (1 packages loaded, 28 targets configured).\nINFO: Found 1 target...\nTarget //:events up-to-date:\n  bazel-bin/events.jar\nINFO: Elapsed time: 0.450s, Critical Path: 0.20s\nINFO: 2 processes: 1 internal, 1 darwin-sandbox.\nINFO: Build completed successfully, 2 total actions",
+      "revId": "878dab3254258d7a6a0d7cbdb26c71096acfb2bb",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
