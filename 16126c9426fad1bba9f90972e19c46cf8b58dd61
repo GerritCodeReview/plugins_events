@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8621ba2b_20f1e64a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1012457
+      },
+      "writtenOn": "2021-05-24T22:16:51Z",
+      "side": 1,
+      "message": "$ ▶ ./run.sh --events-plugin-jar /Users/kaushikl/workspace/events/bazel-bin/events.jar\nBuilding docker images..\nCreating network \"events_17912_gerrit-net\" with driver \"bridge\"\nCreating volume \"events_17912_gerrit-site-etc\" with default driver\nCreating events_17912_gerrit-01_1 ... done\nCreating events_17912_run_tests_1 ... done\nwait-for-it.sh: waiting 60 seconds for gerrit-01:29418\nwait-for-it.sh: gerrit-01:29418 is available after 24 seconds\nGerrit is up\nCreating a default user account ...\nWarning: Permanently added \u0027[gerrit-01]:29418,[192.168.16.2]:29418\u0027 (ECDSA) to the list of known hosts.\nCreating a test project ...\nCloning into \u0027/home/gerrit_admin/workspace\u0027...\nwarning: remote HEAD refers to nonexistent ref, unable to checkout.\n\n[master (root-commit) bf70bf9] Initial commit\nremote: Processing changes: refs: 1, done\nTo ssh://gerrit-01:29418/test-project\n * [new branch]      HEAD -\u003e master\nPASSED - visible-events patchset-created test\nPASSED - visible-events patchset-created ref-updated test\nPASSED - visible-events draft-published test\nPASSED - visible-events change-abandoned test\nPASSED - visible-events change-restored test\nPASSED - visible-events comment-added test\nPASSED - visible-events change-merged ref-updated test\nPASSED - visible-events change-merged test\nPASSED - core/plugin diff test",
+      "revId": "16126c9426fad1bba9f90972e19c46cf8b58dd61",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
