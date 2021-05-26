@@ -94,32 +94,36 @@ setup_captures() {
 capture_events() { # count
     local count=$1
     [ -n "$count" ] || count=1
-    ssh -p 29418 -x "$SERVER" "${PLUGIN_CMD[@]}" > "$EVENT_FIFO" &
-    CAPTURE_PID_SSH=$!
+
+    # Re-create the fifo to ensure that is is empty
+    rm -f "$EVENT_FIFO"
+    mkfifo "$EVENT_FIFO"
+
     head -n $count < "$EVENT_FIFO" > "$EVENTS" &
     CAPTURE_PID_HEAD=$!
+    sleep 1
+    ssh -p 29418 -x "$SERVER" "${PLUGIN_CMD[@]}" > "$EVENT_FIFO" &
+    CAPTURE_PID_SSH=$!
     sleep 1
 }
 
 wait_event() {
-   (sleep 1 ; q kill -9 $CAPTURE_PID_SSH ; q kill -9 $CAPTURE_PID_HEAD ) &
-    q wait $CAPTURE_PID_SSH $CAPTURE_PID_HEAD
+   # Below kill of CAPTURE_PID_HEAD is a safety net and ideally we wouldn't
+   # want this kill to stop CAPTURE_PID_HEAD, rather we want it die on its
+   # own when the 'head' in capture_events() captures the desired events. The
+   # delay here must ideally be greater than the run time of the entire suite.
+   (sleep 120 ; q kill -9 $CAPTURE_PID_HEAD ; ) &
+   q wait $CAPTURE_PID_HEAD
+   q kill -9 $CAPTURE_PID_SSH
+   q wait $CAPTURE_PID_SSH
 }
 
-get_event() { # number
-    local number=$1
-    [ -n "$number" ] || number=1
-
-    awk "NR==$number" "$EVENTS"
-}
-
-result_type() { # test type [n]
-    local test=$1 type=$2 number=$3
-    [ -n "$number" ] || number=1
+result_type() { # test type [expected_count]
+    local test=$1 type=$2 expected_count=$3
+    [ -n "$expected_count" ] || expected_count=1
     wait_event
-    local event=$(get_event "$number")
-    echo "$event" | grep -q "\"type\":\"$type\""
-    result "$test $type" "$event"
+    local actual_count=$(grep -c "\"type\":\"$type\"" "$EVENTS")
+    result_out "$test $type" "$expected_count $type event(s)" "$actual_count $type event(s)"
 }
 
 # ------------------------- Usage ---------------------------
@@ -195,7 +199,6 @@ EVENTS_CORE=$TEST_DIR/events-core
 EVENTS_PLUGIN=$TEST_DIR/events-plugin
 EVENT_FIFO=$TEST_DIR/event-fifo
 EVENTS=$TEST_DIR/events
-mkfifo "$EVENT_FIFO"
 
 trap cleanup EXIT
 
@@ -209,7 +212,7 @@ type=patchset-created
 capture_events 2
 ch1=$(create_change --draft "$REF_BRANCH" "$FILE_A") || exit
 result_type "$GROUP" "$type"
-result_type "$GROUP $type" "ref-updated" 2
+result_type "$GROUP $type" "ref-updated"
 
 type=draft-published
 capture_events
@@ -238,8 +241,8 @@ events_count=2
 is_plugin_installed reviewnotes && events_count=3
 capture_events "$events_count"
 submit "$ch1,1"
-result_type "$GROUP $type" "ref-updated"
-result_type "$GROUP" "$type" "$events_count"
+result_type "$GROUP $type" "ref-updated" "$((events_count-1))"
+result_type "$GROUP" "$type"
 
 # reviewer-added needs to be tested via Rest-API
 
