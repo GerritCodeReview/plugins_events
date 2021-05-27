@@ -15,6 +15,7 @@
 package com.googlesource.gerrit.plugins.events;
 
 import com.google.gerrit.common.data.GlobalCapability;
+import com.google.gerrit.extensions.annotations.PluginName;
 import com.google.gerrit.extensions.annotations.RequiresCapability;
 import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.extensions.registration.RegistrationHandle;
@@ -85,6 +86,8 @@ public final class StreamEvents extends BaseCommand {
   @Inject protected BranchHelper perms;
 
   @Inject protected IdentifiedUser currentUser;
+
+  @Inject @PluginName String pluginName;
 
   protected CancelableRunnable flusherRunnable;
   protected RegistrationHandle subscription;
@@ -184,7 +187,7 @@ public final class StreamEvents extends BaseCommand {
 
   protected void subscribe() {
     subscription =
-        subscriptionListeners.add(
+        subscriptionListeners.add(pluginName,
             new StreamEventListener() {
               @Override
               public void onStreamEventUpdate() {

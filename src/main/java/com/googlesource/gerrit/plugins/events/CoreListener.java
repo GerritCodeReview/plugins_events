@@ -15,12 +15,11 @@
 package com.googlesource.gerrit.plugins.events;
 
 import com.google.common.base.Supplier;
-import com.google.gerrit.common.EventListener;
 import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.reviewdb.client.Project;
 import com.google.gerrit.server.events.Event;
+import com.google.gerrit.server.events.EventListener;
 import com.google.gerrit.server.events.ProjectNameKeySerializer;
-import com.google.gerrit.server.events.RefUpdatedEvent;
 import com.google.gerrit.server.events.SupplierSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

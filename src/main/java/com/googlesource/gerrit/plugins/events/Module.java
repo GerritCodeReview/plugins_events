@@ -14,8 +14,8 @@
 
 package com.googlesource.gerrit.plugins.events;
 
-import com.google.gerrit.common.EventListener;
 import com.google.gerrit.extensions.registration.DynamicSet;
+import com.google.gerrit.server.events.EventListener;
 import com.google.inject.AbstractModule;
 import com.googlesource.gerrit.plugins.events.fsstore.FsStore;
 
