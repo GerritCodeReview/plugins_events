@@ -62,17 +62,17 @@ create_change() { # [--dependent] [--draft] branch file [commit_message] > chang
 review() { gssh gerrit review "$@" ; }
 
 submit() { # change,ps
-   local out=$(review "$1" --submit)
-   local acl_err="one or more approvals failed; review output above"
-   local conflict_err="The change could not be merged due to a path conflict."
+    local out=$(review "$1" --submit)
+    local acl_err="one or more approvals failed; review output above"
+    local conflict_err="The change could not be merged due to a path conflict."
 
-   if echo "$out" | grep -q "$acl_err" ; then
-      if ! echo "$out" | grep -q "$conflict_err" ; then
+    if echo "$out" | grep -q "$acl_err" ; then
+        if ! echo "$out" | grep -q "$conflict_err" ; then
             echo "$out"
             echo "User needs ACLs to approve and submit changes to $REF_BRANCH"
             exit 1
-       fi
-   fi
+        fi
+    fi
 }
 
 # ------------------------- Event Capturing ---------------------------
