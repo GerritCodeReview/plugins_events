@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f760d99_4afbcc8b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1012457
+      },
+      "writtenOn": "2021-05-28T19:17:50Z",
+      "side": 1,
+      "message": "└─ $ ▶ git log -1\ncommit 109cd4de93df5642bee15371eaaf04e49825211a (HEAD -\u003e master)\nAuthor: Kaushik Lingarkar \u003ckaushikl@codeaurora.org\u003e\nDate:   Thu May 27 17:06:31 2021 -0700\n\n    build with 3.0\n\n    Change-Id: I0b222254eafa33b94a740106b6ed47aca0f00e35\n\n└─ $ ▶ bazel build events\nStarting local Bazel server and connecting to it...\nDEBUG: Rule \u0027com_googlesource_gerrit_bazlets\u0027 indicated that a canonical reproducible form can be obtained by modifying arguments shallow_since \u003d \"1621378007 -0600\"\nDEBUG: Repository com_googlesource_gerrit_bazlets instantiated at:\n  /Users/kaushikl/workspace/other/upstream_events/WORKSPACE:5:13: in \u003ctoplevel\u003e\n  /Users/kaushikl/workspace/other/upstream_events/bazlets.bzl:9:23: in load_bazlets\nRepository rule git_repository defined at:\n  /Users/kaushikl/.cache/bazel/2d7bf481ce897a04a13a8295c13e6f20/external/bazel_tools/tools/build_defs/repo/git.bzl:199:33: in \u003ctoplevel\u003e\nINFO: Analyzed target //:events (24 packages loaded, 696 targets configured).\nINFO: Found 1 target...\nTarget //:events up-to-date:\n  bazel-bin/events.jar\nINFO: Elapsed time: 19.649s, Critical Path: 5.87s\nINFO: 14 processes: 5 internal, 7 darwin-sandbox, 2 worker.\nINFO: Build completed successfully, 14 total actions\n\n└─ $ ▶ bazel test docker-tests\nDEBUG: Rule \u0027com_googlesource_gerrit_bazlets\u0027 indicated that a canonical reproducible form can be obtained by modifying arguments shallow_since \u003d \"1621378007 -0600\"\nDEBUG: Repository com_googlesource_gerrit_bazlets instantiated at:\n  /Users/kaushikl/workspace/other/upstream_events/WORKSPACE:5:13: in \u003ctoplevel\u003e\n  /Users/kaushikl/workspace/other/upstream_events/bazlets.bzl:9:23: in load_bazlets\nRepository rule git_repository defined at:\n  /Users/kaushikl/.cache/bazel/2d7bf481ce897a04a13a8295c13e6f20/external/bazel_tools/tools/build_defs/repo/git.bzl:199:33: in \u003ctoplevel\u003e\nINFO: Analyzed target //:docker-tests (2 packages loaded, 59 targets configured).\nINFO: Found 1 test target...\nTarget //:docker-tests up-to-date:\n  bazel-bin/docker-tests\nINFO: Elapsed time: 111.698s, Critical Path: 111.34s\nINFO: 5 processes: 3 internal, 2 local.\nINFO: Build completed successfully, 5 total actions\n//:docker-tests                                                          PASSED in 111.2s\n\nINFO: Build completed successfully, 5 total actions",
+      "revId": "109cd4de93df5642bee15371eaaf04e49825211a",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
