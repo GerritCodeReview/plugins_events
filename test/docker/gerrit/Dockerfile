@@ -1,4 +1,4 @@
-FROM gerritcodereview/gerrit:2.16.27-ubuntu16
+FROM gerritcodereview/gerrit:3.0.16-ubuntu18
 
 USER root
 
