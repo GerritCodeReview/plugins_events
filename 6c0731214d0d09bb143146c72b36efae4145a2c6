@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "769af580_738c224d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1012457
+      },
+      "writtenOn": "2021-05-28T18:55:51Z",
+      "side": 1,
+      "message": "└─ $ ▶ git log -1\ncommit 6c0731214d0d09bb143146c72b36efae4145a2c6 (HEAD -\u003e master)\nAuthor: Kaushik Lingarkar \u003ckaushikl@codeaurora.org\u003e\nDate:   Fri May 28 11:04:19 2021 -0700\n\n    Remove support for maven build\n\n    Change-Id: I20650545078fdf8580d546f884c9e749c452ef4e\n\n└─ $ ▶ bazel build events\nDEBUG: Rule \u0027com_googlesource_gerrit_bazlets\u0027 indicated that a canonical reproducible form can be obtained by modifying arguments shallow_since \u003d \"1591646384 -0400\"\nDEBUG: Repository com_googlesource_gerrit_bazlets instantiated at:\n  /Users/kaushikl/workspace/other/upstream_events/WORKSPACE:5:13: in \u003ctoplevel\u003e\n  /Users/kaushikl/workspace/other/upstream_events/bazlets.bzl:9:23: in load_bazlets\nRepository rule git_repository defined at:\n  /Users/kaushikl/.cache/bazel/2d7bf481ce897a04a13a8295c13e6f20/external/bazel_tools/tools/build_defs/repo/git.bzl:199:33: in \u003ctoplevel\u003e\nINFO: Analyzed target //:events (0 packages loaded, 0 targets configured).\nINFO: Found 1 target...\nTarget //:events up-to-date:\n  bazel-bin/events.jar\nINFO: Elapsed time: 0.243s, Critical Path: 0.12s\nINFO: 1 process: 1 internal.\nINFO: Build completed successfully, 1 total action",
+      "revId": "6c0731214d0d09bb143146c72b36efae4145a2c6",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
