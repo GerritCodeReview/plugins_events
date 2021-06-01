@@ -33,6 +33,7 @@ import java.io.PrintWriter;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.apache.sshd.server.Environment;
+import org.apache.sshd.server.channel.ChannelSession;
 import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +101,7 @@ public final class StreamEvents extends BaseCommand {
   protected volatile boolean shuttingDown = false;
 
   @Override
-  public void start(final Environment env) throws IOException {
+  public void start(ChannelSession channel, Environment env) throws IOException {
     try {
       parseCommandLine();
     } catch (UnloggedFailure e) {
@@ -163,7 +164,7 @@ public final class StreamEvents extends BaseCommand {
   }
 
   @Override
-  protected void onExit(final int rc) {
+  protected void onExit(int rc) {
     unsubscribe();
     synchronized (crossThreadlock) {
       shuttingDown = true;
@@ -172,7 +173,7 @@ public final class StreamEvents extends BaseCommand {
   }
 
   @Override
-  public void destroy() {
+  public void destroy(ChannelSession channel) {
     unsubscribe();
     synchronized (crossThreadlock) {
       boolean alreadyShuttingDown = shuttingDown;

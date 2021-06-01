@@ -15,11 +15,13 @@
 package com.googlesource.gerrit.plugins.events;
 
 import com.google.common.base.Supplier;
+import com.google.gerrit.entities.Change;
+import com.google.gerrit.entities.Project;
 import com.google.gerrit.extensions.registration.DynamicSet;
-import com.google.gerrit.reviewdb.client.Project;
+import com.google.gerrit.server.change.ChangeKeyAdapter;
 import com.google.gerrit.server.events.Event;
 import com.google.gerrit.server.events.EventListener;
-import com.google.gerrit.server.events.ProjectNameKeySerializer;
+import com.google.gerrit.server.events.ProjectNameKeyAdapter;
 import com.google.gerrit.server.events.SupplierSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,7 +38,8 @@ public class CoreListener implements EventListener {
   protected static final Gson gson =
       new GsonBuilder()
           .registerTypeAdapter(Supplier.class, new SupplierSerializer())
-          .registerTypeAdapter(Project.NameKey.class, new ProjectNameKeySerializer())
+          .registerTypeAdapter(Project.NameKey.class, new ProjectNameKeyAdapter())
+          .registerTypeAdapter(Change.Key.class, new ChangeKeyAdapter())
           .create();
   protected final DynamicSet<StreamEventListener> listeners;
   protected final EventStore store;

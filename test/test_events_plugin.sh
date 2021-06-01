@@ -244,12 +244,12 @@ result_type "$GROUP" "$type" 1
 result_type "$GROUP $type" "ref-updated" 2
 
 type=change-abandoned
-capture_events 3
+capture_events 2
 review "$ch1,1" --abandon
 result_type "$GROUP" "$type"
 
 type=change-restored
-capture_events 3
+capture_events 2
 review "$ch1,1" --restore
 result_type "$GROUP" "$type"
 

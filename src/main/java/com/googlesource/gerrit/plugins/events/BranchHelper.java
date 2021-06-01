@@ -14,8 +14,8 @@
 
 package com.googlesource.gerrit.plugins.events;
 
-import com.google.gerrit.reviewdb.client.Branch;
-import com.google.gerrit.reviewdb.client.Project;
+import com.google.gerrit.entities.BranchNameKey;
+import com.google.gerrit.entities.Project;
 import com.google.gerrit.server.IdentifiedUser;
 import com.google.gerrit.server.permissions.PermissionBackend;
 import com.google.gerrit.server.permissions.PermissionBackendException;
@@ -44,20 +44,20 @@ public class BranchHelper {
     }
   }
 
-  public boolean isVisibleTo(Branch.NameKey branchName, IdentifiedUser user)
+  public boolean isVisibleTo(BranchNameKey branchName, IdentifiedUser user)
       throws PermissionBackendException {
     if (branchName == null) {
       return false;
     }
-    ProjectState pe = projectCache.get(branchName.getParentKey());
+    ProjectState pe = projectCache.get(branchName.project());
     if (pe == null) {
       return false;
     }
     return permissionBackend.user(user).ref(branchName).test(RefPermission.READ);
   }
 
-  public static Branch.NameKey getBranch(JsonElement event) {
-    Branch.NameKey b = null;
+  public static BranchNameKey getBranch(JsonElement event) {
+    BranchNameKey b = null;
     if (event != null) {
       JsonObject obj = event.getAsJsonObject();
       // Known events of this type:
@@ -78,7 +78,7 @@ public class BranchHelper {
     return b;
   }
 
-  protected static Branch.NameKey getBranch(JsonObject projectParent) {
+  protected static BranchNameKey getBranch(JsonObject projectParent) {
     Project.NameKey project = getProject(projectParent);
     if (project != null) {
       // Known events of this type:
@@ -99,7 +99,7 @@ public class BranchHelper {
       if (branch != null) {
         String name = asString(branch);
         if (name != null) {
-          return new Branch.NameKey(project, name);
+          return BranchNameKey.create(project, name);
         }
       }
     }
@@ -120,7 +120,7 @@ public class BranchHelper {
           }
         }
         if (name != null) {
-          return new Project.NameKey(name);
+          return Project.nameKey(name);
         }
       }
     }
