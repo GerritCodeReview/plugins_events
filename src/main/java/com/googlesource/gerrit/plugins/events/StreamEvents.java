@@ -19,6 +19,7 @@ import com.google.gerrit.extensions.annotations.PluginName;
 import com.google.gerrit.extensions.annotations.RequiresCapability;
 import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.extensions.registration.RegistrationHandle;
+import com.google.gerrit.server.DynamicOptions;
 import com.google.gerrit.server.IdentifiedUser;
 import com.google.gerrit.server.git.WorkQueue.CancelableRunnable;
 import com.google.gerrit.sshd.BaseCommand;
@@ -102,24 +103,27 @@ public final class StreamEvents extends BaseCommand {
 
   @Override
   public void start(ChannelSession channel, Environment env) throws IOException {
-    try {
-      parseCommandLine();
-    } catch (UnloggedFailure e) {
-      String msg = e.getMessage();
-      if (!msg.endsWith("\n")) {
-        msg += "\n";
+    try (DynamicOptions pluginOptions =
+        new DynamicOptions(injector, dynamicBeans)) {
+      try {
+        parseCommandLine(pluginOptions);
+      } catch (UnloggedFailure e) {
+        String msg = e.getMessage();
+        if (!msg.endsWith("\n")) {
+          msg += "\n";
+        }
+        err.write(msg.getBytes("UTF-8"));
+        err.flush();
+        onExit(1);
+        return;
       }
-      err.write(msg.getBytes("UTF-8"));
-      err.flush();
-      onExit(1);
-      return;
-    }
-    stdout = toPrintWriter(out);
+      stdout = toPrintWriter(out);
 
-    initSent();
-    flusherRunnable = createFlusherRunnable();
-    subscribe();
-    startFlush();
+      initSent();
+      flusherRunnable = createFlusherRunnable();
+      subscribe();
+      startFlush();
+    }
   }
 
   protected CancelableRunnable createFlusherRunnable() {
