@@ -49,7 +49,7 @@ public class BranchHelper {
     if (branchName == null) {
       return false;
     }
-    ProjectState pe = projectCache.get(branchName.project());
+    ProjectState pe = projectCache.get(branchName.project()).get();
     if (pe == null) {
       return false;
     }
