@@ -244,7 +244,7 @@ result_type "$GROUP" "$type" 1
 result_type "$GROUP $type" "ref-updated" 2
 
 type=change-abandoned
-capture_events 2
+capture_events 3
 review "$ch1,1" --abandon
 result_type "$GROUP" "$type"
 
@@ -271,7 +271,7 @@ q unmark_change_private "$ch1"
 result_type "$GROUP" "$type" 2
 
 type=change-merged
-events_count=3
+events_count=4
 # If reviewnotes plugin is installed, an extra event of type 'ref-updated'
 # on 'refs/notes/review' is fired when a change is merged.
 is_plugin_installed reviewnotes && events_count="$((events_count+1))"
