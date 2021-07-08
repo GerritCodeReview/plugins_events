@@ -1,0 +1,11 @@
+- job:
+    name: plugins-events-build
+    parent: gerrit-plugin-build
+    pre-run:
+        tools/playbooks/install_docker.yaml
+
+- project:
+    check:
+      jobs:
+        - plugins-events-build
+
