@@ -33,6 +33,23 @@
       "message": "We need to merge https://gerrit-review.googlesource.com/c/zuul/ops/+/309882 first to add the project to Zuul.\n",
       "revId": "5a7431a9a1441110ae4310059ae204b72fac0942",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d19728f_c8736ca2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1012457
+      },
+      "writtenOn": "2021-07-21T22:23:04Z",
+      "side": 1,
+      "message": "@James I have added the required configs for zuul (see diff between patch-sets 4 and 5) in this change. I have also updated zuul/ops (see https://gerrit-review.googlesource.com/c/zuul/ops/+/312343). The zuul pipeline does seem to trigger, however I see a message like below. Do you know what I may be doing wrong?\n\n The combined check state has been updated to NOT_RELEVANT for patch set 7 of this change.\n\n All checks:\n Not Relevant: Zuul Check Pipeline",
+      "revId": "5a7431a9a1441110ae4310059ae204b72fac0942",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
