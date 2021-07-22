@@ -1,10 +1,10 @@
+load("//tools/bzl:junit.bzl", "junit_tests")
 load(
     "//tools/bzl:plugin.bzl",
     "PLUGIN_DEPS",
     "PLUGIN_TEST_DEPS",
     "gerrit_plugin",
 )
-
 load("@rules_java//java:defs.bzl", "java_library", "java_plugin")
 
 plugin_name = "events"
@@ -22,11 +22,35 @@ gerrit_plugin(
     resources = glob(["src/main/resources/**/*"]),
 )
 
+junit_tests(
+    name = "events_tests",
+    size = "small",
+    srcs = glob(["src/test/java/**/*Test.java"]),
+    tags = ["events"],
+    deps = [":events__plugin_test_deps"],
+)
+
+java_library(
+    name = "events__plugin_test_deps",
+    testonly = True,
+    srcs = glob(
+        ["src/test/java/**/*.java"],
+        exclude = ["src/test/java/**/*Test.java"],
+    ),
+    visibility = ["//visibility:public"],
+    exports = PLUGIN_DEPS + PLUGIN_TEST_DEPS + [
+        ":events__plugin",
+    ],
+)
+
 sh_test(
     name = "docker-tests",
     size = "medium",
     srcs = ["test/docker/run.sh"],
-    args = ["--events-plugin-jar", "$(location :events)"],
+    args = [
+        "--events-plugin-jar",
+        "$(location :events)",
+    ],
     data = [plugin_name] + glob(["test/**"]),
     local = True,
 )
