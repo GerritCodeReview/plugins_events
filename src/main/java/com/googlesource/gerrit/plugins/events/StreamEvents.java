@@ -67,7 +67,7 @@ public final class StreamEvents extends BaseCommand {
       }
 
       try {
-        resume = new Long(ids[1]);
+        resume = Long.parseLong(ids[1]);
         return;
       } catch (NumberFormatException e) { // fall through
       }

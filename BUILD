@@ -20,6 +20,7 @@ gerrit_plugin(
         "Gerrit-SshModule: com.googlesource.gerrit.plugins.events.SshModule",
     ],
     resources = glob(["src/main/resources/**/*"]),
+    javacopts = [ "-Werror", "-Xlint:all", "-Xlint:-classfile", "-Xlint:-processing"],
 )
 
 junit_tests(
