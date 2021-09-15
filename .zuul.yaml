@@ -5,6 +5,15 @@
         tools/playbooks/install_docker.yaml
 
 - project:
+    description: |
+      Build the plugin in check, and also build and publish it after
+      every merged commit.
     check:
       jobs:
         - plugins-events-build
+    post:
+      jobs:
+        - plugins-events-build
+        - gerrit-plugin-publish:
+            dependencies:
+              - gerrit-plugin-build
