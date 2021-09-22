@@ -118,8 +118,8 @@ capture_events() { # count
     [ -n "$count" ] || count=1
 
     # Re-create the fifo to ensure that is is empty
-    rm -f "$EVENT_FIFO"
-    mkfifo "$EVENT_FIFO"
+    rm -f -- "$EVENT_FIFO"
+    mkfifo -- "$EVENT_FIFO"
 
     head -n $count < "$EVENT_FIFO" > "$EVENTS" &
     CAPTURE_PID_HEAD=$!
@@ -195,17 +195,18 @@ parseArgs() {
     [ -n "$REF_BRANCH" ] || usage "ref branch not set"
 }
 
-MYPROG=$(basename "$0")
-MYDIR=$(dirname "$0")
+readlink -f / &> /dev/null || readlink() { greadlink "$@" ; } # for MacOS
+MYDIR=$(dirname -- "$(readlink -f -- "$0")")
+MYPROG=$(basename -- "$0")
 
 source "$MYDIR/lib_result.sh"
 
 parseArgs "$@"
 
 TEST_DIR=$MYDIR/../target/test
-rm -rf "$TEST_DIR"
-mkdir -p "$TEST_DIR"
-TEST_DIR=$(readlink -f "$TEST_DIR")
+rm -rf -- "$TEST_DIR"
+mkdir -p -- "$TEST_DIR"
+TEST_DIR=$(readlink -f -- "$TEST_DIR")
 
 REST_API_CHANGES_URL="http://$SERVER:8080/a/changes"
 GITURL=ssh://$SERVER:29418/$PROJECT
@@ -214,7 +215,7 @@ echo "$REF_BRANCH" | grep -q '^refs/' || DEST_REF=refs/heads/$REF_BRANCH
 git ls-remote "$GITURL" | grep -q "$DEST_REF" || usage "invalid project/server/ref"
 
 REPO_DIR=$TEST_DIR/repo
-q git init "$REPO_DIR"
+q git init -- "$REPO_DIR"
 GIT_DIR="$REPO_DIR/.git"
 FILE_A="$REPO_DIR/fileA"
 
@@ -287,7 +288,7 @@ result_type "$GROUP $type" "ref-updated" "$((events_count-1))"
 
 # ------------------------- Compare them all to Core -------------------------
 
-out=$(diff "$EVENTS_CORE" "$EVENTS_PLUGIN")
+out=$(diff -- "$EVENTS_CORE" "$EVENTS_PLUGIN")
 result "core/plugin diff" "$out"
 
 exit $RESULT

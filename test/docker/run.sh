@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readlink --canonicalize / &> /dev/null || readlink() { greadlink "$@" ; } # for MacOS
+readlink -f / &> /dev/null || readlink() { greadlink "$@" ; } # for MacOS
 MYDIR=$(dirname -- "$(readlink -f -- "$0")")
 ARTIFACTS=$MYDIR/gerrit/artifacts
 
@@ -78,15 +78,14 @@ COMPOSE_YAML="$MYDIR/docker-compose.yaml"
 COMPOSE_ARGS=(--project-name "$PROJECT_NAME" -f "$COMPOSE_YAML")
 check_prerequisite
 mkdir -p -- "$ARTIFACTS"
-[ -n "$EVENTS_PLUGIN_JAR" ] && cp -f "$EVENTS_PLUGIN_JAR" "$ARTIFACTS/events.jar"
+[ -n "$EVENTS_PLUGIN_JAR" ] && cp -f -- "$EVENTS_PLUGIN_JAR" "$ARTIFACTS/events.jar"
 if [ ! -e "$ARTIFACTS/events.jar" ] ; then
     MISSING="Missing $ARTIFACTS/events.jar"
     [ -n "$EVENTS_PLUGIN_JAR" ] && die "$MISSING, check for copy failure?"
     usage "$MISSING, did you forget --events-plugin-jar?"
 fi
-[ -n "$GERRIT_WAR" ] && cp -f "$GERRIT_WAR" "$ARTIFACTS/gerrit.war"
-progress "Building docker images" build_images
-run_events_plugin_tests ; RESULT=$?
-cleanup
-
-exit "$RESULT"
+[ -n "$GERRIT_WAR" ] && cp -f -- "$GERRIT_WAR" "$ARTIFACTS/gerrit.war"
+( trap cleanup EXIT SIGTERM
+    progress "Building docker images" build_images
+    run_events_plugin_tests
+)
