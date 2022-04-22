@@ -23,15 +23,13 @@ import org.kohsuke.args4j.Option;
 
 @RequiresCapability(GlobalCapability.ADMINISTRATE_SERVER)
 @CommandMetaData(
-  name = "trim",
-  description = "Trim old events up to and including trim-id from EventStore"
-)
+    name = "trim",
+    description = "Trim old events up to and including trim-id from EventStore")
 final class TrimCommand extends SshCommand {
   @Option(
-    name = "--trim-id",
-    metaVar = "TRIM_ID",
-    usage = "Trim old events up to and including trim-id from EventStore"
-  )
+      name = "--trim-id",
+      metaVar = "TRIM_ID",
+      usage = "Trim old events up to and including trim-id from EventStore")
   protected long trim = -1;
 
   @Option(name = "--size", metaVar = "SIZE", usage = "Trim and keep SIZE events")
