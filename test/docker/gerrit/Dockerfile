@@ -4,11 +4,9 @@ ENV GERRIT_SITE /var/gerrit
 COPY artifacts/plugins/ $GERRIT_SITE/plugins/
 
 USER root
-
-RUN git config -f "$GERRIT_SITE/etc/gerrit.config" auth.type \
-    DEVELOPMENT_BECOME_ANY_ACCOUNT
-
 COPY artifacts/bin/ /tmp/
 RUN { [ -e /tmp/gerrit.war ] && cp /tmp/gerrit.war "$GERRIT_SITE/bin/gerrit.war" ; } || true
+COPY start.sh /
 
 USER gerrit
+ENTRYPOINT /start.sh

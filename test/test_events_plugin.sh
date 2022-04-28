@@ -7,6 +7,15 @@ mygit() { git --work-tree="$REPO_DIR" --git-dir="$GIT_DIR" "$@" ; } # [args...]
 # plugin_name
 is_plugin_installed() { gssh gerrit plugin ls | awk '{print $1}' | grep -q "^$1$"; }
 
+set_filter_rules() { # [rule]...
+    git config -f "$GERRIT_CFG" --unset-all plugin.events.filter
+    local rule
+    for rule in "$@" ; do
+        git config -f "$GERRIT_CFG" plugin.events.filter "$rule"
+    done
+    gssh gerrit plugin reload events
+}
+
 cleanup() {
     wait_event
     (kill_diff_captures ; sleep 1 ; kill_diff_captures -9 ) &
@@ -140,13 +149,17 @@ wait_event() {
    q wait $CAPTURE_PID_SSH
 }
 
-result_type() { # test type [expected_count]
+
+result_event() { # test type [expected_count]
     local test=$1 type=$2 expected_count=$3
     [ -n "$expected_count" ] || expected_count=1
     wait_event
     local actual_count=$(grep -c "\"type\":\"$type\"" "$EVENTS")
-    result_out "$test $type" "$expected_count $type event(s)" "$actual_count $type event(s)"
+    result_out "$test" "$expected_count $type event(s)" "$actual_count $type event(s)"
 }
+
+# test type [expected_count]
+result_type() { result_event "$1 $2" "$2" "$3" ; }
 
 # ------------------------- Usage ---------------------------
 
@@ -223,6 +236,7 @@ EVENTS_CORE=$TEST_DIR/events-core
 EVENTS_PLUGIN=$TEST_DIR/events-plugin
 EVENT_FIFO=$TEST_DIR/event-fifo
 EVENTS=$TEST_DIR/events
+GERRIT_CFG="/gerrit.config/gerrit.config"
 
 trap cleanup EXIT
 
@@ -234,6 +248,7 @@ RESULT=0
 
 # ------------------------- Individual Event Tests ---------------------------
 GROUP=visible-events
+set_filter_rules # No rules
 setup_diff_captures
 
 type=patchset-created
@@ -290,5 +305,25 @@ out=$(diff -- "$EVENTS_CORE" "$EVENTS_PLUGIN")
 result "$GROUP core/plugin diff" "$out"
 
 kill_diff_captures
+
+# ------------------------- Filtering -------------------------
+
+GROUP=restored-filtered
+set_filter_rules 'DROP classname com.google.gerrit.server.events.ChangeRestoredEvent'
+
+ch1=$(create_change "$REF_BRANCH" "$FILE_A") || exit
+type=change-abandoned
+
+capture_events 3
+review "$ch1,1" --abandon
+result_type "$GROUP" "$type"
+
+type=change-restored
+capture_events 4
+review "$ch1,1" --restore
+# Instead of timing out waiting for the filtered change-restored event,
+# create follow-on events and capture them to trigger completion.
+review "$ch1,1" --message "'\"trigger filtered completion\"'"
+result_type "$GROUP" "$type" 0
 
 exit $RESULT

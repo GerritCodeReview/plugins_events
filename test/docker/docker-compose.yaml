@@ -16,6 +16,7 @@ services:
     volumes:
       - "../../:/events:ro"
       - "gerrit-site-etc:/server-ssh-key:ro"
+      - "gerrit-site-etc:/gerrit.config"
     depends_on:
       - gerrit-01
     environment:
