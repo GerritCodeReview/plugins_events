@@ -9,7 +9,7 @@ is_plugin_installed() { gssh gerrit plugin ls | awk '{print $1}' | grep -q "^$1$
 
 cleanup() {
     wait_event
-    (kill_captures ; sleep 1 ; kill_captures -9 ) &
+    (kill_diff_captures ; sleep 1 ; kill_diff_captures -9 ) &
 }
 
 # > uuid
@@ -99,14 +99,14 @@ unmark_change_private() { # change
 
 # ------------------------- Event Capturing ---------------------------
 
-kill_captures() { # sig
+kill_diff_captures() { # sig
     local pid
     for pid in "${CAPTURE_PIDS[@]}" ; do
         q kill $1 $pid
     done
 }
 
-setup_captures() {
+setup_diff_captures() {
     ssh -p 29418 -x "$SERVER" "${CORE_CMD[@]}" > "$EVENTS_CORE" &
     CAPTURE_PIDS=("${CAPTURE_PIDS[@]}" $!)
     ssh -p 29418 -x "$SERVER" "${PLUGIN_CMD[@]}" > "$EVENTS_PLUGIN" &
@@ -226,8 +226,6 @@ EVENTS=$TEST_DIR/events
 
 trap cleanup EXIT
 
-setup_captures
-
 # We need to do an initial REST call, as the first REST call after a server is
 # brought up results in being anonymous despite providing proper authentication.
 get_open_changes
@@ -236,6 +234,8 @@ RESULT=0
 
 # ------------------------- Individual Event Tests ---------------------------
 GROUP=visible-events
+setup_diff_captures
+
 type=patchset-created
 capture_events 3
 ch1=$(create_change "$REF_BRANCH" "$FILE_A") || exit
@@ -286,9 +286,9 @@ result_type "$GROUP $type" "ref-updated" "$((events_count-1))"
 
 # reviewer-added needs to be tested via Rest-API
 
-# ------------------------- Compare them all to Core -------------------------
-
 out=$(diff -- "$EVENTS_CORE" "$EVENTS_PLUGIN")
-result "core/plugin diff" "$out"
+result "$GROUP core/plugin diff" "$out"
+
+kill_diff_captures
 
 exit $RESULT
