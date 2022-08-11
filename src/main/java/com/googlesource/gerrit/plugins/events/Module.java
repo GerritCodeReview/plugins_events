@@ -14,8 +14,9 @@
 
 package com.googlesource.gerrit.plugins.events;
 
+import com.google.gerrit.extensions.registration.DynamicItem;
 import com.google.gerrit.extensions.registration.DynamicSet;
-import com.google.gerrit.server.events.EventListener;
+import com.google.gerrit.server.events.EventDispatcher;
 import com.google.inject.AbstractModule;
 import com.googlesource.gerrit.plugins.events.fsstore.FsStore;
 
@@ -24,6 +25,6 @@ public class Module extends AbstractModule {
   protected void configure() {
     DynamicSet.setOf(binder(), StreamEventListener.class);
     bind(EventStore.class).to(FsStore.class);
-    DynamicSet.bind(binder(), EventListener.class).to(CoreListener.class);
+    DynamicItem.bind(binder(), EventDispatcher.class).to(FileSystemEventBroker.class);
   }
 }
