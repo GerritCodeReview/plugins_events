@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6905baf5_1e900e01",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1105741
+      },
+      "writtenOn": "2022-08-12T16:11:20Z",
+      "side": 1,
+      "message": "line 111, fireEvent(event) would send it to both UserScoped and UnRestricted listeners. StreamEventListener is specific to events plugin and hence this extra piece.",
+      "parentUuid": "1f313da6_8daa802e",
+      "range": {
+        "startLine": 113,
+        "startChar": 37,
+        "endLine": 113,
+        "endChar": 57
+      },
+      "revId": "0f3598a0347e8b61e475d274f921c31acbad1689",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "15a07656_84e588c9",
         "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
         "patchSetId": 1
@@ -37,6 +61,24 @@
       "writtenOn": "2022-08-12T16:02:46Z",
       "side": 1,
       "message": "This is now swallowing exceptions which some paths wouldn\u0027t normally?",
+      "revId": "0f3598a0347e8b61e475d274f921c31acbad1689",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5cd3aea7_8e29827a",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1105741
+      },
+      "writtenOn": "2022-08-12T16:11:20Z",
+      "side": 1,
+      "message": "Yeah. All the paths, for now atleast, just do nothing more than logging. Is it okay if I just add a logging here ?",
+      "parentUuid": "15a07656_84e588c9",
       "revId": "0f3598a0347e8b61e475d274f921c31acbad1689",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
