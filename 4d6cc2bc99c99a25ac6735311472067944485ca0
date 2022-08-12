@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a850414_0c23bfe5",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2022-08-12T17:25:37Z",
+      "side": 1,
+      "message": "I think that synchronizing here is hard to get right, and likely actually slower since the process is a serialized process anyway, and splitting it across threads can only add more overhead. Additionally, I suspect that adding a synchronized is anywhere is not going to work unless the synchronized object is shared across all threads, which current lock is not. The original EventBroker is declared with a Guice @Singleton, using that on this broker could likely help achieve this.",
+      "range": {
+        "startLine": 116,
+        "startChar": 10,
+        "endLine": 116,
+        "endChar": 23
+      },
+      "revId": "4d6cc2bc99c99a25ac6735311472067944485ca0",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
