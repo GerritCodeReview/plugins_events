@@ -33,6 +33,24 @@
       "message": "It would be better if this could be at a finer graine (not as much code in the try block if possible so it\u0027s obvious where this is thrown).",
       "revId": "afcbc79eb03b1a6ab738a186a7946dd4158305d7",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "194b1884_e42c50ab",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1105741
+      },
+      "writtenOn": "2022-08-14T19:00:28Z",
+      "side": 1,
+      "message": "In order for the event to be retried, we need to stop processing further. If we fine grain this, it would mean we would be skipping that event and would go for next event ?",
+      "parentUuid": "d6c14ae5_49a88387",
+      "revId": "afcbc79eb03b1a6ab738a186a7946dd4158305d7",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
