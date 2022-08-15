@@ -105,6 +105,24 @@
       "parentUuid": "aa4af142_d2842a73",
       "revId": "afcbc79eb03b1a6ab738a186a7946dd4158305d7",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2374dd23_a6382e0e",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1105741
+      },
+      "writtenOn": "2022-08-15T23:32:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "906ba5f2_912a429c",
+      "revId": "afcbc79eb03b1a6ab738a186a7946dd4158305d7",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
