@@ -49,10 +49,9 @@ public final class StreamEvents extends BaseCommand {
   protected static final Gson gson = new Gson();
 
   @Option(
-    name = "--resume-after",
-    metaVar = "RESUME_AFTER",
-    usage = "event id after which to resume playing events on connection"
-  )
+      name = "--resume-after",
+      metaVar = "RESUME_AFTER",
+      usage = "event id after which to resume playing events on connection")
   protected void parseId(String arg) throws IOException {
     resume = 0;
     if ("0".equals(arg)) {
@@ -103,8 +102,7 @@ public final class StreamEvents extends BaseCommand {
 
   @Override
   public void start(ChannelSession channel, Environment env) throws IOException {
-    try (DynamicOptions pluginOptions =
-        new DynamicOptions(injector, dynamicBeans)) {
+    try (DynamicOptions pluginOptions = new DynamicOptions(injector, dynamicBeans)) {
       try {
         parseCommandLine(pluginOptions);
       } catch (UnloggedFailure e) {
@@ -190,7 +188,8 @@ public final class StreamEvents extends BaseCommand {
 
   protected void subscribe() {
     subscription =
-        subscriptionListeners.add(pluginName,
+        subscriptionListeners.add(
+            pluginName,
             new StreamEventListener() {
               @Override
               public void onStreamEventUpdate() {
