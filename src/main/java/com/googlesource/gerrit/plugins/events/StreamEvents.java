@@ -47,7 +47,6 @@ public final class StreamEvents extends BaseCommand {
 
   protected static final int BATCH_SIZE = 32; // yield thread after
   protected static final Gson gson = new Gson();
-  protected static final JsonParser parser = new JsonParser();
 
   @Option(
       name = "--resume-after",
@@ -232,7 +231,7 @@ public final class StreamEvents extends BaseCommand {
 
   protected void flush(String uuid, long number, String json) {
     if (json != null) {
-      JsonElement el = parser.parse(json);
+      JsonElement el = JsonParser.parseString(json);
       if (perms.isVisibleTo(el, currentUser)) {
         if (includeIds) {
           el.getAsJsonObject().addProperty("id", uuid + ":" + number);
