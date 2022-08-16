@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14a91c78_a8d839ba",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/fsstore/FsListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2022-08-16T20:58:16Z",
+      "side": 1,
+      "message": "As a follow on change it might be nice to allow the queue to be specified.",
+      "revId": "30a40eb7ce91dded5e6ff22f7223b2b16f29baa1",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
