@@ -4,9 +4,6 @@ services:
   gerrit-01:
     build:
       context: gerrit
-      args:
-        - GERRIT_WAR
-        - EVENTS_PLUGIN_JAR
     networks:
       - gerrit-net
     volumes:
@@ -19,6 +16,7 @@ services:
     volumes:
       - "../../:/events:ro"
       - "gerrit-site-etc:/server-ssh-key:ro"
+      - "gerrit-site-etc:/gerrit.config"
     depends_on:
       - gerrit-01
     environment:

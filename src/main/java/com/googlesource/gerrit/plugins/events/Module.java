@@ -14,16 +14,45 @@
 
 package com.googlesource.gerrit.plugins.events;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import com.google.common.base.Strings;
+import com.google.gerrit.extensions.annotations.PluginName;
+import com.google.gerrit.extensions.registration.DynamicItem;
 import com.google.gerrit.extensions.registration.DynamicSet;
-import com.google.gerrit.server.events.EventListener;
-import com.google.inject.AbstractModule;
+import com.google.gerrit.lifecycle.LifecycleModule;
+import com.google.gerrit.server.config.ConfigUtil;
+import com.google.gerrit.server.config.PluginConfigFactory;
+import com.google.gerrit.server.events.EventDispatcher;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.googlesource.gerrit.plugins.events.fsstore.FsListener.FsLifecycleListener;
 import com.googlesource.gerrit.plugins.events.fsstore.FsStore;
 
-public class Module extends AbstractModule {
+public class Module extends LifecycleModule {
+  private static final int DEFAULT_POLLING_INTERVAL = 0;
+
+  @Provides
+  @Singleton
+  @PollingInterval
+  protected Long getCleanupInterval(PluginConfigFactory cfg, @PluginName String pluginName) {
+    String fromConfig =
+        Strings.nullToEmpty(cfg.getFromGerritConfig(pluginName).getString("pollingInterval"));
+    return SECONDS.toMillis(ConfigUtil.getTimeUnit(fromConfig, DEFAULT_POLLING_INTERVAL, SECONDS));
+  }
+
+  @Provides
+  @Singleton
+  @PollingQueue
+  protected String getPollingQueue(PluginConfigFactory cfg, @PluginName String pluginName) {
+    return Strings.nullToEmpty(cfg.getFromGerritConfig(pluginName).getString("queue"));
+  }
+
   @Override
   protected void configure() {
     DynamicSet.setOf(binder(), StreamEventListener.class);
     bind(EventStore.class).to(FsStore.class);
-    DynamicSet.bind(binder(), EventListener.class).to(CoreListener.class);
+    DynamicItem.bind(binder(), EventDispatcher.class).to(FileSystemEventBroker.class);
+    listener().to(FsLifecycleListener.class);
   }
 }
