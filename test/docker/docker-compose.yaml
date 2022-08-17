@@ -4,9 +4,6 @@ services:
   gerrit-01:
     build:
       context: gerrit
-      args:
-        - GERRIT_WAR
-        - EVENTS_PLUGIN_JAR
     networks:
       - gerrit-net
     volumes:

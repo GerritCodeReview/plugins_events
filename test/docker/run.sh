@@ -3,6 +3,7 @@
 readlink -f / &> /dev/null || readlink() { greadlink "$@" ; } # for MacOS
 MYDIR=$(dirname -- "$(readlink -f -- "$0")")
 ARTIFACTS=$MYDIR/gerrit/artifacts
+BAZEL_BUILT_JAR=$MYDIR/../../bazel-bin/events.jar
 
 die() { echo -e "\nERROR: $@" ; kill $$ ; exit 1 ; } # error_message
 
@@ -28,18 +29,14 @@ Usage:
     This tool runs the plugin functional tests in a Docker environment built
     from the gerritcodereview/gerrit base Docker image.
 
-    The events plugin JAR and optionally a Gerrit WAR are expected to be in the
-    $ARTIFACTS dir;
-    however, the --events-plugin-jar and --gerrit-war switches may be used as
-    helpers to specify which files to copy there.
-
     Options:
     --help|-h
-    --gerrit-war|-g             path to Gerrit WAR file. Will likely not
-                                function correctly if it's a different
+    --gerrit-war|-g             optional path to Gerrit WAR file. Will likely
+                                not function correctly if it's a different
                                 MAJOR.MINOR version than the image version
                                 in test/docker/gerrit/Dockerfile.
-    --events-plugin-jar|-e      path to events plugin JAR file
+    --events-plugin-jar|-e      optional path to events plugin JAR file
+                                Defaults to $BAZEL_BUILT_JAR
 
 EOF
 
@@ -64,6 +61,7 @@ run_events_plugin_tests() {
 
 cleanup() {
     docker-compose "${COMPOSE_ARGS[@]}" down -v --rmi local 2>/dev/null
+    rm -rf "$ARTIFACTS"
 }
 
 while (( "$#" )); do
@@ -81,11 +79,12 @@ COMPOSE_YAML="$MYDIR/docker-compose.yaml"
 COMPOSE_ARGS=(--project-name "$PROJECT_NAME" -f "$COMPOSE_YAML")
 check_prerequisite
 mkdir -p -- "$ARTIFACTS"
-[ -n "$EVENTS_PLUGIN_JAR" ] && cp -f -- "$EVENTS_PLUGIN_JAR" "$ARTIFACTS/events.jar"
-if [ ! -e "$ARTIFACTS/events.jar" ] ; then
-    MISSING="Missing $ARTIFACTS/events.jar"
-    [ -n "$EVENTS_PLUGIN_JAR" ] && die "$MISSING, check for copy failure?"
-    usage "$MISSING, did you forget --events-plugin-jar?"
+if [ -n "$EVENTS_PLUGIN_JAR" ] ; then
+    cp -f "$EVENTS_PLUGIN_JAR" "$ARTIFACTS/events.jar"
+elif [ -e "$BAZEL_BUILT_JAR" ] ; then
+    cp -f "$BAZEL_BUILT_JAR" "$ARTIFACTS/events.jar"
+else
+    usage "Cannot find plugin jar, did you forget --events-plugin-jar?"
 fi
 [ -n "$GERRIT_WAR" ] && cp -f -- "$GERRIT_WAR" "$ARTIFACTS/gerrit.war"
 ( trap cleanup EXIT SIGTERM
