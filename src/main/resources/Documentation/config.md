@@ -14,7 +14,12 @@ new events may have been written to the filestore and output them.
 
 Reload the plugin on each primary for the changes to take effect.
 
-The polling frequency can be specified in the configuration.
+Config
+------
+
+`pollingInterval`
+
+: The polling frequency can be specified in the configuration.
 For example:
 
 ```
@@ -38,3 +43,17 @@ If a time unit suffix is not specified, `seconds` is assumed.
 
 If 'pollingInterval' is not present in the configuration, polling
 will not be enabled.
+
+`queue`
+
+: The work queue on which the polling is scheduled can be provided
+using the queue option. Example
+
+```
+  [plugin "@PLUGIN@"]
+    queue = myQueue
+```
+
+causes polling to be scheduled on myQueue executor. If the specified
+queue is not found or the queue is not specified, default queue
+(WorkQueue) is used.

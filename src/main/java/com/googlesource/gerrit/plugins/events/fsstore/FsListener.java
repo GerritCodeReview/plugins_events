@@ -24,11 +24,14 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.googlesource.gerrit.plugins.events.FileSystemEventBroker;
 import com.googlesource.gerrit.plugins.events.PollingInterval;
+import com.googlesource.gerrit.plugins.events.PollingQueue;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
 @Singleton
 public class FsListener implements Runnable {
   public static class FsLifecycleListener implements LifecycleListener {
+    protected final String workQueue;
     protected final WorkQueue queue;
     protected final long pollingInterval;
     protected final FileSystemEventBroker broker;
@@ -36,20 +39,26 @@ public class FsListener implements Runnable {
 
     @Inject
     protected FsLifecycleListener(
-        WorkQueue queue, @PollingInterval long pollingInterval, EventDispatcher dispatcher) {
+        WorkQueue queue,
+        @PollingInterval long pollingInterval,
+        EventDispatcher dispatcher,
+        @PollingQueue String workQueue) {
       this.queue = queue;
       this.pollingInterval = pollingInterval;
       this.broker = (FileSystemEventBroker) dispatcher;
+      this.workQueue = workQueue;
     }
 
     @Override
     public void start() {
       if (pollingInterval > 0) {
+        ScheduledExecutorService executor = queue.getExecutor(workQueue);
+        if (executor == null) {
+          executor = queue.getDefaultQueue();
+        }
         future =
-            queue
-                .getDefaultQueue()
-                .scheduleAtFixedRate(
-                    new FsListener(broker), pollingInterval, pollingInterval, MILLISECONDS);
+            executor.scheduleAtFixedRate(
+                new FsListener(broker), pollingInterval, pollingInterval, MILLISECONDS);
       }
     }
 
