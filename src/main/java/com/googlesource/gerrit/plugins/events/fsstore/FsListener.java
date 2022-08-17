@@ -45,7 +45,7 @@ public class FsListener implements Runnable {
     @Override
     public void start() {
       if (pollingInterval > 0) {
-        ScheduledFuture<?> future =
+        future =
             queue
                 .getDefaultQueue()
                 .scheduleAtFixedRate(
