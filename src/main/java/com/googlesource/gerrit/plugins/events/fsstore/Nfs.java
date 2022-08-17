@@ -22,12 +22,11 @@ import java.util.Locale;
 /** Some NFS utilities */
 public class Nfs {
   /**
-   * Determine if a throwable or a cause in its causal chain is a Stale NFS
-   * File Handle
+   * Determine if a throwable or a cause in its causal chain is a Stale NFS File Handle
    *
    * @param throwable
-   * @return a boolean true if the throwable or a cause in its causal chain is
-   *         a Stale NFS File Handle
+   * @return a boolean true if the throwable or a cause in its causal chain is a Stale NFS File
+   *     Handle
    */
   public static boolean isStaleFileHandleInCausalChain(Throwable throwable) {
     while (throwable != null) {
