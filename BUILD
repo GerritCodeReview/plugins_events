@@ -38,7 +38,7 @@ sh_test(
     size = "medium",
     srcs = ["test/docker/run.sh"],
     args = [
-        "--events-plugin-jar",
+        "--plugin", plugin_name,
         "$(location :events)",
     ],
     data = [plugin_name] + glob(["test/**"]),
