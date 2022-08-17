@@ -41,6 +41,13 @@ public class Module extends LifecycleModule {
     return SECONDS.toMillis(ConfigUtil.getTimeUnit(fromConfig, DEFAULT_POLLING_INTERVAL, SECONDS));
   }
 
+  @Provides
+  @Singleton
+  @PollingQueue
+  protected String getPollingQueue(PluginConfigFactory cfg, @PluginName String pluginName) {
+    return Strings.nullToEmpty(cfg.getFromGerritConfig(pluginName).getString("queue"));
+  }
+
   @Override
   protected void configure() {
     DynamicSet.setOf(binder(), StreamEventListener.class);
