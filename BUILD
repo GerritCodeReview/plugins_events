@@ -43,4 +43,5 @@ sh_test(
     ],
     data = [plugin_name] + glob(["test/**"]),
     local = True,
+    tags = ["docker"],
 )
