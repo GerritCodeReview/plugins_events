@@ -32,6 +32,7 @@ import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.apache.sshd.server.Environment;
@@ -47,7 +48,6 @@ public final class StreamEvents extends BaseCommand {
 
   protected static final int BATCH_SIZE = 32; // yield thread after
   protected static final Gson gson = new Gson();
-  protected static final JsonParser parser = new JsonParser();
 
   @Option(
     name = "--resume-after",
@@ -233,7 +233,7 @@ public final class StreamEvents extends BaseCommand {
 
   protected void flush(String uuid, long number, String json) {
     if (json != null) {
-      JsonElement el = parser.parse(json);
+      JsonElement el = JsonParser.parseString(json);
       if (perms.isVisibleTo(el, currentUser)) {
         if (includeIds) {
           el.getAsJsonObject().addProperty("id", uuid + ":" + number);
