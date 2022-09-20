@@ -16,6 +16,98 @@
       "message": "Tested that we no longer produce duplicate events when new events are generated within event-listeners with this change.",
       "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5f9b3b56_5f656195",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2022-09-20T18:32:13Z",
+      "side": 1,
+      "message": "should be `volatile`?",
+      "range": {
+        "startLine": 54,
+        "startChar": 20,
+        "endLine": 54,
+        "endChar": 29
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4ed9037_7f049aa7",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2022-09-20T18:32:13Z",
+      "side": 1,
+      "message": "Can you fix this wording? It doesn\u0027t make sense as-is.",
+      "range": {
+        "startLine": 134,
+        "startChar": 11,
+        "endLine": 134,
+        "endChar": 83
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "77a20b0c_4efec5f7",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2022-09-20T18:32:13Z",
+      "side": 1,
+      "message": "Should this be s/It it/If it/ ? Maybe replace \"it\" with whatever that\u0027s referring to since it\u0027s not clear to me?",
+      "range": {
+        "startLine": 136,
+        "startChar": 11,
+        "endLine": 136,
+        "endChar": 16
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce32b5f6_8ffafdb1",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2022-09-20T18:32:13Z",
+      "side": 1,
+      "message": "Should this go in a `finally{}`?",
+      "range": {
+        "startLine": 153,
+        "startChar": 6,
+        "endLine": 153,
+        "endChar": 24
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
