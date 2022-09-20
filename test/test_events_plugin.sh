@@ -17,7 +17,8 @@ set_filter_rules() { # [rule]...
 }
 
 cleanup() {
-    wait_event
+    wait_event_for plugin
+    wait_event_for core
     (kill_diff_captures ; sleep 1 ; kill_diff_captures -9 ) &
 }
 
@@ -122,44 +123,60 @@ setup_diff_captures() {
     CAPTURE_PIDS=("${CAPTURE_PIDS[@]}" $!)
 }
 
-capture_events() { # count
-    local count=$1
+capture_events_for() { # 'plugin'|'core' count
+    local for=$1 count=$2 cmd
     [ -n "$count" ] || count=1
 
     # Re-create the fifo to ensure that is is empty
-    rm -f -- "$EVENT_FIFO"
-    mkfifo -- "$EVENT_FIFO"
+    rm -f -- "$EVENT_FIFO.$for"
+    mkfifo -- "$EVENT_FIFO.$for"
 
-    head -n $count < "$EVENT_FIFO" > "$EVENTS" &
-    CAPTURE_PID_HEAD=$!
+    head -n $count < "$EVENT_FIFO.$for" > "$EVENTS.$for" &
+    CAPTURE_PID_HEAD[$for]=$!
     sleep 1
-    ssh -p 29418 -x "$SERVER" "${PLUGIN_CMD[@]}" > "$EVENT_FIFO" &
-    CAPTURE_PID_SSH=$!
+    case "$1" in
+        plugin) cmd=("${PLUGIN_CMD[@]}") ;;
+        core)   cmd=("${CORE_CMD[@]}") ;;
+        *) echo "Unkown type: $for (should be plugin|core)" >&2 ; exit 1 ;;
+    esac
+    ssh -p 29418 -x "$SERVER" "${cmd[@]}" > "$EVENT_FIFO.$for" &
+    CAPTURE_PID_SSH[$for]=$!
     sleep 1
 }
 
-wait_event() {
+capture_events() { # count
+    capture_events_for plugin "$@"
+    capture_events_for core "$@"
+}
+
+wait_event_for() { # 'plugin'|'core'
    # Below kill of CAPTURE_PID_HEAD is a safety net and ideally we wouldn't
    # want this kill to stop CAPTURE_PID_HEAD, rather we want it die on its
    # own when the 'head' in capture_events() captures the desired events. The
    # delay here must ideally be greater than the run time of the entire suite.
-   (sleep 120 ; q kill -9 $CAPTURE_PID_HEAD ; ) &
-   q wait $CAPTURE_PID_HEAD
-   q kill -9 $CAPTURE_PID_SSH
-   q wait $CAPTURE_PID_SSH
+   (sleep 120 ; q kill -9 ${CAPTURE_PID_HEAD[$1]} ; ) &
+   q wait ${CAPTURE_PID_HEAD[$1]}
+   q kill -9 ${CAPTURE_PID_SSH[$1]}
+   q wait ${CAPTURE_PID_SSH[$1]}
 }
 
-
-result_event() { # test type [expected_count]
-    local test=$1 type=$2 expected_count=$3
+result_event_for() { # 'plugin'|'core' test type [expected_count]
+    local for=$1 test=$2 type=$3 expected_count=$4
     [ -n "$expected_count" ] || expected_count=1
-    wait_event
-    local actual_count=$(grep -c "\"type\":\"$type\"" "$EVENTS")
-    result_out "$test" "$expected_count $type event(s)" "$actual_count $type event(s)"
+    wait_event_for "$for"
+    local actual_count=$(grep -c "\"type\":\"$type\"" "$EVENTS.$for")
+    result_out "$test $for" "$expected_count $type event(s)" "$actual_count $type event(s)"
+    [ "$expected_count" = "$actual_count" ] || cat "$EVENTS.$for"
 }
+
+# 'plugin'|'core' test type [expected_count]
+result_type_for() { result_event_for "$1" "$2 $3" "$3" "$4" ; }
 
 # test type [expected_count]
-result_type() { result_event "$1 $2" "$2" "$3" ; }
+result_type() {
+    result_type_for plugin "$@"
+    result_type_for core "$@"
+}
 
 # ------------------------- Usage ---------------------------
 
@@ -237,6 +254,8 @@ EVENTS_PLUGIN=$TEST_DIR/events-plugin
 EVENT_FIFO=$TEST_DIR/event-fifo
 EVENTS=$TEST_DIR/events
 GERRIT_CFG="/gerrit.config/gerrit.config"
+declare -A CAPTURE_PID_HEAD
+declare -A CAPTURE_PID_SSH
 
 trap cleanup EXIT
 
