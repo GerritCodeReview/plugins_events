@@ -51,6 +51,7 @@ public class FileSystemEventBroker extends EventBroker {
   protected final EventStore store;
   protected final Gson gson;
   protected final DynamicSet<StreamEventListener> streamEventListeners;
+  protected boolean isSending;
   protected volatile long lastSent;
   protected static final String KEY_FILTER = "filter";
   protected static final String FILTER_TYPE_DROP = "DROP";
@@ -126,15 +127,30 @@ public class FileSystemEventBroker extends EventBroker {
   }
 
   public synchronized void sendAllPendingEvents() throws PermissionBackendException {
-    try {
-      long current = store.getHead();
-      while (lastSent < current) {
-        long next = lastSent + 1;
-        fireEvent(gson.fromJson(store.get(next), Event.class));
-        lastSent = next;
+    if (!isSending) {
+      isSending = true;
+      try {
+        long lastHead = 0;
+        // Since we currentHead is used to avoid reading the expensive head reading for every
+        // iteration, it means that it might be out of date by the time the loop finishes.
+        // It it is out of date because the current event creates new events, those new
+        // events will be created on the same thread, and will not have been sent due to the
+        // isSending check, and these events should still be sent, without waiting for a
+        // polling interval, thus the recheck of the head after sending existing events.
+        for (long currentHead = store.getHead();
+            currentHead != lastHead;
+            currentHead = store.getHead()) {
+          while (lastSent < currentHead) {
+            long next = lastSent + 1;
+            fireEvent(gson.fromJson(store.get(next), Event.class));
+            lastSent = next;
+          }
+          lastHead = currentHead;
+        }
+      } catch (IOException e) {
+        // Next Event would re-try the events.
       }
-    } catch (IOException e) {
-      // Next Event would re-try the events.
+      isSending = false;
     }
     for (StreamEventListener l : streamEventListeners) {
       l.onStreamEventUpdate();
