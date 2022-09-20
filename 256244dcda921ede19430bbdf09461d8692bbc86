@@ -66,6 +66,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8ea3dbc8_47c8df62",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1012457
+      },
+      "writtenOn": "2022-09-20T18:35:37Z",
+      "side": 1,
+      "message": "s/Since we currentHead/Since currentHead/ ?",
+      "range": {
+        "startLine": 134,
+        "startChar": 11,
+        "endLine": 134,
+        "endChar": 31
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "77a20b0c_4efec5f7",
         "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
         "patchSetId": 1
@@ -82,6 +105,52 @@
         "startChar": 11,
         "endLine": 136,
         "endChar": 16
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da56fa5d_87294dea",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1012457
+      },
+      "writtenOn": "2022-09-20T18:35:37Z",
+      "side": 1,
+      "message": "s/It it/If it/ ?",
+      "range": {
+        "startLine": 136,
+        "startChar": 11,
+        "endLine": 136,
+        "endChar": 16
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ed946086_6645b52e",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1012457
+      },
+      "writtenOn": "2022-09-20T18:35:37Z",
+      "side": 1,
+      "message": "Why do this again?",
+      "range": {
+        "startLine": 142,
+        "startChar": 12,
+        "endLine": 142,
+        "endChar": 41
       },
       "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
