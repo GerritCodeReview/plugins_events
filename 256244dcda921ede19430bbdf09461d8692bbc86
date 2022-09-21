@@ -41,6 +41,30 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "44a5ad2b_7e7acbc3",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2022-09-21T21:04:39Z",
+      "side": 1,
+      "message": "Synchronized use, so not needed. Eliminated with new design anyway.",
+      "parentUuid": "5f9b3b56_5f656195",
+      "range": {
+        "startLine": 54,
+        "startChar": 20,
+        "endLine": 54,
+        "endChar": 29
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f4ed9037_7f049aa7",
@@ -82,6 +106,54 @@
         "startChar": 11,
         "endLine": 134,
         "endChar": 31
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "693e9125_dfddf469",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2022-09-21T21:04:39Z",
+      "side": 1,
+      "message": "Eliminated with new design.",
+      "parentUuid": "8ea3dbc8_47c8df62",
+      "range": {
+        "startLine": 134,
+        "startChar": 11,
+        "endLine": 134,
+        "endChar": 31
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "93235b06_72ffcbad",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2022-09-21T21:04:39Z",
+      "side": 1,
+      "message": "Eliminated with new design.",
+      "parentUuid": "f4ed9037_7f049aa7",
+      "range": {
+        "startLine": 134,
+        "startChar": 11,
+        "endLine": 134,
+        "endChar": 83
       },
       "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
@@ -133,6 +205,54 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2b085b60_958cdd85",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2022-09-21T21:04:39Z",
+      "side": 1,
+      "message": "Eliminated with new design.",
+      "parentUuid": "da56fa5d_87294dea",
+      "range": {
+        "startLine": 136,
+        "startChar": 11,
+        "endLine": 136,
+        "endChar": 16
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2697f0a_ddf6f795",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2022-09-21T21:04:39Z",
+      "side": 1,
+      "message": "Eliminated with new design.",
+      "parentUuid": "77a20b0c_4efec5f7",
+      "range": {
+        "startLine": 136,
+        "startChar": 11,
+        "endLine": 136,
+        "endChar": 16
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ed946086_6645b52e",
@@ -156,6 +276,30 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a25ea10_caa5f9af",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2022-09-21T21:04:39Z",
+      "side": 1,
+      "message": "Since it can change between iterations. Eliminated with new design anyway.",
+      "parentUuid": "ed946086_6645b52e",
+      "range": {
+        "startLine": 142,
+        "startChar": 12,
+        "endLine": 142,
+        "endChar": 41
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ce32b5f6_8ffafdb1",
@@ -169,6 +313,30 @@
       "writtenOn": "2022-09-20T18:32:13Z",
       "side": 1,
       "message": "Should this go in a `finally{}`?",
+      "range": {
+        "startLine": 153,
+        "startChar": 6,
+        "endLine": 153,
+        "endChar": 24
+      },
+      "revId": "256244dcda921ede19430bbdf09461d8692bbc86",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aad0c6d0_d6b8fba3",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2022-09-21T21:04:39Z",
+      "side": 1,
+      "message": "Probably, but eliminated with new design.",
+      "parentUuid": "ce32b5f6_8ffafdb1",
       "range": {
         "startLine": 153,
         "startChar": 6,
