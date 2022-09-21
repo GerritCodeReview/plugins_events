@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f889fdb5_c45418a5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2022-09-21T22:44:50Z",
+      "side": 1,
+      "message": "Did you mean s/prevents/ensures/ ? (and then s/to happen/happens/ later in the sentence).",
+      "range": {
+        "startLine": 12,
+        "startChar": 63,
+        "endLine": 12,
+        "endChar": 71
+      },
+      "revId": "e1f6f9e6c4eae1e44a9c69b1823bf4da093784b8",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6192b63_1850274e",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2022-09-21T22:44:50Z",
+      "side": 1,
+      "message": "Not related to your change, but since other than in the constructor this is only set/read in a synchronized method, it doesn\u0027t need to be `volatile`.",
+      "range": {
+        "startLine": 58,
+        "startChar": 12,
+        "endLine": 58,
+        "endChar": 20
+      },
+      "revId": "e1f6f9e6c4eae1e44a9c69b1823bf4da093784b8",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
