@@ -70,6 +70,30 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "98f1f966_26e08841",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2022-09-22T16:44:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7501019f_60375079",
+      "range": {
+        "startLine": 136,
+        "startChar": 27,
+        "endLine": 136,
+        "endChar": 46
+      },
+      "revId": "e1f6f9e6c4eae1e44a9c69b1823bf4da093784b8",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "594d8f4f_ed047504",
@@ -87,6 +111,24 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae86b87d_0cd91213",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2022-09-22T16:44:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "594d8f4f_ed047504",
+      "revId": "e1f6f9e6c4eae1e44a9c69b1823bf4da093784b8",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "342924a1_c224f24b",
@@ -100,6 +142,30 @@
       "writtenOn": "2022-09-21T22:57:46Z",
       "side": 1,
       "message": "Rename `fireUserScopedEventListener` to `fireEventsForUserScopedEventListener`?",
+      "range": {
+        "startLine": 197,
+        "startChar": 17,
+        "endLine": 197,
+        "endChar": 44
+      },
+      "revId": "e1f6f9e6c4eae1e44a9c69b1823bf4da093784b8",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b069953b_41ba02b8",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2022-09-22T16:44:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "342924a1_c224f24b",
       "range": {
         "startLine": 197,
         "startChar": 17,
