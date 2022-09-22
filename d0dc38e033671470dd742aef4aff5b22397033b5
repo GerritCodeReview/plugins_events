@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a98e6db_41a1004f",
+        "filename": "test/test_events_plugin.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1012457
+      },
+      "writtenOn": "2022-09-22T17:47:07Z",
+      "side": 1,
+      "message": "Why do we need this?",
+      "range": {
+        "startLine": 169,
+        "startChar": 4,
+        "endLine": 169,
+        "endChar": 65
+      },
+      "revId": "d0dc38e033671470dd742aef4aff5b22397033b5",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
