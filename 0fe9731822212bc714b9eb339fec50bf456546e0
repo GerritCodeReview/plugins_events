@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "28c5b05f_426224f8",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2022-09-22T17:52:37Z",
+      "side": 1,
+      "message": "Should this be named to make it clearer this is only `UserScopedEventListener`s and does not include the `unrestrictedListeners`?",
+      "range": {
+        "startLine": 215,
+        "startChar": 65,
+        "endLine": 215,
+        "endChar": 77
+      },
+      "revId": "0fe9731822212bc714b9eb339fec50bf456546e0",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
