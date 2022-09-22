@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "a7f2d717_11328020",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2022-09-22T18:21:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f889fdb5_c45418a5",
+      "range": {
+        "startLine": 12,
+        "startChar": 63,
+        "endLine": 12,
+        "endChar": 71
+      },
+      "revId": "e1f6f9e6c4eae1e44a9c69b1823bf4da093784b8",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "e6192b63_1850274e",
         "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
         "patchSetId": 2
