@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "909648fa_b68a0f86",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2023-02-07T23:07:50Z",
+      "side": 1,
+      "message": "nit: You don\u0027t need to say \"events plugin\" since this repo is only the events plugin 😊\n\n`Fix trim command doc` is fine.",
+      "revId": "794507da696ea4ec9d97c0bd8e1df7904cc20b43",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "13f1b019_12501b79",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2023-02-07T23:07:50Z",
+      "side": 1,
+      "message": "nit: Replace with `The --trim-id option ...`",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 29
+      },
+      "revId": "794507da696ea4ec9d97c0bd8e1df7904cc20b43",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b51ee15f_635ef4b5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2023-02-07T23:07:50Z",
+      "side": 1,
+      "message": "nit: You can probably remove this sentence completely.",
+      "range": {
+        "startLine": 10,
+        "startChar": 42,
+        "endLine": 11,
+        "endChar": 28
+      },
+      "revId": "794507da696ea4ec9d97c0bd8e1df7904cc20b43",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
