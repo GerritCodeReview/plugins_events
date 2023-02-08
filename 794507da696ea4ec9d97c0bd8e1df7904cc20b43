@@ -18,6 +18,24 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ce40650_fc7d6467",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1156394
+      },
+      "writtenOn": "2023-02-08T15:23:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "909648fa_b68a0f86",
+      "revId": "794507da696ea4ec9d97c0bd8e1df7904cc20b43",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "13f1b019_12501b79",
@@ -41,6 +59,30 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc993e27_cce7f7a2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1156394
+      },
+      "writtenOn": "2023-02-08T15:23:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "13f1b019_12501b79",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 29
+      },
+      "revId": "794507da696ea4ec9d97c0bd8e1df7904cc20b43",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b51ee15f_635ef4b5",
@@ -54,6 +96,30 @@
       "writtenOn": "2023-02-07T23:07:50Z",
       "side": 1,
       "message": "nit: You can probably remove this sentence completely.",
+      "range": {
+        "startLine": 10,
+        "startChar": 42,
+        "endLine": 11,
+        "endChar": 28
+      },
+      "revId": "794507da696ea4ec9d97c0bd8e1df7904cc20b43",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf83a61e_f9a63a92",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1156394
+      },
+      "writtenOn": "2023-02-08T15:23:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b51ee15f_635ef4b5",
       "range": {
         "startLine": 10,
         "startChar": 42,
