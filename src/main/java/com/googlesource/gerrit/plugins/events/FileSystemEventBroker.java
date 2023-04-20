@@ -126,13 +126,12 @@ public class FileSystemEventBroker extends EventBroker {
   }
 
   protected void storeEvent(Event event) {
-    if (dropEventNames.contains(event.getClass().getName())) {
-      return;
-    }
-    try {
-      store.add(gson.toJson(event));
-    } catch (IOException ex) {
-      log.error("Cannot add event to event store", ex);
+    if (!isDrop(event)) {
+      try {
+        store.add(gson.toJson(event));
+      } catch (IOException ex) {
+        log.error("Cannot add event to event store", ex);
+      }
     }
   }
 
@@ -224,6 +223,10 @@ public class FileSystemEventBroker extends EventBroker {
 
   protected boolean isStreamListener(UserScopedEventListener l) {
     return l.getClass().getName().startsWith("com.google.gerrit.sshd.commands.StreamEvents");
+  }
+
+  protected boolean isDrop(Event event) {
+    return dropEventNames.contains(event.getClass().getName());
   }
 
   protected void readAndParseCfg(String pluginName, GerritServerConfigProvider configProvider) {

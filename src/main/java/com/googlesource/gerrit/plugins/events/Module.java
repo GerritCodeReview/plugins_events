@@ -52,7 +52,7 @@ public class Module extends LifecycleModule {
   protected void configure() {
     DynamicSet.setOf(binder(), StreamEventListener.class);
     bind(EventStore.class).to(FsStore.class);
-    DynamicItem.bind(binder(), EventDispatcher.class).to(FileSystemEventBroker.class);
+    DynamicItem.bind(binder(), EventDispatcher.class).to(AsyncEventBroker.class);
     listener().to(FsLifecycleListener.class);
   }
 }
