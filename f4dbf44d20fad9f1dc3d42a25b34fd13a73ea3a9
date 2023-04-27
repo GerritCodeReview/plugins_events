@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4086012a_2f586ff1",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/AsyncEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2023-04-27T20:19:26Z",
+      "side": 1,
+      "message": "Make configurable.",
+      "range": {
+        "startLine": 83,
+        "startChar": 36,
+        "endLine": 83,
+        "endChar": 37
+      },
+      "revId": "f4dbf44d20fad9f1dc3d42a25b34fd13a73ea3a9",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a26e5155_f391cbb4",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/AsyncEventBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1003883
+      },
+      "writtenOn": "2023-04-27T20:19:26Z",
+      "side": 1,
+      "message": "Could be configurable, but anything more then 1 increases the chance of lost events greater than not being asynchronous. Likely should use an ArrayBlockingQueue instead.",
+      "range": {
+        "startLine": 86,
+        "startChar": 16,
+        "endLine": 86,
+        "endChar": 47
+      },
+      "revId": "f4dbf44d20fad9f1dc3d42a25b34fd13a73ea3a9",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
