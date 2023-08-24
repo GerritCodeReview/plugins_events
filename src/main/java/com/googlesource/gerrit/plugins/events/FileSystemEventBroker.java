@@ -18,6 +18,7 @@ import com.google.gerrit.common.Nullable;
 import com.google.gerrit.entities.BranchNameKey;
 import com.google.gerrit.entities.Change;
 import com.google.gerrit.entities.Project;
+import com.google.gerrit.entities.RefNames;
 import com.google.gerrit.extensions.annotations.PluginName;
 import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.server.CurrentUser;
@@ -46,6 +47,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,15 +55,25 @@ import org.slf4j.LoggerFactory;
 public class FileSystemEventBroker extends EventBroker {
   private static final Logger log = LoggerFactory.getLogger(FileSystemEventBroker.class);
 
+  protected final static Predicate<Event> IS_NOTEDB_METAREF = event -> {
+      if (event instanceof RefEvent) {
+        return RefNames.isNoteDbMetaRef(((RefEvent) event).getRefName());
+      }
+      return false;
+    };
+
   protected static final String KEY_FILTER = "filter";
   protected static final String FILTER_TYPE_DROP = "DROP";
   protected static final String FILTER_ELEMENT_CLASSNAME = "classname";
+  protected static final String FILTER_ELEMENT_EVENT_REFUPDATED = "RefUpdatedEvent";
+  protected static final String FILTER_TEST_IS_NOTEDB_METAREF = "isNoteDbMetaRef";
 
   protected final EventStore store;
   protected final Gson gson;
   protected final DynamicSet<StreamEventListener> streamEventListeners;
 
   protected long lastSent;
+  protected Predicate<Event> drop = e -> false;
   protected Set<String> dropEventNames = new HashSet<>();
 
   @Inject
@@ -126,14 +138,21 @@ public class FileSystemEventBroker extends EventBroker {
   }
 
   protected void storeEvent(Event event) {
-    if (dropEventNames.contains(event.getClass().getName())) {
-      return;
+    if (!isDropEvent(event)) {
+      try {
+        store.add(gson.toJson(event));
+      } catch (IOException ex) {
+        log.error("Cannot add event to event store", ex);
+      }
     }
-    try {
-      store.add(gson.toJson(event));
-    } catch (IOException ex) {
-      log.error("Cannot add event to event store", ex);
+  }
+
+  protected boolean isDropEvent(Event event) {
+    if (drop.test(event) ||
+        dropEventNames.contains(event.getClass().getName())) {
+      return true;
     }
+    return false;
   }
 
   public synchronized void fireEventForStreamListeners() throws PermissionBackendException {
@@ -230,13 +249,20 @@ public class FileSystemEventBroker extends EventBroker {
     PluginConfig cfg = PluginConfig.createFromGerritConfig(pluginName, configProvider.loadConfig());
     for (String filter : cfg.getStringList(KEY_FILTER)) {
       String pieces[] = filter.split(" ");
-      if (pieces.length == 3
-          && FILTER_TYPE_DROP.equals(pieces[0])
-          && FILTER_ELEMENT_CLASSNAME.equals(pieces[1])) {
-        dropEventNames.add(pieces[2]);
-      } else {
-        log.error("Ignoring invalid filter: " + filter);
+      if (pieces.length == 3) {
+        if (FILTER_TYPE_DROP.equals(pieces[0])) {
+          if (FILTER_ELEMENT_CLASSNAME.equals(pieces[1])) {
+            dropEventNames.add(pieces[2]);
+            continue;
+          }
+          if (FILTER_ELEMENT_EVENT_REFUPDATED.equals(pieces[1])
+              && FILTER_TEST_IS_NOTEDB_METAREF.equals(pieces[2])) {
+            drop = IS_NOTEDB_METAREF;
+            continue;
+          }
+        }
       }
+      log.error("Ignoring invalid filter: " + filter);
     }
   }
 }
