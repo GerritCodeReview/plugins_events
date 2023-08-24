@@ -107,6 +107,13 @@ unmark_change_private() { # change
         --data '{"message":"unmark_private"}' "$REST_API_CHANGES_URL/$1/private"
 }
 
+
+add_meta_ref_updates() { # num_events num_meta_ref_upates > total_num_events
+    local n=$1 m=$2
+    [ "$FILTERED" = "META_REF_UPDATES" ] && { echo "$n" ; return ; }
+    echo $(($n + $m))
+}
+
 # ------------------------- Event Capturing ---------------------------
 
 kill_diff_captures() { # sig
@@ -176,6 +183,68 @@ result_type_for() { result_event_for "$1" "$2 $3" "$3" "$4" ; }
 result_type() {
     result_type_for plugin "$@"
     result_type_for core "$@"
+}
+
+# ------------------------- Tests ---------------------------
+
+main_suite() { # group_name
+    GROUP=$1
+    setup_diff_captures
+
+    type=patchset-created
+    capture_events $(add_meta_ref_updates 2 1)
+    ch1=$(create_change "$REF_BRANCH" "$FILE_A") || exit
+    result_type "$GROUP" "$type" 1
+    # The change ref and its meta ref are expected to be updated
+    # For example: 'refs/changes/01/1001/1' and 'refs/changes/01/1001/meta'
+    result_type "$GROUP $type" "ref-updated" $(add_meta_ref_updates 1 1)
+
+    type=change-abandoned
+    capture_events $(add_meta_ref_updates 1 2)
+    review "$ch1,1" --abandon
+    result_type "$GROUP" "$type"
+
+    type=change-restored
+    capture_events $(add_meta_ref_updates 1 1)
+    review "$ch1,1" --restore
+    result_type "$GROUP" "$type"
+
+    type=comment-added
+    capture_events $(add_meta_ref_updates 1 1)
+    review "$ch1,1" --message "my_comment" $APPROVALS
+    result_type "$GROUP" "$type"
+
+    type=wip-state-changed
+    capture_events $(add_meta_ref_updates 1 3)
+    q mark_change_wip "$ch1"
+    q mark_change_ready "$ch1"
+    result_type "$GROUP" "$type" $(add_meta_ref_updates 1 1)
+
+    type=private-state-changed
+    capture_events $(add_meta_ref_updates 1 3)
+    q mark_change_private "$ch1"
+    q unmark_change_private "$ch1"
+    result_type "$GROUP" "$type" $(add_meta_ref_updates 1 1)
+
+    type=change-merged
+    events_count=$(add_meta_ref_updates 2 2)
+    # If reviewnotes plugin is installed, an extra event of type 'ref-updated'
+    # on 'refs/notes/review' is fired when a change is merged.
+    is_plugin_installed reviewnotes && events_count="$((events_count+1))"
+    capture_events "$events_count"
+    submit "$ch1,1"
+    result_type "$GROUP" "$type"
+    # The destination ref of the change, its meta ref and notes ref(if reviewnotes
+    # plugin is installed) are expected to be updated.
+    # For example: 'refs/heads/master', 'refs/changes/01/1001/meta' and 'refs/notes/review'
+    result_type "$GROUP $type" "ref-updated" "$((events_count-1))"
+
+    # reviewer-added needs to be tested via Rest-API
+
+    out=$(diff -- "$EVENTS_CORE" "$EVENTS_PLUGIN")
+    result "$GROUP core/plugin diff" "$out"
+
+    kill_diff_captures
 }
 
 # ------------------------- Usage ---------------------------
@@ -266,79 +335,29 @@ get_open_changes
 RESULT=0
 
 # ------------------------- Individual Event Tests ---------------------------
-GROUP=visible-events
+FILTERED=""
 set_filter_rules # No rules
-setup_diff_captures
-
-type=patchset-created
-capture_events 3
-ch1=$(create_change "$REF_BRANCH" "$FILE_A") || exit
-result_type "$GROUP" "$type" 1
-# The change ref and its meta ref are expected to be updated
-# For example: 'refs/changes/01/1001/1' and 'refs/changes/01/1001/meta'
-result_type "$GROUP $type" "ref-updated" 2
-
-type=change-abandoned
-capture_events 3
-review "$ch1,1" --abandon
-result_type "$GROUP" "$type"
-
-type=change-restored
-capture_events 2
-review "$ch1,1" --restore
-result_type "$GROUP" "$type"
-
-type=comment-added
-capture_events 2
-review "$ch1,1" --message "my_comment" $APPROVALS
-result_type "$GROUP" "$type"
-
-type=wip-state-changed
-capture_events 4
-q mark_change_wip "$ch1"
-q mark_change_ready "$ch1"
-result_type "$GROUP" "$type" 2
-
-type=private-state-changed
-capture_events 4
-q mark_change_private "$ch1"
-q unmark_change_private "$ch1"
-result_type "$GROUP" "$type" 2
-
-type=change-merged
-events_count=4
-# If reviewnotes plugin is installed, an extra event of type 'ref-updated'
-# on 'refs/notes/review' is fired when a change is merged.
-is_plugin_installed reviewnotes && events_count="$((events_count+1))"
-capture_events "$events_count"
-submit "$ch1,1"
-result_type "$GROUP" "$type"
-# The destination ref of the change, its meta ref and notes ref(if reviewnotes
-# plugin is installed) are expected to be updated.
-# For example: 'refs/heads/master', 'refs/changes/01/1001/meta' and 'refs/notes/review'
-result_type "$GROUP $type" "ref-updated" "$((events_count-1))"
-
-# reviewer-added needs to be tested via Rest-API
-
-out=$(diff -- "$EVENTS_CORE" "$EVENTS_PLUGIN")
-result "$GROUP core/plugin diff" "$out"
-
-kill_diff_captures
+main_suite visible-events
 
 # ------------------------- Filtering -------------------------
 
+FILTERED="META_REF_UPDATES"
+set_filter_rules 'DROP RefUpdatedEvent isNoteDbMetaRef'
+main_suite meta-refUpdated-filtered
+
+
+FILTERED=""
 GROUP=restored-filtered
 set_filter_rules 'DROP classname com.google.gerrit.server.events.ChangeRestoredEvent'
 
 ch1=$(create_change "$REF_BRANCH" "$FILE_A") || exit
 type=change-abandoned
-
-capture_events 3
+capture_events $(add_meta_ref_updates 1 2)
 review "$ch1,1" --abandon
 result_type "$GROUP" "$type"
 
 type=change-restored
-capture_events 4
+capture_events $(add_meta_ref_updates 3 1)
 review "$ch1,1" --restore
 # Instead of timing out waiting for the filtered change-restored event,
 # create follow-on events and capture them to trigger completion.
