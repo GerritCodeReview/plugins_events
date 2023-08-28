@@ -106,17 +106,17 @@ public class FileSystemEventBroker extends EventBroker {
 
   @Override
   public void postEvent(Change change, ChangeEvent event) throws PermissionBackendException {
-    storeEvent(event);
+    Drop drop = storeEvent(event);
     super.postEvent(change, event);
-    fireEventForStreamListeners();
+    fireEventForStreamListeners(drop);
   }
 
   @Override
   public void postEvent(Project.NameKey projectName, ProjectEvent event) {
-    storeEvent(event);
+    Drop drop = storeEvent(event);
     super.postEvent(projectName, event);
     try {
-      fireEventForStreamListeners();
+      fireEventForStreamListeners(drop);
     } catch (PermissionBackendException e) {
       log.error("Permission Exception while dispatching the event. Will be tried again.", e);
     }
@@ -125,26 +125,28 @@ public class FileSystemEventBroker extends EventBroker {
   @Override
   public void postEvent(BranchNameKey branchName, RefEvent event)
       throws PermissionBackendException {
-    storeEvent(event);
+    Drop drop = storeEvent(event);
     super.postEvent(branchName, event);
-    fireEventForStreamListeners();
+    fireEventForStreamListeners(drop);
   }
 
   @Override
   public void postEvent(Event event) throws PermissionBackendException {
-    storeEvent(event);
+    Drop drop = storeEvent(event);
     super.postEvent(event);
-    fireEventForStreamListeners();
+    fireEventForStreamListeners(drop);
   }
 
-  protected void storeEvent(Event event) {
+  protected Drop storeEvent(Event event) {
     if (!isDropEvent(event)) {
       try {
         store.add(gson.toJson(event));
+        return Drop.FALSE;
       } catch (IOException ex) {
         log.error("Cannot add event to event store", ex);
       }
     }
+    return Drop.TRUE;
   }
 
   protected boolean isDropEvent(Event event) {
@@ -155,20 +157,26 @@ public class FileSystemEventBroker extends EventBroker {
     return false;
   }
 
-  public synchronized void fireEventForStreamListeners() throws PermissionBackendException {
-    try {
-      long current = store.getHead();
-      while (lastSent < current) {
-        long next = lastSent + 1;
-        fireEventForUserScopedEventListener(
-            Type.STREAM, gson.fromJson(store.get(next), Event.class));
-        lastSent = next;
+  public void fireEventForStreamListeners() throws PermissionBackendException {
+    fireEventForStreamListeners(Drop.FALSE);
+  }
+
+  protected synchronized void fireEventForStreamListeners(Drop drop) throws PermissionBackendException {
+    if (!Drop.TRUE.equals(drop)) {
+      try {
+        long current = store.getHead();
+        while (lastSent < current) {
+          long next = lastSent + 1;
+          fireEventForUserScopedEventListener(
+              Type.STREAM, gson.fromJson(store.get(next), Event.class));
+          lastSent = next;
+        }
+      } catch (IOException e) {
+        // Next Event would re-try the events.
       }
-    } catch (IOException e) {
-      // Next Event would re-try the events.
-    }
-    for (StreamEventListener l : streamEventListeners) {
-      l.onStreamEventUpdate();
+      for (StreamEventListener l : streamEventListeners) {
+        l.onStreamEventUpdate();
+      }
     }
   }
 
@@ -226,9 +234,14 @@ public class FileSystemEventBroker extends EventBroker {
     }
   }
 
-  public enum Type {
+  protected enum Type {
     STREAM,
     NON_STREAM
+  }
+
+  protected enum Drop {
+    TRUE,
+    FALSE
   }
 
   protected List<PluginSetEntryContext<UserScopedEventListener>> getListeners(Type type) {
