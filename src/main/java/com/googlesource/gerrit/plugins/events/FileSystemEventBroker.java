@@ -67,6 +67,10 @@ public class FileSystemEventBroker extends EventBroker {
   protected static final String FILTER_ELEMENT_CLASSNAME = "classname";
   protected static final String FILTER_ELEMENT_EVENT_REFUPDATED = "RefUpdatedEvent";
   protected static final String FILTER_TEST_IS_NOTEDB_METAREF = "isNoteDbMetaRef";
+  protected static final String FILTER_TEST_IS_REFS_CHANGES = "isRefsChanges";
+  protected static final String FILTER_TEST_IS_REFS_EDIT = "isRefsEdit";
+  protected static final String FILTER_TEST_IS_REFS_DRAFST_COMMENTS = "isRefsDraftsComments";
+  protected static final String FILTER_TEST_IS_REFS_STARRE_CHANGES = "isRefsStarredChanges";
 
   protected final EventStore store;
   protected final Gson gson;
@@ -132,18 +136,21 @@ public class FileSystemEventBroker extends EventBroker {
 
   @Override
   public void postEvent(Event event) throws PermissionBackendException {
-    storeEvent(event);
+    boolean isDrop = isDropEvent(event);
+    if (!isDrop) {
+      storeEvent(event);
+    }
     super.postEvent(event);
-    fireEventForStreamListeners();
+    if (!isDrop) {
+      fireEventForStreamListeners();
+    }
   }
 
   protected void storeEvent(Event event) {
-    if (!isDropEvent(event)) {
-      try {
-        store.add(gson.toJson(event));
-      } catch (IOException ex) {
-        log.error("Cannot add event to event store", ex);
-      }
+    try {
+      store.add(gson.toJson(event));
+    } catch (IOException ex) {
+      log.error("Cannot add event to event store", ex);
     }
   }
 
