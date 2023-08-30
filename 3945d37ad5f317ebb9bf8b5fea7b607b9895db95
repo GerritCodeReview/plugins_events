@@ -34,6 +34,24 @@
       "parentUuid": "25a4f0fb_edebc7f0",
       "revId": "3945d37ad5f317ebb9bf8b5fea7b607b9895db95",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a9b663a0_a82c00c0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2023-08-30T04:14:11Z",
+      "side": 1,
+      "message": "Yes, it would be good if the commit-message-length-validator plugin could help with that problem.",
+      "parentUuid": "40fe5bf7_4c6df2c7",
+      "revId": "3945d37ad5f317ebb9bf8b5fea7b607b9895db95",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
