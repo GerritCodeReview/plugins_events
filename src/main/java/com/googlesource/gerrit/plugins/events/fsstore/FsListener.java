@@ -80,7 +80,7 @@ public class FsListener implements Runnable {
   @Override
   public void run() {
     try {
-      broker.sendAllPendingEvents();
+      broker.fireEventForStreamListeners();
     } catch (PermissionBackendException e) {
       // Ignore
     }

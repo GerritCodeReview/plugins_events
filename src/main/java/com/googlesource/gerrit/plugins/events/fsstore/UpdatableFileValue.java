@@ -16,6 +16,7 @@ package com.googlesource.gerrit.plugins.events.fsstore;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
@@ -290,7 +291,11 @@ public abstract class UpdatableFileValue<T> extends NfsFileValue<T> {
 
     // Maximum delay incurred due to a server crash.
     FileTime expiry = Fs.getFileTimeAgo(10, TimeUnit.SECONDS);
-    return Nfs.isAllEntriesOlderThan(paths.update, expiry);
+    try {
+      return Nfs.isAllEntriesOlderThan(paths.update, expiry);
+    } catch (NoSuchFileException e) {
+      return false;
+    }
   }
 
   protected abstract UniqueUpdate<T> createUniqueUpdate(String uuid, boolean ours, long maxTries)

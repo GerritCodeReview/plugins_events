@@ -27,6 +27,10 @@ parameter:
 
  DROP classname fully.qualified.java.ClassName
 
+or:
+
+ DROP RefUpdatedEvent isNoteDbMetaRef
+
 If the `plugin.@PLUGIN@.filter` key is specified more than once it
 will cause events matching any of the rules to be dropped.
 
