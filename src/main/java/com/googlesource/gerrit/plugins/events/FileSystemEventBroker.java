@@ -55,12 +55,13 @@ import org.slf4j.LoggerFactory;
 public class FileSystemEventBroker extends EventBroker {
   private static final Logger log = LoggerFactory.getLogger(FileSystemEventBroker.class);
 
-  protected final static Predicate<Event> IS_NOTEDB_METAREF = event -> {
-      if (event instanceof RefEvent) {
-        return RefNames.isNoteDbMetaRef(((RefEvent) event).getRefName());
-      }
-      return false;
-    };
+  protected static final Predicate<Event> IS_NOTEDB_METAREF =
+      event -> {
+        if (event instanceof RefEvent) {
+          return RefNames.isNoteDbMetaRef(((RefEvent) event).getRefName());
+        }
+        return false;
+      };
 
   protected static final String KEY_FILTER = "filter";
   protected static final String FILTER_TYPE_DROP = "DROP";
@@ -150,8 +151,7 @@ public class FileSystemEventBroker extends EventBroker {
   }
 
   protected boolean isDropEvent(Event event) {
-    if (drop.test(event) ||
-        dropEventNames.contains(event.getClass().getName())) {
+    if (drop.test(event) || dropEventNames.contains(event.getClass().getName())) {
       return true;
     }
     return false;
@@ -161,7 +161,8 @@ public class FileSystemEventBroker extends EventBroker {
     fireEventForStreamListeners(Drop.FALSE);
   }
 
-  protected synchronized void fireEventForStreamListeners(Drop drop) throws PermissionBackendException {
+  protected synchronized void fireEventForStreamListeners(Drop drop)
+      throws PermissionBackendException {
     if (!Drop.TRUE.equals(drop)) {
       try {
         long current = store.getHead();
