@@ -9,7 +9,7 @@ SYNOPSIS
 --------
 ```
 ssh -p @SSH_PORT@ @SSH_HOST@ @PLUGIN@ trim
-   [--id] <TRIM_ID>
+   [--trim-id] <TRIM_ID>
    [--size] <SIZE>
 ```
 

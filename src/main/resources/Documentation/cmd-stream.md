@@ -54,14 +54,14 @@ EXAMPLES
 --------
 
 ```
-    $ ssh -p 29418 review.example.com @PLUGIN@ stream-events --ids
+    $ ssh -p 29418 review.example.com @PLUGIN@ stream --ids
     {"type":"comment-added", ..., "id":"bdedff7d-34fd-4459-a6a7-3f738f32c01d:1"}
     {"type":"change-merged", ..., "id":"bdedff7d-34fd-4459-a6a7-3f738f32c01d:2"}
 
 ```
 
 ```
-    $ ssh -p 29418 review.example.com @PLUGIN@ stream-events --ids \
+    $ ssh -p 29418 review.example.com @PLUGIN@ stream --ids \
         --resume-after bdedff7d-34fd-4459-a6a7-3f738f32c01d:1
     {"type":"change-merged", ..., "id":"bdedff7d-34fd-4459-a6a7-3f738f32c01d:2"}
     {"type":"change-abandoned", ..., "id":"bdedff7d-34fd-4459-a6a7-3f738f32c01d:3"}
