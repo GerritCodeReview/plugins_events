@@ -17,7 +17,8 @@ set_filter_rules() { # [rule]...
 }
 
 cleanup() {
-    wait_event
+    wait_event_for plugin
+    wait_event_for core
     (kill_diff_captures ; sleep 1 ; kill_diff_captures -9 ) &
 }
 
@@ -106,6 +107,13 @@ unmark_change_private() { # change
         --data '{"message":"unmark_private"}' "$REST_API_CHANGES_URL/$1/private"
 }
 
+
+add_meta_ref_updates() { # num_events num_meta_ref_upates > total_num_events
+    local n=$1 m=$2
+    [ "$FILTERED" = "META_REF_UPDATES" ] && { echo "$n" ; return ; }
+    echo $(($n + $m))
+}
+
 # ------------------------- Event Capturing ---------------------------
 
 kill_diff_captures() { # sig
@@ -122,44 +130,122 @@ setup_diff_captures() {
     CAPTURE_PIDS=("${CAPTURE_PIDS[@]}" $!)
 }
 
-capture_events() { # count
-    local count=$1
+capture_events_for() { # 'plugin'|'core' count
+    local for=$1 count=$2 cmd
     [ -n "$count" ] || count=1
 
     # Re-create the fifo to ensure that is is empty
-    rm -f -- "$EVENT_FIFO"
-    mkfifo -- "$EVENT_FIFO"
+    rm -f -- "$EVENT_FIFO.$for"
+    mkfifo -- "$EVENT_FIFO.$for"
 
-    head -n $count < "$EVENT_FIFO" > "$EVENTS" &
-    CAPTURE_PID_HEAD=$!
+    head -n $count < "$EVENT_FIFO.$for" > "$EVENTS.$for" &
+    CAPTURE_PID_HEAD[$for]=$!
     sleep 1
-    ssh -p 29418 -x "$SERVER" "${PLUGIN_CMD[@]}" > "$EVENT_FIFO" &
-    CAPTURE_PID_SSH=$!
+    case "$1" in
+        plugin) cmd=("${PLUGIN_CMD[@]}") ;;
+        core)   cmd=("${CORE_CMD[@]}") ;;
+        *) echo "Unkown type: $for (should be plugin|core)" >&2 ; exit 1 ;;
+    esac
+    ssh -p 29418 -x "$SERVER" "${cmd[@]}" > "$EVENT_FIFO.$for" &
+    CAPTURE_PID_SSH[$for]=$!
     sleep 1
 }
 
-wait_event() {
+capture_events() { # count
+    capture_events_for plugin "$@"
+    capture_events_for core "$@"
+}
+
+wait_event_for() { # 'plugin'|'core'
    # Below kill of CAPTURE_PID_HEAD is a safety net and ideally we wouldn't
    # want this kill to stop CAPTURE_PID_HEAD, rather we want it die on its
    # own when the 'head' in capture_events() captures the desired events. The
    # delay here must ideally be greater than the run time of the entire suite.
-   (sleep 120 ; q kill -9 $CAPTURE_PID_HEAD ; ) &
-   q wait $CAPTURE_PID_HEAD
-   q kill -9 $CAPTURE_PID_SSH
-   q wait $CAPTURE_PID_SSH
+   (sleep 120 ; q kill -9 ${CAPTURE_PID_HEAD[$1]} ; ) &
+   q wait ${CAPTURE_PID_HEAD[$1]}
+   q kill -9 ${CAPTURE_PID_SSH[$1]}
+   q wait ${CAPTURE_PID_SSH[$1]}
 }
 
-
-result_event() { # test type [expected_count]
-    local test=$1 type=$2 expected_count=$3
+result_event_for() { # 'plugin'|'core' test type [expected_count]
+    local for=$1 test=$2 type=$3 expected_count=$4
     [ -n "$expected_count" ] || expected_count=1
-    wait_event
-    local actual_count=$(grep -c "\"type\":\"$type\"" "$EVENTS")
-    result_out "$test" "$expected_count $type event(s)" "$actual_count $type event(s)"
+    wait_event_for "$for"
+    local actual_count=$(grep -c "\"type\":\"$type\"" "$EVENTS.$for")
+    result_out "$test $for" "$expected_count $type event(s)" "$actual_count $type event(s)"
+    [ "$expected_count" = "$actual_count" ] || cat "$EVENTS.$for"
 }
+
+# 'plugin'|'core' test type [expected_count]
+result_type_for() { result_event_for "$1" "$2 $3" "$3" "$4" ; }
 
 # test type [expected_count]
-result_type() { result_event "$1 $2" "$2" "$3" ; }
+result_type() {
+    result_type_for plugin "$@"
+    result_type_for core "$@"
+}
+
+# ------------------------- Tests ---------------------------
+
+main_suite() { # group_name
+    GROUP=$1
+    setup_diff_captures
+
+    type=patchset-created
+    capture_events $(add_meta_ref_updates 2 1)
+    ch1=$(create_change "$REF_BRANCH" "$FILE_A") || exit
+    result_type "$GROUP" "$type" 1
+    # The change ref and its meta ref are expected to be updated
+    # For example: 'refs/changes/01/1001/1' and 'refs/changes/01/1001/meta'
+    result_type "$GROUP $type" "ref-updated" $(add_meta_ref_updates 1 1)
+
+    type=change-abandoned
+    capture_events $(add_meta_ref_updates 1 1)
+    review "$ch1,1" --abandon
+    result_type "$GROUP" "$type"
+
+    type=change-restored
+    capture_events $(add_meta_ref_updates 1 1)
+    review "$ch1,1" --restore
+    result_type "$GROUP" "$type"
+
+    type=comment-added
+    capture_events $(add_meta_ref_updates 1 1)
+    review "$ch1,1" --message "my_comment" $APPROVALS
+    result_type "$GROUP" "$type"
+
+    type=wip-state-changed
+    capture_events $(add_meta_ref_updates 1 3)
+    q mark_change_wip "$ch1"
+    q mark_change_ready "$ch1"
+    result_type "$GROUP" "$type" $(add_meta_ref_updates 1 1)
+
+    type=private-state-changed
+    capture_events $(add_meta_ref_updates 1 3)
+    q mark_change_private "$ch1"
+    q unmark_change_private "$ch1"
+    result_type "$GROUP" "$type" $(add_meta_ref_updates 1 1)
+
+    type=change-merged
+    events_count=$(add_meta_ref_updates 2 2)
+    # If reviewnotes plugin is installed, an extra event of type 'ref-updated'
+    # on 'refs/notes/review' is fired when a change is merged.
+    is_plugin_installed reviewnotes && events_count="$((events_count+1))"
+    capture_events "$events_count"
+    submit "$ch1,1"
+    result_type "$GROUP" "$type"
+    # The destination ref of the change, its meta ref and notes ref(if reviewnotes
+    # plugin is installed) are expected to be updated.
+    # For example: 'refs/heads/master', 'refs/changes/01/1001/meta' and 'refs/notes/review'
+    result_type "$GROUP $type" "ref-updated" "$((events_count-1))"
+
+    # reviewer-added needs to be tested via Rest-API
+
+    out=$(diff -- "$EVENTS_CORE" "$EVENTS_PLUGIN")
+    result "$GROUP core/plugin diff" "$out"
+
+    kill_diff_captures
+}
 
 # ------------------------- Usage ---------------------------
 
@@ -237,6 +323,8 @@ EVENTS_PLUGIN=$TEST_DIR/events-plugin
 EVENT_FIFO=$TEST_DIR/event-fifo
 EVENTS=$TEST_DIR/events
 GERRIT_CFG="/gerrit.config/gerrit.config"
+declare -A CAPTURE_PID_HEAD
+declare -A CAPTURE_PID_SSH
 
 trap cleanup EXIT
 
@@ -247,83 +335,35 @@ get_open_changes
 RESULT=0
 
 # ------------------------- Individual Event Tests ---------------------------
-GROUP=visible-events
+FILTERED=""
 set_filter_rules # No rules
-setup_diff_captures
-
-type=patchset-created
-capture_events 3
-ch1=$(create_change "$REF_BRANCH" "$FILE_A") || exit
-result_type "$GROUP" "$type" 1
-# The change ref and its meta ref are expected to be updated
-# For example: 'refs/changes/01/1001/1' and 'refs/changes/01/1001/meta'
-result_type "$GROUP $type" "ref-updated" 2
-
-type=change-abandoned
-capture_events 2
-review "$ch1,1" --abandon
-result_type "$GROUP" "$type"
-
-type=change-restored
-capture_events 2
-review "$ch1,1" --restore
-result_type "$GROUP" "$type"
-
-type=comment-added
-capture_events 2
-review "$ch1,1" --message "my_comment" $APPROVALS
-result_type "$GROUP" "$type"
-
-type=wip-state-changed
-capture_events 4
-q mark_change_wip "$ch1"
-q mark_change_ready "$ch1"
-result_type "$GROUP" "$type" 2
-
-type=private-state-changed
-capture_events 4
-q mark_change_private "$ch1"
-q unmark_change_private "$ch1"
-result_type "$GROUP" "$type" 2
-
-type=change-merged
-events_count=4
-# If reviewnotes plugin is installed, an extra event of type 'ref-updated'
-# on 'refs/notes/review' is fired when a change is merged.
-is_plugin_installed reviewnotes && events_count="$((events_count+1))"
-capture_events "$events_count"
-submit "$ch1,1"
-result_type "$GROUP" "$type"
-# The destination ref of the change, its meta ref and notes ref(if reviewnotes
-# plugin is installed) are expected to be updated.
-# For example: 'refs/heads/master', 'refs/changes/01/1001/meta' and 'refs/notes/review'
-result_type "$GROUP $type" "ref-updated" "$((events_count-1))"
-
-# reviewer-added needs to be tested via Rest-API
-
-out=$(diff -- "$EVENTS_CORE" "$EVENTS_PLUGIN")
-result "$GROUP core/plugin diff" "$out"
-
-kill_diff_captures
+main_suite visible-events
 
 # ------------------------- Filtering -------------------------
 
+FILTERED="META_REF_UPDATES"
+set_filter_rules 'DROP RefUpdatedEvent isNoteDbMetaRef'
+main_suite meta-refUpdated-filtered
+
+
+FILTERED=""
 GROUP=restored-filtered
 set_filter_rules 'DROP classname com.google.gerrit.server.events.ChangeRestoredEvent'
 
 ch1=$(create_change "$REF_BRANCH" "$FILE_A") || exit
 type=change-abandoned
-
-capture_events 2
+capture_events $(add_meta_ref_updates 1 1)
 review "$ch1,1" --abandon
 result_type "$GROUP" "$type"
 
 type=change-restored
-capture_events 3
+capture_events $(add_meta_ref_updates 1 2)
 review "$ch1,1" --restore
 # Instead of timing out waiting for the filtered change-restored event,
 # create follow-on events and capture them to trigger completion.
 review "$ch1,1" --message "'\"trigger filtered completion\"'"
 result_type "$GROUP" "$type" 0
+result_type "$GROUP" "comment-added" 1
+result_type "$GROUP" "ref-updated" 2
 
 exit $RESULT

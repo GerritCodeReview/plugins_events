@@ -14,11 +14,14 @@
 
 package com.googlesource.gerrit.plugins.events;
 
+import com.google.gerrit.common.Nullable;
 import com.google.gerrit.entities.BranchNameKey;
 import com.google.gerrit.entities.Change;
 import com.google.gerrit.entities.Project;
+import com.google.gerrit.entities.RefNames;
 import com.google.gerrit.extensions.annotations.PluginName;
 import com.google.gerrit.extensions.registration.DynamicSet;
+import com.google.gerrit.server.CurrentUser;
 import com.google.gerrit.server.config.GerritInstanceId;
 import com.google.gerrit.server.config.GerritServerConfigProvider;
 import com.google.gerrit.server.config.PluginConfig;
@@ -34,27 +37,44 @@ import com.google.gerrit.server.notedb.ChangeNotes;
 import com.google.gerrit.server.permissions.PermissionBackend;
 import com.google.gerrit.server.permissions.PermissionBackendException;
 import com.google.gerrit.server.plugincontext.PluginSetContext;
+import com.google.gerrit.server.plugincontext.PluginSetEntryContext;
 import com.google.gerrit.server.project.ProjectCache;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import javax.annotation.Nullable;
+import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
 public class FileSystemEventBroker extends EventBroker {
   private static final Logger log = LoggerFactory.getLogger(FileSystemEventBroker.class);
-  protected final EventStore store;
-  protected final Gson gson;
-  protected final DynamicSet<StreamEventListener> streamEventListeners;
-  protected volatile long lastSent;
+
+  protected static final Predicate<Event> IS_NOTEDB_METAREF =
+      event -> {
+        if (event instanceof RefEvent) {
+          return RefNames.isNoteDbMetaRef(((RefEvent) event).getRefName());
+        }
+        return false;
+      };
+
   protected static final String KEY_FILTER = "filter";
   protected static final String FILTER_TYPE_DROP = "DROP";
   protected static final String FILTER_ELEMENT_CLASSNAME = "classname";
+  protected static final String FILTER_ELEMENT_EVENT_REFUPDATED = "RefUpdatedEvent";
+  protected static final String FILTER_TEST_IS_NOTEDB_METAREF = "isNoteDbMetaRef";
+
+  protected final EventStore store;
+  protected final Gson gson;
+  protected final DynamicSet<StreamEventListener> streamEventListeners;
+
+  protected long lastSent;
+  protected Predicate<Event> drop = e -> false;
   protected Set<String> dropEventNames = new HashSet<>();
 
   @Inject
@@ -87,71 +107,176 @@ public class FileSystemEventBroker extends EventBroker {
 
   @Override
   public void postEvent(Change change, ChangeEvent event) throws PermissionBackendException {
-    storeEvent(event);
-    sendAllPendingEvents();
+    Drop drop = storeEvent(event);
+    super.postEvent(change, event);
+    fireEventForStreamListeners(drop);
   }
 
   @Override
   public void postEvent(Project.NameKey projectName, ProjectEvent event) {
-    storeEvent(event);
+    Drop drop = storeEvent(event);
+    super.postEvent(projectName, event);
     try {
-      sendAllPendingEvents();
+      fireEventForStreamListeners(drop);
     } catch (PermissionBackendException e) {
       log.error("Permission Exception while dispatching the event. Will be tried again.", e);
     }
   }
 
   @Override
-  protected void fireEvent(BranchNameKey branchName, RefEvent event)
+  public void postEvent(BranchNameKey branchName, RefEvent event)
       throws PermissionBackendException {
-    storeEvent(event);
-    sendAllPendingEvents();
+    Drop drop = storeEvent(event);
+    super.postEvent(branchName, event);
+    fireEventForStreamListeners(drop);
   }
 
   @Override
   public void postEvent(Event event) throws PermissionBackendException {
-    storeEvent(event);
-    sendAllPendingEvents();
+    Drop drop = storeEvent(event);
+    super.postEvent(event);
+    fireEventForStreamListeners(drop);
   }
 
-  protected void storeEvent(Event event) {
-    if (dropEventNames.contains(event.getClass().getName())) {
-      return;
-    }
-    try {
-      store.add(gson.toJson(event));
-    } catch (IOException ex) {
-      log.error("Cannot add event to event store", ex);
-    }
-  }
-
-  public synchronized void sendAllPendingEvents() throws PermissionBackendException {
-    try {
-      long current = store.getHead();
-      while (lastSent < current) {
-        long next = lastSent + 1;
-        fireEvent(gson.fromJson(store.get(next), Event.class));
-        lastSent = next;
+  protected Drop storeEvent(Event event) {
+    if (!isDropEvent(event)) {
+      try {
+        store.add(gson.toJson(event));
+        return Drop.FALSE;
+      } catch (IOException ex) {
+        log.error("Cannot add event to event store", ex);
       }
-    } catch (IOException e) {
-      // Next Event would re-try the events.
     }
-    for (StreamEventListener l : streamEventListeners) {
-      l.onStreamEventUpdate();
+    return Drop.TRUE;
+  }
+
+  protected boolean isDropEvent(Event event) {
+    if (drop.test(event) || dropEventNames.contains(event.getClass().getName())) {
+      return true;
     }
+    return false;
+  }
+
+  public void fireEventForStreamListeners() throws PermissionBackendException {
+    fireEventForStreamListeners(Drop.FALSE);
+  }
+
+  protected synchronized void fireEventForStreamListeners(Drop drop)
+      throws PermissionBackendException {
+    if (!Drop.TRUE.equals(drop)) {
+      try {
+        long current = store.getHead();
+        while (lastSent < current) {
+          long next = lastSent + 1;
+          fireEventForUserScopedEventListener(
+              Type.STREAM, gson.fromJson(store.get(next), Event.class));
+          lastSent = next;
+        }
+      } catch (IOException e) {
+        // Next Event would re-try the events.
+      }
+      for (StreamEventListener l : streamEventListeners) {
+        l.onStreamEventUpdate();
+      }
+    }
+  }
+
+  @Override
+  protected void fireEvent(Change change, ChangeEvent event) throws PermissionBackendException {
+    setInstanceIdWhenEmpty(event);
+    for (PluginSetEntryContext<UserScopedEventListener> c : getListeners(Type.NON_STREAM)) {
+      CurrentUser user = c.call(UserScopedEventListener::getUser);
+      if (isVisibleTo(change, user)) {
+        c.run(l -> l.onEvent(event));
+      }
+    }
+    fireEventForUnrestrictedListeners(event);
+  }
+
+  @Override
+  protected void fireEvent(Project.NameKey project, ProjectEvent event) {
+    setInstanceIdWhenEmpty(event);
+    for (PluginSetEntryContext<UserScopedEventListener> c : getListeners(Type.NON_STREAM)) {
+      CurrentUser user = c.call(UserScopedEventListener::getUser);
+      if (isVisibleTo(project, user)) {
+        c.run(l -> l.onEvent(event));
+      }
+    }
+    fireEventForUnrestrictedListeners(event);
+  }
+
+  @Override
+  protected void fireEvent(BranchNameKey branchName, RefEvent event)
+      throws PermissionBackendException {
+    setInstanceIdWhenEmpty(event);
+    for (PluginSetEntryContext<UserScopedEventListener> c : getListeners(Type.NON_STREAM)) {
+      CurrentUser user = c.call(UserScopedEventListener::getUser);
+      if (isVisibleTo(branchName, user)) {
+        c.run(l -> l.onEvent(event));
+      }
+    }
+    fireEventForUnrestrictedListeners(event);
+  }
+
+  @Override
+  protected void fireEvent(Event event) throws PermissionBackendException {
+    setInstanceIdWhenEmpty(event);
+    fireEventForUserScopedEventListener(Type.NON_STREAM, event);
+    fireEventForUnrestrictedListeners(event);
+  }
+
+  protected void fireEventForUserScopedEventListener(Type type, Event event)
+      throws PermissionBackendException {
+    for (PluginSetEntryContext<UserScopedEventListener> c : getListeners(type)) {
+      CurrentUser user = c.call(UserScopedEventListener::getUser);
+      if (isVisibleTo(event, user)) {
+        c.run(l -> l.onEvent(event));
+      }
+    }
+  }
+
+  protected enum Type {
+    STREAM,
+    NON_STREAM
+  }
+
+  protected enum Drop {
+    TRUE,
+    FALSE
+  }
+
+  protected List<PluginSetEntryContext<UserScopedEventListener>> getListeners(Type type) {
+    List<PluginSetEntryContext<UserScopedEventListener>> filteredListeners = new ArrayList<>();
+    for (PluginSetEntryContext<UserScopedEventListener> c : listeners) {
+      if ((type == Type.STREAM) == isStreamListener(c.get())) {
+        filteredListeners.add(c);
+      }
+    }
+    return filteredListeners;
+  }
+
+  protected boolean isStreamListener(UserScopedEventListener l) {
+    return l.getClass().getName().startsWith("com.google.gerrit.sshd.commands.StreamEvents");
   }
 
   protected void readAndParseCfg(String pluginName, GerritServerConfigProvider configProvider) {
     PluginConfig cfg = PluginConfig.createFromGerritConfig(pluginName, configProvider.loadConfig());
     for (String filter : cfg.getStringList(KEY_FILTER)) {
       String pieces[] = filter.split(" ");
-      if (pieces.length == 3
-          && FILTER_TYPE_DROP.equals(pieces[0])
-          && FILTER_ELEMENT_CLASSNAME.equals(pieces[1])) {
-        dropEventNames.add(pieces[2]);
-      } else {
-        log.error("Ignoring invalid filter: " + filter);
+      if (pieces.length == 3) {
+        if (FILTER_TYPE_DROP.equals(pieces[0])) {
+          if (FILTER_ELEMENT_CLASSNAME.equals(pieces[1])) {
+            dropEventNames.add(pieces[2]);
+            continue;
+          }
+          if (FILTER_ELEMENT_EVENT_REFUPDATED.equals(pieces[1])
+              && FILTER_TEST_IS_NOTEDB_METAREF.equals(pieces[2])) {
+            drop = IS_NOTEDB_METAREF;
+            continue;
+          }
+        }
       }
+      log.error("Ignoring invalid filter: " + filter);
     }
   }
 }
