@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "004539b0_f7e8818d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2024-02-06T22:58:20Z",
+      "side": 1,
+      "message": "I don\u0027t yet know what\u0027s causing it, but the tests now take much longer to pass on 3.6 than they do with 3.5.",
+      "revId": "5096fd0ec6701a1919f141971cb770cb0b25c3f2",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
