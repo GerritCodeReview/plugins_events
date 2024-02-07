@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6901af1_5bebb3cd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2024-02-07T21:49:14Z",
+      "side": 1,
+      "message": "Removed the Zuul -1 because it\u0027s running against core master and not using the standalone build configuration. This change works as expected with 3.7, but we\u0027re not creating a stable-3.7 branch at this time.",
+      "revId": "bc795a56444a35ebc37b15c98515509c525325c1",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
