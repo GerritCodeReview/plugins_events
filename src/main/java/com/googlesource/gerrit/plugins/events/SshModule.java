@@ -14,9 +14,16 @@
 
 package com.googlesource.gerrit.plugins.events;
 
+import com.google.gerrit.extensions.annotations.PluginName;
 import com.google.gerrit.sshd.PluginCommandModule;
+import com.google.inject.Inject;
 
 public class SshModule extends PluginCommandModule {
+  @Inject
+  SshModule(@PluginName String pluginName) {
+    super(pluginName);
+  }
+
   @Override
   protected void configureCommands() {
     command(StreamEvents.class);
