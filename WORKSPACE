@@ -3,7 +3,7 @@ workspace(name = "events")
 load("//:bazlets.bzl", "load_bazlets")
 
 load_bazlets(
-    commit = "e977766e5670dca125c502c37339e9f3da9b329b",
+    commit = "cc68cb5ffdab500e36674cb7558911b180ea61c3",
 )
 
 load(
