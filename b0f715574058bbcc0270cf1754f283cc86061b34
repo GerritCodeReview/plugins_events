@@ -16,6 +16,24 @@
       "message": "Seems like the gerrit docker image needs to be updated\n`gerritcodereview/gerrit:3.8.3-ubuntu22` -\u003e `gerritcodereview/gerrit:3.10.4-ubuntu22`",
       "revId": "b0f715574058bbcc0270cf1754f283cc86061b34",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d9986bb0_b4d3df61",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1152670
+      },
+      "writtenOn": "2025-01-30T12:37:26Z",
+      "side": 1,
+      "message": "*`gerritcodereview/gerrit:3.10.3-ubuntu22`",
+      "parentUuid": "75c22294_e33b17cb",
+      "revId": "b0f715574058bbcc0270cf1754f283cc86061b34",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
