@@ -34,6 +34,24 @@
       "parentUuid": "75c22294_e33b17cb",
       "revId": "b0f715574058bbcc0270cf1754f283cc86061b34",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32da4b0c_2a991981",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1152670
+      },
+      "writtenOn": "2025-01-30T12:41:26Z",
+      "side": 1,
+      "message": "Sorry didn\u0027t realize which gerrit version you were using.\nUse this one `gerritcodereview/gerrit:3.10.0-ubuntu22`",
+      "parentUuid": "d9986bb0_b4d3df61",
+      "revId": "b0f715574058bbcc0270cf1754f283cc86061b34",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
