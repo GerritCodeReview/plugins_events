@@ -259,7 +259,7 @@ public class FileSystemEventBroker extends EventBroker {
     return l.getClass().getName().startsWith("com.google.gerrit.sshd.commands.StreamEvents");
   }
 
-  protected void readAndParseCfg(String pluginName, GerritServerConfigProvider configProvider) {
+  public final void readAndParseCfg(String pluginName, GerritServerConfigProvider configProvider) {
     PluginConfig cfg = PluginConfig.createFromGerritConfig(pluginName, configProvider.loadConfig());
     for (String filter : cfg.getStringList(KEY_FILTER)) {
       String pieces[] = filter.split(" ");

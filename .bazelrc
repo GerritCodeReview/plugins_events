@@ -1,7 +1,7 @@
-build --java_language_version=11
-build --java_runtime_version=remotejdk_11
-build --tool_java_language_version=11
-build --tool_java_runtime_version=remotejdk_11
+build --java_language_version=17
+build --java_runtime_version=remotejdk_17
+build --tool_java_language_version=17
+build --tool_java_runtime_version=remotejdk_17
 
 build --workspace_status_command="python3 ./tools/workspace_status.py"
 build --repository_cache=~/.gerritcodereview/bazel-cache/repository
