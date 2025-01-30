@@ -52,6 +52,29 @@
       "parentUuid": "d9986bb0_b4d3df61",
       "revId": "b0f715574058bbcc0270cf1754f283cc86061b34",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d06afa47_2d2473a0",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/FileSystemEventBroker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1152670
+      },
+      "writtenOn": "2025-01-30T12:46:53Z",
+      "side": 1,
+      "message": "```suggestion\n  private void readAndParseCfg(\n```",
+      "range": {
+        "startLine": 262,
+        "startChar": 2,
+        "endLine": 262,
+        "endChar": 17
+      },
+      "revId": "b0f715574058bbcc0270cf1754f283cc86061b34",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
