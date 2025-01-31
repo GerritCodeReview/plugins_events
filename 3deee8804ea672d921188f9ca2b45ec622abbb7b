@@ -34,6 +34,24 @@
       "parentUuid": "c1f32368_4a3bc52d",
       "revId": "3deee8804ea672d921188f9ca2b45ec622abbb7b",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b077028_9e957941",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3380830
+      },
+      "writtenOn": "2025-01-31T11:22:48Z",
+      "side": 1,
+      "message": "And make changes in .bazelrc for upgrade to java 17",
+      "parentUuid": "8cd8466b_9101e444",
+      "revId": "3deee8804ea672d921188f9ca2b45ec622abbb7b",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
