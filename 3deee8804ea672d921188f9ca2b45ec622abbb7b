@@ -16,6 +16,24 @@
       "message": "This branch is currently behind stable-3.9, so that should get fixed first.",
       "revId": "3deee8804ea672d921188f9ca2b45ec622abbb7b",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8cd8466b_9101e444",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3380830
+      },
+      "writtenOn": "2025-01-31T11:20:24Z",
+      "side": 1,
+      "message": "Rebased this change on https://gerrit-review.googlesource.com/c/plugins/events/+/450062 . The build is failing for parent change as it contains changes specific to 3.9 upgrade. Current branch only has these changes unmerged est: Update to latest stable Alpine release (3.19)\n  Update to 3.9.1 . Can I just do this \"Update to latest stable Alpine release (3.19)\" change in stable-3.10 branch ?",
+      "parentUuid": "c1f32368_4a3bc52d",
+      "revId": "3deee8804ea672d921188f9ca2b45ec622abbb7b",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
