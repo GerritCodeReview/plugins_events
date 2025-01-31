@@ -1,4 +1,4 @@
-FROM gerritcodereview/gerrit:3.8.3-ubuntu22
+FROM gerritcodereview/gerrit:3.9.1-ubuntu22
 
 ENV GERRIT_SITE /var/gerrit
 COPY artifacts/plugins/ $GERRIT_SITE/plugins/
