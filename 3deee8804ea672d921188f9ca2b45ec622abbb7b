@@ -88,6 +88,24 @@
       "parentUuid": "0e1916c2_17282088",
       "revId": "3deee8804ea672d921188f9ca2b45ec622abbb7b",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c385918f_04c7fca3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2025-02-03T16:20:04Z",
+      "side": 1,
+      "message": "I submitted change 450062, so you can rebase this on top now.",
+      "parentUuid": "433f0b56_7def937a",
+      "revId": "3deee8804ea672d921188f9ca2b45ec622abbb7b",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
