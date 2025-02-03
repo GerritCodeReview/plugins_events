@@ -70,6 +70,24 @@
       "parentUuid": "1b077028_9e957941",
       "revId": "3deee8804ea672d921188f9ca2b45ec622abbb7b",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "433f0b56_7def937a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2025-02-03T16:17:22Z",
+      "side": 1,
+      "message": "\u003e Can I just do this \"Update to latest stable Alpine release (3.19)\" change in stable-3.10 branch ?\n\nNo, we should be able to get that 3.9 merge change submitted. Even if we have to manually mark it as verified because we don\u0027t expect 3.10 to work yet.",
+      "parentUuid": "0e1916c2_17282088",
+      "revId": "3deee8804ea672d921188f9ca2b45ec622abbb7b",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
