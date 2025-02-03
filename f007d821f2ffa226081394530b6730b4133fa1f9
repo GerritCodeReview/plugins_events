@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8f9e57b_affa7fe4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2025-02-03T16:18:51Z",
+      "side": 1,
+      "message": "This is needed and it\u0027s ok if the 3.9-specific tests fail when run with a 3.10 WAR because this branch doesn\u0027t have the real 3.10 updates yet.",
+      "revId": "f007d821f2ffa226081394530b6730b4133fa1f9",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
