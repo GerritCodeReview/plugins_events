@@ -26,8 +26,6 @@ cat "$USER_HOME"/.ssh/id_rsa.pub | ssh -p 29418 -i /server-ssh-key/ssh_host_rsa_
   "Gerrit Code Review@$GERRIT_HOST" suexec --as "admin@example.com" -- gerrit create-account \
      --ssh-key - --email "gerrit_admin@localdomain"  --group "Administrators" "gerrit_admin"
 
-setup_test_project
-
 HTTP_PASSWD=$(uuidgen)
 ssh -p 29418 "$GERRIT_HOST" gerrit set-account "$USER" --http-password "$HTTP_PASSWD"
 cat <<EOT >> ~/.netrc
@@ -35,5 +33,9 @@ machine $GERRIT_HOST
 login $USER
 password $HTTP_PASSWD
 EOT
+
+curl --netrc -X GET "http://$GERRIT_HOST:8080/accounts/self/username" # to avoid redirects on first login
+./docker/run_tests/add_gerrit_access_permissions.sh
+setup_test_project
 
 ./test_events_plugin.sh --server "$GERRIT_HOST" --project "$TEST_PROJECT"
