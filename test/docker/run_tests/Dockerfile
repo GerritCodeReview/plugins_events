@@ -1,12 +1,12 @@
 FROM alpine:3.19
 
-ARG UID=1000
-ARG GID=1000
+ARG UID=1001
+ARG GID=1001
 ENV USER gerrit_admin
 ENV USER_HOME /home/$USER
 ENV WORKSPACE $USER_HOME/workspace
 
-RUN apk --update add --no-cache openssh bash git util-linux openssl shadow curl
+RUN apk --update add --no-cache openssh bash git util-linux openssl shadow curl jq
 RUN echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 
 RUN groupadd -f -g $GID users2
