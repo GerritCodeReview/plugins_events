@@ -3,7 +3,7 @@ workspace(name = "events")
 load("//:bazlets.bzl", "load_bazlets")
 
 load_bazlets(
-    commit = "e3a8273dbfced5c41f6f08f49d063c4366be0278",
+    commit = "b1d205acd376e48cf79beb8499fb0f9a824a217b",
 )
 
 load(
@@ -13,3 +13,5 @@ load(
 
 # Load release Plugin API
 gerrit_api()
+
+register_toolchains("//tools:all")
