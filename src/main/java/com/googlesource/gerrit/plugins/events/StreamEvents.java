@@ -32,6 +32,8 @@ import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.apache.sshd.server.Environment;
@@ -77,6 +79,13 @@ public final class StreamEvents extends BaseCommand {
 
   @Option(name = "--ids", usage = "add ids to events (useful for resuming after a disconnect)")
   protected boolean includeIds = false;
+
+  @Option(
+      name = "--subscribe",
+      aliases = {"-s"},
+      metaVar = "SUBSCRIBE",
+      usage = "subscribe to specific events")
+  protected List<String> subscribedEventTypes = new ArrayList<>();
 
   @Inject @StreamCommandExecutor protected ScheduledThreadPoolExecutor threadPool;
 
@@ -232,7 +241,14 @@ public final class StreamEvents extends BaseCommand {
   protected void flush(String uuid, long number, String json) {
     if (json != null) {
       JsonElement el = JsonParser.parseString(json);
-      if (perms.isVisibleTo(el, currentUser)) {
+      String eventType = null;
+      if (el.isJsonObject() && el.getAsJsonObject().has("type")) {
+        eventType = el.getAsJsonObject().get("type").getAsString();
+      }
+      boolean subscribed =
+          subscribedEventTypes.isEmpty()
+              || (eventType != null && subscribedEventTypes.contains(eventType));
+      if (subscribed && perms.isVisibleTo(el, currentUser)) {
         if (includeIds) {
           el.getAsJsonObject().addProperty("id", uuid + ":" + number);
           json = gson.toJson(el);
