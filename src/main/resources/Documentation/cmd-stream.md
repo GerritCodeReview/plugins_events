@@ -11,6 +11,7 @@ SYNOPSIS
 ssh -p @SSH_PORT@ @SSH_HOST@ @PLUGIN@ stream
    [--ids]
    [--resume-after <RESUME_AFTER>]
+   [--subscribe <EVENT_TYPE>]
 ```
 
 DESCRIPTION
@@ -41,6 +42,18 @@ OPTIONS
 
 : event id after which to resume playing events on connection.
 
+**--subscribe**
+
+: Only stream events of the specified type(s). Multiple `--subscribe` (or `-s`) options can be provided to listen for multiple event types.
+  For example, to receive only change-abandoned and change-merged events:
+  ```
+  ssh -p @SSH_PORT@ @SSH_HOST@ @PLUGIN@ stream --subscribe change-abandoned --subscribe change-merged
+  ```
+  or using the alias:
+  ```
+  ssh -p @SSH_PORT@ @SSH_HOST@ @PLUGIN@ stream -s change-abandoned -s change-merged
+  ```
+  If not specified, all event types will be streamed.
 
 ACCESS
 ------
