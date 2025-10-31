@@ -366,4 +366,29 @@ result_type "$GROUP" "$type" 0
 result_type "$GROUP" "comment-added" 1
 result_type "$GROUP" "ref-updated" 2
 
+# ------------------------- Subscribe -------------------------
+FILTERED=""
+set_filter_rules # No rules
+GROUP=subscribe
+type=change-abandoned
+
+PLUGIN_CMD+=(-s "$type")
+
+ch1=$(create_change "$REF_BRANCH" "$FILE_A") || exit
+
+capture_events_for plugin $(add_meta_ref_updates 1 0)
+capture_events_for core $(add_meta_ref_updates 1 1)
+review "$ch1,1" --abandon
+result_type "$GROUP" "$type" 1
+
+type=change-restored
+capture_events $(add_meta_ref_updates 1 2)
+review "$ch1,1" --restore
+# Plugin is expected to emit zero change-restored events (filtered out).
+# The follow-on abandon regenerates change activity,
+# ensuring event capture completion and test progress.
+review "$ch1,1" --abandon
+result_type_for plugin "$GROUP" "$type" 0
+result_type_for core "$GROUP" "$type" 1
+
 exit $RESULT
