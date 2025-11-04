@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4364eff8_84cf6740",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/StreamEvents.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1012457
+      },
+      "writtenOn": "2025-11-04T04:07:35Z",
+      "side": 1,
+      "message": "Get `eventType` only when `subscribedEventTypes` is not empty?",
+      "revId": "a1119a1682d7c3e42982073753d18f839239a16d",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
