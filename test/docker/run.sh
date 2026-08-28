@@ -56,10 +56,21 @@ build_images() {
     docker-compose "${COMPOSE_ARGS[@]}" build --quiet
 }
 
+print_logs() {
+    docker-compose "${COMPOSE_ARGS[@]}" logs --no-color gerrit-01
+    echo "---------------------"
+    docker-compose "${COMPOSE_ARGS[@]}" exec -T gerrit-01 \
+        tail -n 200 "/var/gerrit/logs/error_log" 2> /dev/null ||
+        echo "gerrit-01 is not running"
+}
+
 run_events_plugin_tests() {
     docker-compose "${COMPOSE_ARGS[@]}" up --detach
     docker-compose "${COMPOSE_ARGS[@]}" exec -T --user=gerrit_admin run_tests \
-        '/events/test/docker/run_tests/start.sh'
+        '/events/test/docker/run_tests/start.sh' || {
+            print_logs
+            return 1
+        }
 }
 
 fetch_artifact() { # source_location output_path

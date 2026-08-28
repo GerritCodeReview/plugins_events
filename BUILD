@@ -6,6 +6,7 @@ load(
     "gerrit_plugin",
 )
 load("@rules_java//java:defs.bzl", "java_library", "java_plugin")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
 
 plugin_name = "events"
 
