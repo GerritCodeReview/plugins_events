@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e938e4f4_b564d919",
+        "filename": "test/docker/gerrit/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2026-08-28T23:20:44Z",
+      "side": 1,
+      "message": "unrelated?",
+      "revId": "86229d5685d79c23ff4223582afc6968377fb7d4",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
