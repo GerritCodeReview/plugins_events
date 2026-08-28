@@ -18,7 +18,7 @@ cp -r /events "$USER_HOME"/
 
 cd "$USER_HOME"/events/test
 ./docker/run_tests/wait-for-it.sh "$GERRIT_HOST":"$PORT" \
-    -t 60 -- echo "Gerrit is up"
+    -t 120 -- echo "Gerrit is up"
 
 echo "Creating a default user account ..."
 
