@@ -8,7 +8,8 @@ The @PLUGIN@ plugin provides a mechanism to store events.
 ----------------
 
 The events plugin stores events using a standard filesystem.  Events
-are stored under "<site_dir>/data/plugin/events".  Events do not use
+are stored under "<site_dir>/data/plugin/events" by default, which can
+be changed with the [directory](config.md) option.  Events do not use
 significant disk space, however it might still make sense to regularly
 trim them with a cron job.
 

@@ -23,14 +23,17 @@ import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.lifecycle.LifecycleModule;
 import com.google.gerrit.server.config.ConfigUtil;
 import com.google.gerrit.server.config.PluginConfigFactory;
+import com.google.gerrit.server.config.SitePaths;
 import com.google.gerrit.server.events.EventDispatcher;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.googlesource.gerrit.plugins.events.fsstore.FsListener.FsLifecycleListener;
 import com.googlesource.gerrit.plugins.events.fsstore.FsStore;
+import java.nio.file.Path;
 
 public class Module extends LifecycleModule {
   private static final int DEFAULT_POLLING_INTERVAL = 0;
+  private static final String DEFAULT_DIRECTORY = "events";
 
   @Provides
   @Singleton
@@ -46,6 +49,20 @@ public class Module extends LifecycleModule {
   @PollingQueue
   protected String getPollingQueue(PluginConfigFactory cfg, @PluginName String pluginName) {
     return Strings.nullToEmpty(cfg.getFromGerritConfig(pluginName).getString("queue"));
+  }
+
+  @Provides
+  @Singleton
+  @StoreDirectory
+  protected Path getStoreDirectory(
+      PluginConfigFactory cfg, @PluginName String pluginName, SitePaths site) {
+    String fromConfig =
+        Strings.nullToEmpty(cfg.getFromGerritConfig(pluginName).getString("directory"));
+    Path directory =
+        fromConfig.isEmpty()
+            ? site.data_dir.resolve("plugin").resolve(DEFAULT_DIRECTORY)
+            : site.resolve(fromConfig);
+    return directory.resolve(FsStore.VERSION_DIRECTORY);
   }
 
   @Override
