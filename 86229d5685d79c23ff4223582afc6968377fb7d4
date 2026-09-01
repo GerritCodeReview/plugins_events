@@ -52,6 +52,24 @@
       "parentUuid": "f946c011_0dfc22a9",
       "revId": "86229d5685d79c23ff4223582afc6968377fb7d4",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82089443_d87f6e63",
+        "filename": "test/docker/gerrit/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2026-09-01T23:38:31Z",
+      "side": 1,
+      "message": "You need to do something like this: 412976: test: Fix docker-tests for in-tree/master | https://gerrit-review.googlesource.com/c/plugins/task/+/412976",
+      "parentUuid": "1484294d_a957fa18",
+      "revId": "86229d5685d79c23ff4223582afc6968377fb7d4",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
