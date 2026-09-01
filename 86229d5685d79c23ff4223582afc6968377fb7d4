@@ -70,6 +70,24 @@
       "parentUuid": "1484294d_a957fa18",
       "revId": "86229d5685d79c23ff4223582afc6968377fb7d4",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "220dd1de_d92f8660",
+        "filename": "test/docker/gerrit/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002666
+      },
+      "writtenOn": "2026-09-01T23:39:22Z",
+      "side": 1,
+      "message": "Oh wait, that\u0027s not enough if the base image doesn\u0027t have Java 25. You\u0027ll need to check that. Worst case you\u0027ll need to switch to a different base image.",
+      "parentUuid": "82089443_d87f6e63",
+      "revId": "86229d5685d79c23ff4223582afc6968377fb7d4",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
