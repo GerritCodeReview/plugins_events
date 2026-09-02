@@ -12,4 +12,8 @@ load(
 )
 
 # Load release Plugin API
-gerrit_api()
+gerrit_api(
+    version = "3.13.8",
+    plugin_api_sha1 = "4ddec4be65f9f3245073b270348710ed32b32f02",
+    acceptance_framework_sha1 = "aabfb5b26bfe1a0c803fccbf199faba942f51b3f",
+)
