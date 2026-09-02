@@ -88,6 +88,24 @@
       "parentUuid": "82089443_d87f6e63",
       "revId": "86229d5685d79c23ff4223582afc6968377fb7d4",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fea6d0ab_77dcfa9b",
+        "filename": "test/docker/gerrit/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 4665459
+      },
+      "writtenOn": "2026-09-02T00:03:44Z",
+      "side": 1,
+      "message": "I dont think even 3.14 images have java25. I tried switching to it in PS3 (https://gerrit-review.googlesource.com/c/plugins/events/+/623221/3/test/docker/gerrit/Dockerfile) and the tests still failed.",
+      "parentUuid": "220dd1de_d92f8660",
+      "revId": "86229d5685d79c23ff4223582afc6968377fb7d4",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
