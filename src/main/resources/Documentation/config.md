@@ -57,3 +57,22 @@ using the queue option. Example
 causes polling to be scheduled on myQueue executor. If the specified
 queue is not found or the queue is not specified, default queue
 (WorkQueue) is used.
+
+`directory`
+
+: The directory in which events are stored can be specified using
+the directory option. Below example causes events to be stored under
+`/shared/gerrit/events`.
+
+```
+  [plugin "@PLUGIN@"]
+    directory = /shared/gerrit/events
+```
+
+Relative paths are resolved against the site directory, so below is
+equivalent to the default, `<site_dir>/data/plugin/events`.
+
+```
+  [plugin "@PLUGIN@"]
+    directory = data/plugin/events
+```

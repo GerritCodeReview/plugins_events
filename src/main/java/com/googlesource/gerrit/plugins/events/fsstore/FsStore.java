@@ -14,9 +14,9 @@
 
 package com.googlesource.gerrit.plugins.events.fsstore;
 
-import com.google.gerrit.server.config.SitePaths;
 import com.google.inject.Inject;
 import com.googlesource.gerrit.plugins.events.EventStore;
+import com.googlesource.gerrit.plugins.events.StoreDirectory;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -77,6 +77,7 @@ public class FsStore implements EventStore {
     }
   }
 
+  public static final String VERSION_DIRECTORY = "fstore-v2";
   public static final long MAX_GET_SPINS = 1000;
   public static final long MAX_SUBMIT_SPINS = 100000;
   public static final long MAX_INCREMENT_SPINS = 1000;
@@ -89,12 +90,8 @@ public class FsStore implements EventStore {
   protected final SequenceCache cachedTail;
 
   @Inject
-  public FsStore(SitePaths site) throws IOException {
-    this(site.data_dir.resolve("plugin").resolve("events").resolve("fstore-v2"));
-  }
-
-  public FsStore(Path base) throws IOException {
-    paths = new BasePaths(base);
+  public FsStore(@StoreDirectory Path directory) throws IOException {
+    paths = new BasePaths(directory.resolve(VERSION_DIRECTORY));
     stores = new Stores(paths);
     stores.initFs();
     uuid = UUID.fromString(stores.uuid.get());
