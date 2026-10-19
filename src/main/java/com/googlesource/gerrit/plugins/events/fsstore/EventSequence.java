@@ -19,6 +19,7 @@ import java.io.InterruptedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Use a file to store a sequence in a multi node/process (Multi-Master) safe way, and allow an
@@ -77,13 +78,16 @@ public class EventSequence extends UpdatableFileValue<Long> {
 
   protected final Semaphore writePermits;
 
+  protected final long writeWaitTimeoutMs;
+
   public EventSequence(Path base) {
-    this(base, 0);
+    this(base, 0, 0);
   }
 
-  public EventSequence(Path base, int maxConcurrentWrites) {
+  public EventSequence(Path base, int maxConcurrentWrites, long writeWaitTimeoutMs) {
     super(base);
     writePermits = maxConcurrentWrites > 0 ? new Semaphore(maxConcurrentWrites, true) : null;
+    this.writeWaitTimeoutMs = writeWaitTimeoutMs;
   }
 
   public void initFs() throws IOException {
@@ -124,7 +128,15 @@ public class EventSequence extends UpdatableFileValue<Long> {
       return;
     }
     try {
-      writePermits.acquire();
+      if (writeWaitTimeoutMs <= 0) {
+        writePermits.acquire();
+      } else if (!writePermits.tryAcquire(writeWaitTimeoutMs, TimeUnit.MILLISECONDS)) {
+        throw new IOException(
+            "Timed out after "
+                + writeWaitTimeoutMs
+                + " ms waiting for a turn to submit event to "
+                + paths.base);
+      }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new InterruptedIOException(

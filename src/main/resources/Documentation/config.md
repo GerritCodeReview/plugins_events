@@ -89,3 +89,16 @@ other down. The default is 2. Set it to 0 to remove the limit.
   [plugin "@PLUGIN@"]
     maxConcurrentWrites = 2
 ```
+
+`writeWaitTimeout`
+
+: How long a thread waits for its turn to write an event. If it waits
+longer, the event is not stored and the error is logged as `Cannot add
+event to event store`. Uses the same time units as `pollingInterval`.
+By default, or if set to 0, threads wait without a timeout. For
+example, this drops events that wait more than a minute:
+
+```
+  [plugin "@PLUGIN@"]
+    writeWaitTimeout = 60s
+```
