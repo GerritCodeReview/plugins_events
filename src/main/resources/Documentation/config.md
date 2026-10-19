@@ -76,3 +76,16 @@ equivalent to the default, `<site_dir>/data/plugin/events`.
   [plugin "@PLUGIN@"]
     directory = data/plugin/events
 ```
+
+`maxConcurrentWrites`
+
+: The maximum number of threads in this Gerrit process that may write
+events to the store at the same time. Other threads wait for their
+turn in arrival order. On a shared filesystem such as NFS, a couple
+of writers can overlap their work, but many writers at once slow each
+other down. The default is 2. Set it to 0 to remove the limit.
+
+```
+  [plugin "@PLUGIN@"]
+    maxConcurrentWrites = 2
+```
