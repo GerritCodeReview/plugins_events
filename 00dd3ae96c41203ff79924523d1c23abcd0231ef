@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96cf8fa9_590989b7",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/fsstore/EventSequence.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 3604707
+      },
+      "writtenOn": "2026-10-19T22:35:24Z",
+      "side": 1,
+      "message": "Move up one line?",
+      "revId": "00dd3ae96c41203ff79924523d1c23abcd0231ef",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
