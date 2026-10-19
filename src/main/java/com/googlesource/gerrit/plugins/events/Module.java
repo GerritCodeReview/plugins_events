@@ -63,6 +63,24 @@ public class Module extends LifecycleModule {
         : site.resolve(fromConfig);
   }
 
+  @Provides
+  @Singleton
+  @MaxConcurrentWrites
+  protected Integer getMaxConcurrentWrites(PluginConfigFactory cfg, @PluginName String pluginName) {
+    return cfg.getFromGerritConfig(pluginName)
+        .getInt("maxConcurrentWrites", FsStore.DEFAULT_MAX_CONCURRENT_WRITES);
+  }
+
+  @Provides
+  @Singleton
+  @WriteWaitTimeout
+  protected Long getWriteWaitTimeout(PluginConfigFactory cfg, @PluginName String pluginName) {
+    String fromConfig =
+        Strings.nullToEmpty(cfg.getFromGerritConfig(pluginName).getString("writeWaitTimeout"));
+    return SECONDS.toMillis(
+        ConfigUtil.getTimeUnit(fromConfig, FsStore.DEFAULT_WRITE_WAIT_TIMEOUT_SECONDS, SECONDS));
+  }
+
   @Override
   protected void configure() {
     DynamicSet.setOf(binder(), StreamEventListener.class);
