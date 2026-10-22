@@ -22,7 +22,10 @@ import com.google.gerrit.extensions.registration.DynamicItem;
 import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.lifecycle.LifecycleModule;
 import com.google.gerrit.server.config.ConfigUtil;
+import com.google.gerrit.server.config.GerritServerConfig;
 import com.google.gerrit.server.config.PluginConfigFactory;
+import com.google.gerrit.server.config.ScheduleConfig;
+import com.google.gerrit.server.config.ScheduleConfig.Schedule;
 import com.google.gerrit.server.config.SitePaths;
 import com.google.gerrit.server.events.EventDispatcher;
 import com.google.inject.Provides;
@@ -30,6 +33,8 @@ import com.google.inject.Singleton;
 import com.googlesource.gerrit.plugins.events.fsstore.FsListener.FsLifecycleListener;
 import com.googlesource.gerrit.plugins.events.fsstore.FsStore;
 import java.nio.file.Path;
+import java.util.Optional;
+import org.eclipse.jgit.lib.Config;
 
 public class Module extends LifecycleModule {
   private static final int DEFAULT_POLLING_INTERVAL = 0;
@@ -49,6 +54,25 @@ public class Module extends LifecycleModule {
   @PollingQueue
   protected String getPollingQueue(PluginConfigFactory cfg, @PluginName String pluginName) {
     return Strings.nullToEmpty(cfg.getFromGerritConfig(pluginName).getString("queue"));
+  }
+
+  @Provides
+  @Singleton
+  @TrimSchedule
+  protected Optional<Schedule> getTrimSchedule(
+      @GerritServerConfig Config cfg, @PluginName String pluginName) {
+    return ScheduleConfig.builder(cfg, "plugin")
+        .setSubsection(pluginName)
+        .setKeyInterval("trimInterval")
+        .setKeyStartTime("trimStartTime")
+        .buildSchedule();
+  }
+
+  @Provides
+  @Singleton
+  @TrimToSize
+  protected Long getTrimToSize(PluginConfigFactory cfg, @PluginName String pluginName) {
+    return cfg.getFromGerritConfig(pluginName).getLong("trimToSize", Trimmer.DEFAULT_TRIM_TO_SIZE);
   }
 
   @Provides
@@ -77,5 +101,6 @@ public class Module extends LifecycleModule {
     bind(EventStore.class).to(FsStore.class);
     DynamicItem.bind(binder(), EventDispatcher.class).to(FileSystemEventBroker.class);
     listener().to(FsLifecycleListener.class);
+    listener().to(Trimmer.TrimLifecycleListener.class);
   }
 }

@@ -44,10 +44,38 @@ If a time unit suffix is not specified, `seconds` is assumed.
 If 'pollingInterval' is not present in the configuration, polling
 will not be enabled.
 
+`trimInterval`, `trimStartTime`
+
+: When to trim old events from the event store, configured as a
+[schedule](../../../Documentation/config-gerrit.html#schedule-configuration).
+Trimming keeps the `trimToSize` most recent events, exactly like the
+[trim](cmd-trim.md) command with its `--size` option. For example:
+
+```
+  [plugin "@PLUGIN@"]
+    trimInterval = 1 day
+    trimStartTime = 02:00
+    trimToSize = 100000
+```
+
+causes all but the 100000 most recent events to be trimmed every day
+at 2 AM.
+
+`trimInterval`, `trimStartTime` and `trimToSize` are all required to
+enable periodic trimming; if any of them is missing, every event is
+kept. In a multi-primary environment, each primary trims the shared
+store on its own schedule, which is safe since trimming is coordinated
+through the store itself.
+
+`trimToSize`
+
+: How many of the most recent events periodic trimming keeps in the
+event store, see `trimInterval`.
+
 `queue`
 
-: The work queue on which the polling is scheduled can be provided
-using the queue option. Example
+: The work queue on which the polling and the trimming are scheduled
+can be provided using the queue option. Example
 
 ```
   [plugin "@PLUGIN@"]
