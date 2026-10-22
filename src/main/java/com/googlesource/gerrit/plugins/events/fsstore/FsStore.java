@@ -136,7 +136,7 @@ public class FsStore implements EventStore {
   }
 
   @Override
-  public void trim(long trim) throws IOException {
+  public synchronized void trim(long trim) throws IOException {
     if (cachedHead.isLessThanOrEqualTo(trim, MAX_GET_SPINS)) {
       long head = getHead();
       if (trim >= head) {
@@ -144,8 +144,10 @@ public class FsStore implements EventStore {
       }
     }
     if (trim > 0) {
-      for (long i = getTail(); i <= trim; i++) {
-        long delete = stores.tail.spinIncrement(MAX_INCREMENT_SPINS) - 1;
+      long tail = getTail();
+      while (tail <= trim) {
+        tail = stores.tail.spinIncrement(MAX_INCREMENT_SPINS);
+        long delete = tail - 1;
         Path event = paths.events.path(delete);
         Fs.tryRecursiveDelete(event);
         if (paths.events.isLastDirEntry(delete)) {
