@@ -44,10 +44,36 @@ If a time unit suffix is not specified, `seconds` is assumed.
 If 'pollingInterval' is not present in the configuration, polling
 will not be enabled.
 
+`trimInterval`
+
+: How often old events are trimmed from the event store. Trimming
+keeps the `trimSize` most recent events, exactly like the
+[trim](cmd-trim.md) command with its `--size` option. For example:
+
+```
+  [plugin "@PLUGIN@"]
+    trimInterval = 1h
+    trimSize = 100000
+```
+
+causes all but the 100000 most recent events to be trimmed every hour.
+
+The interval uses the same time unit suffixes as `pollingInterval`.
+
+Both options are required to enable periodic trimming; if either one
+is missing, or is set to 0, no trimming is done. In a multi-primary
+environment, each primary trims the shared store on its own schedule,
+which is safe since trimming is coordinated through the store itself.
+
+`trimSize`
+
+: How many of the most recent events periodic trimming keeps in the
+event store, see `trimInterval`.
+
 `queue`
 
-: The work queue on which the polling is scheduled can be provided
-using the queue option. Example
+: The work queue on which the polling and the trimming are scheduled
+can be provided using the queue option. Example
 
 ```
   [plugin "@PLUGIN@"]

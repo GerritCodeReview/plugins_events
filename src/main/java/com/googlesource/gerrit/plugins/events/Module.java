@@ -33,6 +33,8 @@ import java.nio.file.Path;
 
 public class Module extends LifecycleModule {
   private static final int DEFAULT_POLLING_INTERVAL = 0;
+  private static final int DEFAULT_TRIM_INTERVAL = 0;
+  private static final int DEFAULT_TRIM_SIZE = 0;
   private static final String DEFAULT_DIRECTORY = "events";
 
   @Provides
@@ -49,6 +51,22 @@ public class Module extends LifecycleModule {
   @PollingQueue
   protected String getPollingQueue(PluginConfigFactory cfg, @PluginName String pluginName) {
     return Strings.nullToEmpty(cfg.getFromGerritConfig(pluginName).getString("queue"));
+  }
+
+  @Provides
+  @Singleton
+  @TrimInterval
+  protected Long getTrimInterval(PluginConfigFactory cfg, @PluginName String pluginName) {
+    String fromConfig =
+        Strings.nullToEmpty(cfg.getFromGerritConfig(pluginName).getString("trimInterval"));
+    return SECONDS.toMillis(ConfigUtil.getTimeUnit(fromConfig, DEFAULT_TRIM_INTERVAL, SECONDS));
+  }
+
+  @Provides
+  @Singleton
+  @TrimSize
+  protected Long getTrimSize(PluginConfigFactory cfg, @PluginName String pluginName) {
+    return cfg.getFromGerritConfig(pluginName).getLong("trimSize", DEFAULT_TRIM_SIZE);
   }
 
   @Provides
@@ -77,5 +95,6 @@ public class Module extends LifecycleModule {
     bind(EventStore.class).to(FsStore.class);
     DynamicItem.bind(binder(), EventDispatcher.class).to(FileSystemEventBroker.class);
     listener().to(FsLifecycleListener.class);
+    listener().to(Trimmer.TrimLifecycleListener.class);
   }
 }

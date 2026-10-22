@@ -14,6 +14,8 @@
 
 package com.googlesource.gerrit.plugins.events;
 
+import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -72,10 +74,49 @@ public class ModuleTest {
     assertEquals(sitePath.toRealPath().resolve("shared"), storeDirectory());
   }
 
+  @Test
+  public void periodicTrimmingIsDisabledByDefault() {
+    assertEquals(0, trimInterval());
+    assertEquals(0, trimSize());
+  }
+
+  @Test
+  public void configuredTrimIntervalIsConvertedToMillis() {
+    cfg.setString("plugin", PLUGIN_NAME, "trimInterval", "1 hour");
+
+    assertEquals(HOURS.toMillis(1), trimInterval());
+  }
+
+  @Test
+  public void trimIntervalWithoutUnitIsInSeconds() {
+    cfg.setString("plugin", PLUGIN_NAME, "trimInterval", "30");
+
+    assertEquals(SECONDS.toMillis(30), trimInterval());
+  }
+
+  @Test
+  public void configuredTrimSizeIsUsed() {
+    cfg.setString("plugin", PLUGIN_NAME, "trimSize", "100000");
+
+    assertEquals(100000, trimSize());
+  }
+
   private Path storeDirectory() {
+    return module.getStoreDirectory(cfgFactory(), PLUGIN_NAME, site);
+  }
+
+  private long trimInterval() {
+    return module.getTrimInterval(cfgFactory(), PLUGIN_NAME);
+  }
+
+  private long trimSize() {
+    return module.getTrimSize(cfgFactory(), PLUGIN_NAME);
+  }
+
+  private PluginConfigFactory cfgFactory() {
     PluginConfigFactory cfgFactory = mock(PluginConfigFactory.class);
     when(cfgFactory.getFromGerritConfig(PLUGIN_NAME))
         .thenReturn(PluginConfig.createFromGerritConfig(PLUGIN_NAME, cfg));
-    return module.getStoreDirectory(cfgFactory, PLUGIN_NAME, site);
+    return cfgFactory;
   }
 }
