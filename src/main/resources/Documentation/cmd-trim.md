@@ -37,5 +37,7 @@ Any user who has administrate server capabilities and has configured an SSH key.
 
 SCRIPTING
 ---------
-This command is intended to be used in scripts, perhaps to be called by a
-cron job.
+This command is intended to be used in scripts, for one off trims and for
+trims scheduled outside of Gerrit. To let the plugin trim the event store
+on a schedule of its own, see the `trimInterval`, `trimStartTime` and
+`trimToSize` options in [config](config.md).
