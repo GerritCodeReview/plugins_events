@@ -56,6 +56,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7687d083_893a9316",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 4665459
+      },
+      "writtenOn": "2026-10-22T22:25:51Z",
+      "side": 1,
+      "message": "Maybe we need to update it like 647704: Prevent concurrent trims from over-trimming | https://gerrit-review.googlesource.com/c/plugins/events/+/647704 ?",
+      "parentUuid": "0843f921_71cbd079",
+      "revId": "1c6f12219592cf04f4b6968737002f69e0283322",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a8622e65_54bb7885",
         "filename": "src/main/java/com/googlesource/gerrit/plugins/events/Module.java",
         "patchSetId": 1
