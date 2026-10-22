@@ -38,4 +38,6 @@ Any user who has administrate server capabilities and has configured an SSH key.
 SCRIPTING
 ---------
 This command is intended to be used in scripts, perhaps to be called by a
-cron job.
+cron job. Instead of a cron job, the plugin can trim the event store on
+its own, see the `trimInterval` and `trimSize` options in
+[config](config.md).

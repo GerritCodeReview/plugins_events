@@ -14,17 +14,22 @@
 
 package com.googlesource.gerrit.plugins.events;
 
+import static java.util.concurrent.TimeUnit.HOURS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.gerrit.server.config.PluginConfig;
 import com.google.gerrit.server.config.PluginConfigFactory;
+import com.google.gerrit.server.config.ScheduleConfig.Schedule;
 import com.google.gerrit.server.config.SitePaths;
 import com.googlesource.gerrit.plugins.events.fsstore.Fs;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import org.eclipse.jgit.lib.Config;
 import org.junit.After;
 import org.junit.Before;
@@ -72,10 +77,52 @@ public class ModuleTest {
     assertEquals(sitePath.toRealPath().resolve("shared"), storeDirectory());
   }
 
+  @Test
+  public void periodicTrimmingIsDisabledByDefault() {
+    assertFalse(trimSchedule().isPresent());
+    assertEquals(0, trimSize());
+  }
+
+  @Test
+  public void configuredTrimScheduleIsUsed() {
+    cfg.setString("plugin", PLUGIN_NAME, "trimInterval", "1 hour");
+    cfg.setString("plugin", PLUGIN_NAME, "trimStartTime", "02:00");
+
+    Schedule schedule = trimSchedule().get();
+    assertEquals(HOURS.toMillis(1), schedule.interval());
+    assertTrue(schedule.initialDelay() > 0 && schedule.initialDelay() <= schedule.interval());
+  }
+
+  @Test
+  public void trimIntervalWithoutStartTimeIsIgnored() {
+    cfg.setString("plugin", PLUGIN_NAME, "trimInterval", "1 hour");
+
+    assertFalse(trimSchedule().isPresent());
+  }
+
+  @Test
+  public void configuredTrimSizeIsUsed() {
+    cfg.setString("plugin", PLUGIN_NAME, "trimSize", "100000");
+
+    assertEquals(100000, trimSize());
+  }
+
   private Path storeDirectory() {
+    return module.getStoreDirectory(cfgFactory(), PLUGIN_NAME, site);
+  }
+
+  private Optional<Schedule> trimSchedule() {
+    return module.getTrimSchedule(cfg, PLUGIN_NAME);
+  }
+
+  private long trimSize() {
+    return module.getTrimSize(cfgFactory(), PLUGIN_NAME);
+  }
+
+  private PluginConfigFactory cfgFactory() {
     PluginConfigFactory cfgFactory = mock(PluginConfigFactory.class);
     when(cfgFactory.getFromGerritConfig(PLUGIN_NAME))
         .thenReturn(PluginConfig.createFromGerritConfig(PLUGIN_NAME, cfg));
-    return module.getStoreDirectory(cfgFactory, PLUGIN_NAME, site);
+    return cfgFactory;
   }
 }
