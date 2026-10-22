@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0209505f_7198343d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 3604707
+      },
+      "writtenOn": "2026-10-22T21:13:54Z",
+      "side": 1,
+      "message": "I don\u0027t think so, it should be safe, and possibly faster?",
+      "parentUuid": "548379fa_9ff80ad6",
+      "revId": "1c6f12219592cf04f4b6968737002f69e0283322",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a8622e65_54bb7885",
         "filename": "src/main/java/com/googlesource/gerrit/plugins/events/Module.java",
         "patchSetId": 1
