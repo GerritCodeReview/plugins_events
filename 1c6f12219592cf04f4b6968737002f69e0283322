@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8622e65_54bb7885",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/Module.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 4665459
+      },
+      "writtenOn": "2026-10-22T21:08:08Z",
+      "side": 1,
+      "message": "Use core\u0027s ScheduleConfig instead? It will look something like:\n\n```\n  @Provides\n  @Singleton\n  @TrimSchedule\n  protected Optional\u003cSchedule\u003e getTrimSchedule(\n      @GerritServerConfig Config cfg, @PluginName String pluginName) {\n    return ScheduleConfig.builder(cfg, \"plugin\")\n        .setSubsection(pluginName)\n        .setKeyInterval(\"trimInterval\")\n        .setKeyStartTime(\"trimStartTime\")\n        .buildSchedule();\n  }\n```",
+      "revId": "1c6f12219592cf04f4b6968737002f69e0283322",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd69acb9_6be66ac3",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/Trimmer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 4665459
+      },
+      "writtenOn": "2026-10-22T21:08:08Z",
+      "side": 1,
+      "message": "Also catch RuntimeException here. Else, scheduleWithFixedDelay stores it in the future and never runs the task again.",
+      "range": {
+        "startLine": 92,
+        "startChar": 0,
+        "endLine": 92,
+        "endChar": 29
+      },
+      "revId": "1c6f12219592cf04f4b6968737002f69e0283322",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
