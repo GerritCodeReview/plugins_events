@@ -72,6 +72,24 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b18629c9_d51553ce",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 4651293
+      },
+      "writtenOn": "2026-10-23T06:44:13Z",
+      "side": 1,
+      "message": "Agreed, and done — I rebased this change onto 647704 so the periodic trims build on the fixed trim() loop. The multi-primary note in config.md is accurate with that in place. \n\nThe parallelism itself is fine, the problem Kaushik points out is that trim() read the tail once and then ran a fixed number of iterations, so concurrent trims added up and over-trimmed. 647704 keeps the parallelism but stops based on the tail returned by each increment, so I\u0027ve based this change on it.",
+      "parentUuid": "7687d083_893a9316",
+      "revId": "1c6f12219592cf04f4b6968737002f69e0283322",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a8622e65_54bb7885",
@@ -89,6 +107,24 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5066917b_be412f0b",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/Module.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 4651293
+      },
+      "writtenOn": "2026-10-23T06:44:13Z",
+      "side": 1,
+      "message": "Done. I left out setKeyJitter since that builder method doesn\u0027t exist in the 3.9 API this branch builds against; happy to add it when this gets merged forward if you\u0027d like a trimJitter key.",
+      "parentUuid": "a8622e65_54bb7885",
+      "revId": "1c6f12219592cf04f4b6968737002f69e0283322",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bd69acb9_6be66ac3",
@@ -102,6 +138,30 @@
       "writtenOn": "2026-10-22T21:08:08Z",
       "side": 1,
       "message": "Also catch RuntimeException here. Else, scheduleWithFixedDelay stores it in the future and never runs the task again.",
+      "range": {
+        "startLine": 92,
+        "startChar": 0,
+        "endLine": 92,
+        "endChar": 29
+      },
+      "revId": "1c6f12219592cf04f4b6968737002f69e0283322",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "620f9fc4_77c16ea8",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/Trimmer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 4651293
+      },
+      "writtenOn": "2026-10-23T06:44:13Z",
+      "side": 1,
+      "message": "Done, now catching IOException | RuntimeException.",
+      "parentUuid": "bd69acb9_6be66ac3",
       "range": {
         "startLine": 92,
         "startChar": 0,
