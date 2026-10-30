@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd1a40ae_e1763947",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/Module.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 3604707
+      },
+      "writtenOn": "2026-10-30T11:58:08Z",
+      "side": 1,
+      "message": "This is a scary default.",
+      "revId": "9b4f877f2a6eb1d9836d1c024f0ac12ae976ab11",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b68b5ce0_c526dffc",
+        "filename": "src/main/resources/Documentation/cmd-trim.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 3604707
+      },
+      "writtenOn": "2026-10-30T11:58:08Z",
+      "side": 1,
+      "message": "This feels like you are correcting the first sentence in the second sentence. Instead, can you aim to have the whole express the current vision without any past visions?",
+      "revId": "9b4f877f2a6eb1d9836d1c024f0ac12ae976ab11",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "519abf3a_21fd6d2b",
+        "filename": "src/main/resources/Documentation/config.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 3604707
+      },
+      "writtenOn": "2026-10-30T11:58:08Z",
+      "side": 1,
+      "message": "It might be better to improve the terminology over the existing \u0027size\u0027 parameter. Maybe call this trimToSize or keepSize instead?",
+      "revId": "9b4f877f2a6eb1d9836d1c024f0ac12ae976ab11",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
