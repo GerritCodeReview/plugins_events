@@ -18,6 +18,24 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc6ef09e_08b37b91",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/events/Module.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 4651293
+      },
+      "writtenOn": "2026-11-01T19:33:44Z",
+      "side": 1,
+      "message": "Good point — the default is now Long.MAX_VALUE (keep every event) instead of 0, so an unset trimToSize can never be read as \"delete everything\". Added a test that the default trims nothing.",
+      "parentUuid": "fd1a40ae_e1763947",
+      "revId": "9b4f877f2a6eb1d9836d1c024f0ac12ae976ab11",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b68b5ce0_c526dffc",
@@ -35,6 +53,24 @@
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8dbc196_c2325230",
+        "filename": "src/main/resources/Documentation/cmd-trim.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 4651293
+      },
+      "writtenOn": "2026-11-01T19:33:44Z",
+      "side": 1,
+      "message": "Rewritten — it now describes scripted/one-off trims and points at the config options for plugin-scheduled trimming, without referring back to the cron-only world.",
+      "parentUuid": "b68b5ce0_c526dffc",
+      "revId": "9b4f877f2a6eb1d9836d1c024f0ac12ae976ab11",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "519abf3a_21fd6d2b",
@@ -48,6 +84,24 @@
       "writtenOn": "2026-10-30T11:58:08Z",
       "side": 1,
       "message": "It might be better to improve the terminology over the existing \u0027size\u0027 parameter. Maybe call this trimToSize or keepSize instead?",
+      "revId": "9b4f877f2a6eb1d9836d1c024f0ac12ae976ab11",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "17b23edb_e56a41e9",
+        "filename": "src/main/resources/Documentation/config.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 4651293
+      },
+      "writtenOn": "2026-11-01T19:33:44Z",
+      "side": 1,
+      "message": "Renamed to trimToSize (keeping the trim* prefix so it groups with trimInterval/trimStartTime), including the binding annotation and docs.",
+      "parentUuid": "519abf3a_21fd6d2b",
       "revId": "9b4f877f2a6eb1d9836d1c024f0ac12ae976ab11",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
