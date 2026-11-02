@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b224c989_d1391069",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 4651293
+      },
+      "writtenOn": "2026-11-02T18:44:51Z",
+      "side": 1,
+      "message": "One thing: the check and the increment still aren\u0027t atomic, so each concurrent trimmer can overshoot by one. With tail\u003d1, trim\u003d3: A increments to 2 (deletes 1), B to 3 (deletes 2), A sees its stale 2 \u003c\u003d 3 and increments to 4 (deletes 3), B sees its stale 3 \u003c\u003d 3 and increments to 5 and deletes event 4. So it\u0027s bounded at k-1 extra events for k trimmers rather than prevented. Correct me if I am wrong?",
+      "revId": "a3153c3f61202037a28b06c314bcb3332b070bf9",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
