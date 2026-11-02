@@ -15,8 +15,10 @@
 package com.googlesource.gerrit.plugins.events.fsstore;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.Semaphore;
 
 /**
  * Use a file to store a sequence in a multi node/process (Multi-Master) safe way, and allow an
@@ -73,8 +75,15 @@ public class EventSequence extends UpdatableFileValue<Long> {
   public long totalSpins;
   public long totalUpdates;
 
+  protected final Semaphore writePermits;
+
   public EventSequence(Path base) {
+    this(base, 0);
+  }
+
+  public EventSequence(Path base, int maxConcurrentWrites) {
     super(base);
+    writePermits = maxConcurrentWrites > 0 ? new Semaphore(maxConcurrentWrites, true) : null;
   }
 
   public void initFs() throws IOException {
@@ -83,6 +92,7 @@ public class EventSequence extends UpdatableFileValue<Long> {
 
   // Advance through phases 1 - 6
   protected UniqueUpdate spinSubmit(String event, long maxTries) throws IOException {
+    acquireWritePermit();
     try (EventBuilder b = new EventBuilder(paths, event)) {
       for (long tries = 0; tries < maxTries; tries++) {
         // Phase 1 (can only succeed if update is empty or non-existant)
@@ -101,6 +111,27 @@ public class EventSequence extends UpdatableFileValue<Long> {
         }
       }
       throw new IOException("Cannot submit event " + paths.base + " after " + maxTries + " tries.");
+    } finally {
+      releaseWritePermit();
+    }
+  }
+
+  protected void acquireWritePermit() throws IOException {
+    if (writePermits == null) {
+      return;
+    }
+    try {
+      writePermits.acquire();
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new InterruptedIOException(
+          "Interrupted waiting for a turn to submit event to " + paths.base);
+    }
+  }
+
+  protected void releaseWritePermit() {
+    if (writePermits != null) {
+      writePermits.release();
     }
   }
 
