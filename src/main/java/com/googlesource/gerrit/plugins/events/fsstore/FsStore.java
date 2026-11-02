@@ -16,6 +16,7 @@ package com.googlesource.gerrit.plugins.events.fsstore;
 
 import com.google.inject.Inject;
 import com.googlesource.gerrit.plugins.events.EventStore;
+import com.googlesource.gerrit.plugins.events.MaxConcurrentWrites;
 import com.googlesource.gerrit.plugins.events.StoreDirectory;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
@@ -43,8 +44,8 @@ public class FsStore implements EventStore {
   protected static class Head extends EventSequence {
     FsStore.BasePaths paths;
 
-    Head(FsStore.BasePaths paths) {
-      super(paths.head);
+    Head(FsStore.BasePaths paths, int maxConcurrentWrites) {
+      super(paths.head, maxConcurrentWrites);
       this.paths = paths;
     }
 
@@ -64,9 +65,9 @@ public class FsStore implements EventStore {
     final Head head;
     final FsSequence tail;
 
-    public Stores(BasePaths bases) {
+    public Stores(BasePaths bases, int maxConcurrentWrites) {
       uuid = new FsId(bases.uuid);
-      head = new Head(bases);
+      head = new Head(bases, maxConcurrentWrites);
       tail = new FsSequence(bases.tail);
     }
 
@@ -81,6 +82,7 @@ public class FsStore implements EventStore {
   public static final long MAX_GET_SPINS = 1000;
   public static final long MAX_SUBMIT_SPINS = 100000;
   public static final long MAX_INCREMENT_SPINS = 1000;
+  public static final int DEFAULT_MAX_CONCURRENT_WRITES = 2;
 
   protected final BasePaths paths;
   protected final Stores stores;
@@ -89,10 +91,15 @@ public class FsStore implements EventStore {
   protected final SequenceCache cachedHead;
   protected final SequenceCache cachedTail;
 
+  public FsStore(Path directory) throws IOException {
+    this(directory, DEFAULT_MAX_CONCURRENT_WRITES);
+  }
+
   @Inject
-  public FsStore(@StoreDirectory Path directory) throws IOException {
+  public FsStore(@StoreDirectory Path directory, @MaxConcurrentWrites int maxConcurrentWrites)
+      throws IOException {
     paths = new BasePaths(directory.resolve(VERSION_DIRECTORY));
-    stores = new Stores(paths);
+    stores = new Stores(paths, maxConcurrentWrites);
     stores.initFs();
     uuid = UUID.fromString(stores.uuid.get());
     cachedHead = new SequenceCache(stores.head);
